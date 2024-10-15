@@ -45,8 +45,8 @@ EXPOSE 80
 # Start Apache web server.
 CMD ["apache2-foreground"]
 
-COPY entrypoint.sh /usr/local/bin/
-RUN chmod +x /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["entrypoint.sh"]
+# COPY entrypoint.sh /usr/local/bin/
+# RUN chmod +x /usr/local/bin/entrypoint.sh
+# ENTRYPOINT ["entrypoint.sh"]
 
-RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
+# RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
