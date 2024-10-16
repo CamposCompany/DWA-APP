@@ -11,13 +11,13 @@ use Faker\Factory as Faker;
 
 class UsersControllerTest extends TestCase
 {
-    // use RefreshDatabase;
+    use RefreshDatabase;
 
     protected function setUp(): void {
         parent::setUp();
 
-        // Role::create(['name' => 'admin']);
-        // Role::create(['name' => 'user']);
+        Role::create(['name' => 'admin']);
+        Role::create(['name' => 'user']);
     }
 
     /** @test */
@@ -37,23 +37,21 @@ class UsersControllerTest extends TestCase
             "document" => $faker->numerify('###########'),
             "password" => 'password123',
             "password_confirmation" => 'password123',
-            "telephone" => $faker->phoneNumber(),
+            "telephone" => substr($faker->phoneNumber(), 0, 15),
             "gender" => $faker->randomElement(['male', 'female']),
             "profile_image" => 'profile.jpg',
             "active" => $faker->boolean(),
-            "role_id" => $faker->numberBetween(1, 5),
             "points" => $faker->numberBetween(0, 500),
         ]);
 
         $response->assertStatus(201);
-        // $this->assertDatabaseHas('users', ['email' => $response->json('email')]);
+        $this->assertDatabaseHas('users', ['email' => $response->json("data.email")]);
     }
 
 
     /** @test */
     public function it_prevents_user_without_permission_from_creating_user() {
         $faker = Faker::create();
-
         $user = User::factory()->create();
         $user->roles()->attach(Role::where('name', 'user')->first()->id);
 
@@ -71,7 +69,6 @@ class UsersControllerTest extends TestCase
             "gender" => $faker->randomElement(['male', 'female']),
             "profile_image" => 'profile.jpg',
             "active" => $faker->boolean(),
-            "role_id" => $faker->numberBetween(1, 5),
             "points" => $faker->numberBetween(0, 500),
         ]);
 

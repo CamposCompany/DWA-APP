@@ -20,7 +20,6 @@ class CreateUsersTable extends Migration
             $table->enum('gender', ['male', 'female', 'other'])->nullable();
             $table->string('profile_image')->nullable();
             $table->boolean('active')->default(true);
-            $table->unsignedBigInteger('role_id');
             $table->integer('points')->default(0);
             $table->rememberToken();
             $table->timestamps();
