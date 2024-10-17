@@ -40,7 +40,6 @@ class UserController extends Controller
             'gender' => $request->gender,
             'profile_image' => $request->profile_image,
             'active' => $request->active ?? true,
-            'role_id' => $request->role_id,
             'points' => $request->points ?? 0
         ]);
 
@@ -67,7 +66,6 @@ class UserController extends Controller
             'gender',
             'profile_image',
             'active',
-            'role_id',
             'points',
         ]));
     

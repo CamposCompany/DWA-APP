@@ -9,7 +9,7 @@ use App\Models\Role;
 class UsersSeeder extends Seeder
 {
     public function run() {
-        User::create([
+        $admin = User::create([
             'first_name' => 'Admin',
             'last_name' => 'User',
             'username' => 'admin_user',
@@ -20,11 +20,11 @@ class UsersSeeder extends Seeder
             'gender' => 'male',
             'profile_image' => null,
             'active' => true,
-            'role_id' => Role::where('name', 'admin')->first()->id,
             'points' => 0,
         ]);
+        $admin->roles()->attach(Role::where('name', 'admin')->first()->id);
 
-        User::create([
+        $owner = User::create([
             'first_name' => 'Owner',
             'last_name' => 'User',
             'username' => 'owner_user',
@@ -35,11 +35,12 @@ class UsersSeeder extends Seeder
             'gender' => 'other',
             'profile_image' => null,
             'active' => true,
-            'role_id' => Role::where('name', 'owner')->first()->id,
             'points' => 0,
         ]);
+        $owner->roles()->attach(Role::where('name', 'owner')->first()->id);
 
-        User::create([
+
+        $personal = User::create([
             'first_name' => 'Personal',
             'last_name' => 'User',
             'username' => 'personal_user',
@@ -50,11 +51,11 @@ class UsersSeeder extends Seeder
             'gender' => 'female',
             'profile_image' => null,
             'active' => true,
-            'role_id' => Role::where('name', 'personal')->first()->id,
             'points' => 0,
         ]);
+        $personal->roles()->attach(Role::where('name', 'personal')->first()->id);
 
-        User::create([
+        $receptionist = User::create([
             'first_name' => 'Receptionist',
             'last_name' => 'User',
             'username' => 'receptionist_user',
@@ -65,13 +66,13 @@ class UsersSeeder extends Seeder
             'gender' => 'other',
             'profile_image' => null,
             'active' => true,
-            'role_id' => Role::where('name', 'receptionist')->first()->id,
             'points' => 0,
         ]);
+        $receptionist->roles()->attach(Role::where('name', 'receptionist')->first()->id);
 
         // Create 10 people with "user" role
         for ($i = 1; $i <= 10; $i++) {
-            User::create([
+            $user = User::create([
                 'first_name' => 'User',
                 'last_name' => 'User ' . $i,
                 'username' => 'regular_user' . $i,
@@ -82,9 +83,9 @@ class UsersSeeder extends Seeder
                 'gender' => null,
                 'profile_image' => null,
                 'active' => true,
-                'role_id' => Role::where('name', 'user')->first()->id,
                 'points' => 0,
             ]);
+            $user->roles()->attach(Role::where('name', 'user')->first()->id);
         }
     }
 }
