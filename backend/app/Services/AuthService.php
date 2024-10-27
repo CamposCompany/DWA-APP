@@ -21,8 +21,9 @@ class AuthService
         $user = $this->userRepository->findActiveUserByDocument($data['document']);
         
         if (!$user) throw new UserNotFoundException();
-        
-        if (Hash::check($data['password'], $user->password)) {
+        $decryptedPassword = $this->decryptPassword($data['password']);
+
+        if (Hash::check($decryptedPassword, $user->password)) {
             $token = $user->createToken($data['document'])->plainTextToken;
             Auth::login($user);
             
@@ -47,6 +48,10 @@ class AuthService
         }
     
         return $this->responseService->error('Não foi possível desconectar o usuário.', 400);
+    }
+
+    private function decryptPassword($password) {
+        return base64_decode($password);
     }
    
 }
