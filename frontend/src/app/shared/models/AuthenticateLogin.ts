@@ -1,4 +1,9 @@
 export interface AuthenticateLogin {
-  document: number;
-  password: string
+  data: AuthenticateLoginData
+  message: string
+}
+
+export interface AuthenticateLoginData {
+  token: string
+  user: any
 }
