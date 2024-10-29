@@ -4,7 +4,6 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { AuthService } from '../../shared/services/auth.service';
 import { LoadingService } from '../../shared/services/loading.service';
-import { tap } from 'rxjs';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
 
@@ -31,14 +30,17 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
+      const password = this.loginForm.get('password')?.value;
+      const encodedPassword = btoa(password);
+
+      this.loginForm.patchValue({ password: encodedPassword });
       const auth$ = this.authService.authenticate(this.loginForm.getRawValue());
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: (() => {
-          // to do: implementar o token e ver como vai enviar a senha criptografada
+        next: ((res) => {
+          console.log(res);
         }),
         error: ((err) => {
-          console.log(err);
           this.errorMessage = err.error.message;
         })
       });
