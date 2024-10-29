@@ -1,0 +1,30 @@
+<div
+  class="container-login h-100 d-flex flex-column justify-content-center align-items-center"
+>
+  <h1 class="text-center">Bem-vindo</h1>
+  <img src="../../../assets/logo/dwa-logo.svg" />
+
+  <div class="d-flex flex-column justify-content-between w-100 h-100">
+    <form [formGroup]="loginForm" class="d-flex flex-column gap-3">
+      <app-input
+        label="CPF"
+        [required]="true"
+        mask="000.000.000-00"
+        [control]="$any(loginForm).controls['document']"
+      ></app-input>
+      <app-input
+        label="Senha"
+        type="password"
+        [required]="true"
+        [control]="$any(loginForm).controls['password']"
+      ></app-input>
+      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </form>
+    <div>
+      <p class="text-center forgot-password">Esqueceu sua senha?</p>
+      <app-button (clicked)="onSubmit()"></app-button>
+    </div>
+  </div>
+</div>
+
+<app-loading></app-loading>
