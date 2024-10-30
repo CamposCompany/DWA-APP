@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
@@ -10,93 +9,35 @@ use App\Http\Requests\ResetPasswordRequest;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Http\JsonResponse;
+use App\Services\UserService;
 
 class UserController extends Controller
 {
+    protected $userService;
 
-    public function index() :JsonResponse {
-        $users = User::where('deleted_at', null)->paginate(50);
-        return response()->json($users);
+    public function __construct(UserService $userService) {
+        $this->userService = $userService;
     }
 
-    public function show(int $id) :JsonResponse {
-        $user = User::where(['id' => $id,'deleted_at' => null])->first();
-
-        if (!$user) {
-            return response()->json(['message' => 'Usuário não encontrado!'], 404);
-        }
-
-        return response()->json([
-            'message' => 'Usuário encontrado com sucesso!',
-            'data' => $user,
-        ], 200);    
+    public function index(): JsonResponse {
+        return $this->userService->getAllUsers();
     }
 
-    public function store(UserStoreRequest $request) {
-        $user = User::create([
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'username' => $request->username,
-            'email' => $request->email,
-            'document' => $request->document,
-            'password' => $request->password,
-            'telephone' => $request->telephone,
-            'gender' => $request->gender,
-            'profile_image' => $request->profile_image,
-            'active' => $request->active ?? true,
-            'role_id' => $request->role_id,
-            'points' => $request->points ?? 0
-        ]);
-
-        return response()->json([
-            'message' => 'Usuário criado com sucesso!',
-            'data' => $user,
-        ], 201);
+    public function show(int $id): JsonResponse {
+        return $this->userService->getUserById($id);
     }
 
-    public function update(UserUpdateRequest $request, int $id) :JsonResponse {
-        $user = User::where(['id' => $id,'deleted_at' => null])->first();
-    
-        if (!$user) {
-            return response()->json(['message' => 'Usuário não encontrado!'], 404);
-        }
-
-        $user->update($request->only([
-            'first_name',
-            'last_name',
-            'username',
-            'email',
-            'document',
-            'telephone',
-            'gender',
-            'profile_image',
-            'active',
-            'role_id',
-            'points',
-        ]));
-    
-        if ($request->filled('password')) {
-            $user->password = $request->password;
-            $user->save();
-        }
-    
-        return response()->json([
-            'message' => 'Usuário atualizado com sucesso!',
-            'data' => $user,
-        ], 200);
+    public function store(UserStoreRequest $request): JsonResponse {
+        return $this->userService->createUser($request->validated());
     }
 
-    public function destroy(int $id) :JsonResponse {
-        $user = User::where(['id' => $id,'deleted_at' => null])->first();
+    public function update(UserUpdateRequest $request, int $id): JsonResponse {
+        return $this->userService->updateUser($request->validated(), $id);
+    }
 
-        if (!$user) {
-            return response()->json(['message' => 'Usuário não encontrado!'], 404);
-        }
-
-        $user->deleted_at = now();
-        $user->save();
-
-        return response()->json(['message' => 'Usuário removido com sucesso!'], 200);
+    public function destroy(int $id): JsonResponse {
+        return $this->userService->deleteUser($id);
     }
 
     public function forgotPassword(ForgotPasswordRequest $request) :JsonResponse {

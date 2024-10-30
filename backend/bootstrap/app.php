@@ -18,17 +18,11 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->api(prepend: [
-            \App\Http\Middleware\ApiForceJsonResponse::class,
+            \App\Http\Middleware\ApiForceJsonResponse::class
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {
-            if ($request->is('api/*')) {
-                return response()->json([
-                    'ok' => false,
-                    'message' => "In withMiddleware: Custom Unauthenticated message because no accept header!",
-                    'msg' => "In withMiddleware: Custom Unauthenticated message because no accept header!",
-                ], 401);
-            } else {
+            if (!$request->is('api/*')) {
                 return route('/');
             }
         });
@@ -37,8 +31,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $exceptions->render(function (AuthenticationException $e, Request $request) {
             if ($request->is('api/*')) {
                 return response()->json([
-                    'message' => $e->getMessage(),
-                    'data'=>[]
+                    'message' => 'Usuário não autenticado.'
                 ], 401);
             }
         });

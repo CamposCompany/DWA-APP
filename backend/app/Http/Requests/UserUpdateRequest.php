@@ -24,7 +24,6 @@ class UserUpdateRequest extends FormRequest
             'gender' => 'nullable|string|in:male,female,other',
             'profile_image' => 'nullable|string|max:255',
             'active' => 'boolean',
-            'role_id' => 'sometimes|required|exists:roles,id',
             'points' => 'integer',
         ];
     }
@@ -38,8 +37,6 @@ class UserUpdateRequest extends FormRequest
             'document.required' => 'O campo documento é obrigatório.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.confirmed' => 'As senhas não coincidem.',
-            'role_id.required' => 'O campo cargo é obrigatório.',
-            'role_id.exists' => 'O cargo especificado não existe.',
         ];
     }
 }

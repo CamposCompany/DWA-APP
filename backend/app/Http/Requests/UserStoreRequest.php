@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UserStoreRequest extends FormRequest
 {
     public function authorize() {
-        return in_array(auth()->user()->role->name, ['receptionist', 'owner', 'admin', 'personal']);
+        return auth()->user()->roles()->whereIn('name', ['receptionist', 'owner', 'admin', 'personal'])->exists();
     }
 
     public function rules() {
@@ -22,7 +22,6 @@ class UserStoreRequest extends FormRequest
             'gender' => 'nullable|string|in:male,female,other',
             'profile_image' => 'nullable|string|max:255',
             'active' => 'boolean',
-            'role_id' => 'required|exists:roles,id',
             'points' => 'integer',
         ];
     }
@@ -36,8 +35,6 @@ class UserStoreRequest extends FormRequest
             'document.required' => 'O campo documento é obrigatório.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.confirmed' => 'As senhas não coincidem.',
-            'role_id.required' => 'O campo cargo é obrigatório.',
-            'role_id.exists' => 'O cargo especificado não existe.',
         ];
     }
 }

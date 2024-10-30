@@ -1,0 +1,11 @@
+html,
+html body {
+  height: 100%;
+}
+html body {
+  background-color: #0f0f0f;
+  padding: 30px;
+}
+
+/* Importing Bootstrap SCSS file. */
+@import 'bootstrap/scss/bootstrap';

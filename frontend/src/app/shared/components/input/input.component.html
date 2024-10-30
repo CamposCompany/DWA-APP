@@ -1,0 +1,32 @@
+<div class="form-group">
+  <label *ngIf="label">{{ label }}</label>
+  <input
+    class="w-100"
+    [placeholder]="placeholder"
+    [required]="required"
+    [formControl]="control"
+    (input)="onInput($event)"
+    [type]="type"
+    [mask]="mask"
+    [name]="label"
+    *ngIf="
+      type == 'text' ||
+      type == 'email' ||
+      type == 'password' ||
+      type == 'color' ||
+      type == 'number' ||
+      type == 'time'
+    "
+  />
+
+  <select
+    class="form-control"
+    *ngIf="type == 'combo'"
+    [required]="required"
+    [formControl]="control"
+  >
+    <option *ngFor="let option of options" [value]="option">
+      {{ option }}
+    </option>
+  </select>
+</div>
