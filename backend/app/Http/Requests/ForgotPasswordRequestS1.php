@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
 
-class ForgotPasswordRequest extends FormRequest
+class ForgotPasswordRequestS1 extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,13 +22,14 @@ class ForgotPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email'
+            'document' => 'required|string',
         ];
     }
 
     public function messages() {
         return [
-            'email.required' => 'O campo email é obrigatório.',
+            'document.required' => 'O campo documento é obrigatório.',
+            'document.string' => 'O campo documento deve ser uma string.',
         ];
     }
 }

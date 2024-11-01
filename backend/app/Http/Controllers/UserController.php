@@ -3,7 +3,8 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UserStoreRequest;
 use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\ForgotPasswordRequestS1;
+use App\Http\Requests\ForgotPasswordRequestS2;
 use App\Http\Requests\ResetPasswordRequest;
 
 use Illuminate\Http\JsonResponse;
@@ -37,8 +38,12 @@ class UserController extends Controller
         return $this->userService->deleteUser($id);
     }
 
-    public function forgotPassword(ForgotPasswordRequest $request) :JsonResponse {
-        return $this->userService->forgotPassword($request);
+    public function forgotPasswordStep1(ForgotPasswordRequestS1 $request) :JsonResponse {
+        return $this->userService->forgotPasswordStep1($request->validated()["document"]);
+    }
+
+    public function forgotPasswordStep2(ForgotPasswordRequestS2 $request) :JsonResponse {
+        return $this->userService->forgotPasswordStep2($request->validated());
     }
 
     public function resetPassword(ResetPasswordRequest $request) :JsonResponse {

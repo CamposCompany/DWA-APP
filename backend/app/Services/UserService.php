@@ -5,6 +5,8 @@ use App\Repositories\UserRepository;
 use App\Exceptions\UserNotFoundException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Password;
+use App\Services\TwilioService;
+use Illuminate\Support\Str;
 
 class UserService
 {
@@ -63,21 +65,33 @@ class UserService
         return $this->responseService->success('Usuário removido com sucesso.');
     }
 
-    public function forgotPassword($request) :JsonResponse {
-        $status = Password::broker('users')->sendResetLink(
-            $request->only('email')
-        );
-    
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json(['message' => 'Um link para redefinir sua senha foi enviado para o seu e-mail.'], 200);
-        } else {
-            return response()->json(['message' => 'Endereço de e-mail inválido ou não foi possível enviar o link de redefinição de senha.'], 400);
-        }
+    public function forgotPasswordStep1(string $document) {
+        $user = $this->userRepository->findActiveUserByDocument($document);
+
+        if (!$user) throw new UserNotFoundException();
+
+        return response()->json(['userID' => $user->id, 'phone' => $user->telephone], 200);
+    }
+
+    public function forgotPasswordStep2(array $data) :JsonResponse {
+        $user = $this->userRepository->findActiveUserById($data["id"]);
+
+        if (!$user) throw new UserNotFoundException();
+
+        $token = $user->createToken($user->document)->plainTextToken;
+        $user->setRememberToken($token);
+
+        $link = url('/password/reset/' . $user->id . '/' . $token);
+
+        $twilio = new TwilioService();
+        $twilio->sendSms($user->telephone, 'Link para redefinir sua senha: ' . $link);
+
+        return response()->json(['message' => 'Um link foi enviado para redefinir sua senha foi enviado para seu telefone.'], 200);
     }
 
     public function resetPassword($request) :JsonResponse {
         $status = Password::broker('users')->reset(
-            $request->only('email', 'password', 'password_confirmation', 'token'),
+            $request->only('id', 'password', 'password_confirmation', 'token'),
             function ($user, $password) {
                 $user->forceFill([
                     'password' => $password
