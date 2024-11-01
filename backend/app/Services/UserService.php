@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Repositories\UserRepository;
 use App\Exceptions\UserNotFoundException;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\Password;
 
 class UserService
 {
@@ -60,5 +61,34 @@ class UserService
         
         $this->userRepository->softDelete($user);
         return $this->responseService->success('Usuário removido com sucesso.');
+    }
+
+    public function forgotPassword($request) :JsonResponse {
+        $status = Password::broker('users')->sendResetLink(
+            $request->only('email')
+        );
+    
+        if ($status === Password::RESET_LINK_SENT) {
+            return response()->json(['message' => 'Um link para redefinir sua senha foi enviado para o seu e-mail.'], 200);
+        } else {
+            return response()->json(['message' => 'Endereço de e-mail inválido ou não foi possível enviar o link de redefinição de senha.'], 400);
+        }
+    }
+
+    public function resetPassword($request) :JsonResponse {
+        $status = Password::broker('users')->reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => $password
+                ])->save();
+            }
+        );
+
+        if ($status === Password::PASSWORD_RESET) {
+            return response()->json(['message' => 'Sua senha foi redefinida!'], 200);
+        } else {
+            return response()->json(['message' => 'Não foi possivel redefinir sua senha no momento, por favor tente novamente mais tarde.'], 400);
+        }
     }
 }
