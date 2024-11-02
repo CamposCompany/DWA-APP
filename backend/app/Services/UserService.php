@@ -70,16 +70,17 @@ class UserService
 
         if (!$user) throw new UserNotFoundException();
 
-        return response()->json(['userID' => $user->id, 'phone' => $user->telephone], 200);
+        return response()->json(['userID' => $user->id, 'telephone' => $user->telephone], 200);
     }
 
     public function forgotPasswordStep2(array $data) :JsonResponse {
-        $user = $this->userRepository->findActiveUserById($data["id"]);
+        $user = $this->userRepository->findActiveUserByDocument($data["document"]);
 
         if (!$user) throw new UserNotFoundException();
 
         $token = $user->createToken($user->document)->plainTextToken;
         $user->setRememberToken($token);
+        $user->save();
 
         $link = url('/password/reset/' . $user->id . '/' . $token);
 
@@ -89,20 +90,16 @@ class UserService
         return response()->json(['message' => 'Um link foi enviado para redefinir sua senha foi enviado para seu telefone.'], 200);
     }
 
-    public function resetPassword($request) :JsonResponse {
-        $status = Password::broker('users')->reset(
-            $request->only('id', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->forceFill([
-                    'password' => $password
-                ])->save();
-            }
-        );
+    public function resetPassword(array $data) :JsonResponse {
+        $user = $this->userRepository->findActiveUserByDocument($data['document']);
 
-        if ($status === Password::PASSWORD_RESET) {
-            return response()->json(['message' => 'Sua senha foi redefinida!'], 200);
-        } else {
-            return response()->json(['message' => 'Não foi possivel redefinir sua senha no momento, por favor tente novamente mais tarde.'], 400);
+        if (!$user || !$user->getRememberToken() === $data['token']) {
+            return response()->json(['message' => 'Token inválido ou expirado.'], 401);
         }
+
+        $user->password = bcrypt($data['password']);
+        $user->setRememberToken(null);
+        $user->save();
+        return response()->json(['message' => 'Senha redefinida com sucesso.'], 200);
     }
 }

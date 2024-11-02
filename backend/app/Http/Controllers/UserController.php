@@ -47,6 +47,6 @@ class UserController extends Controller
     }
 
     public function resetPassword(ResetPasswordRequest $request) :JsonResponse {
-        return $this->userService->resetPassword($request);
+        return $this->userService->resetPassword($request->validated());
     }
 }

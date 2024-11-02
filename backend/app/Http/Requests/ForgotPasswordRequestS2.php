@@ -23,7 +23,7 @@ class ForgotPasswordRequestS2 extends FormRequest
     {
         return [
             'telephone' => 'required|string',
-            'id' => 'required|integer',
+            'document' => 'required|string',
         ];
     }
 
@@ -31,7 +31,7 @@ class ForgotPasswordRequestS2 extends FormRequest
         return [
             'telephone.required' => 'O campo telefone é obrigatório.',
             'telephone.string' => 'O campo telefone deve ser uma string.',
-            'id.required' => 'O campo id é obrigatório.',
+            'document.required' => 'O campo id é obrigatório.',
         ];
     }
 }
