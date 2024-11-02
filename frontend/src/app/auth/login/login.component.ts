@@ -6,11 +6,12 @@ import { AuthService } from '../../shared/services/auth.service';
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule],
+  imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   providers: [AuthService, LoadingService],
