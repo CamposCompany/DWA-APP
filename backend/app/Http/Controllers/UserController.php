@@ -6,7 +6,6 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Http\Requests\ForgotPasswordRequestS1;
 use App\Http\Requests\ForgotPasswordRequestS2;
 use App\Http\Requests\ResetPasswordRequest;
-
 use Illuminate\Http\JsonResponse;
 use App\Services\UserService;
 
