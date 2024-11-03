@@ -85,7 +85,7 @@ class UserService
         $twilio = new TwilioService();
         $twilio->sendSms($user->telephone, 'Link para redefinir sua senha: ' . $link);
 
-        return response()->json(['message' => 'Um link foi enviado para redefinir sua senha foi enviado para seu telefone.'], 200);
+        return $this->responseService->success('Um link foi enviado para redefinir sua senha foi enviado para seu telefone.');
     }
 
     public function resetPassword(array $data) :JsonResponse {
