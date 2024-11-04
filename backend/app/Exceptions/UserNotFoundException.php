@@ -1,14 +1,10 @@
 <?php
 namespace App\Exceptions;
 
-use Exception;
-use Illuminate\Http\JsonResponse;
+use App\Exceptions\CustomException;
 
-class UserNotFoundException extends Exception
+class UserNotFoundException extends CustomException
 {    
-    public function render(): JsonResponse {
-        return response()->json([
-            'message' => 'Usuário não encontrado.'
-        ], 404);
-    }
+    protected $message = 'Usuário não encontrado.';
+    protected $code = 404;
 }

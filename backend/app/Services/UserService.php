@@ -5,6 +5,7 @@ use App\Repositories\UserRepository;
 use App\Exceptions\UserNotFoundException;
 use Illuminate\Http\JsonResponse;
 use App\Services\TwilioService;
+use App\Services\ResponseService;
 
 class UserService
 {

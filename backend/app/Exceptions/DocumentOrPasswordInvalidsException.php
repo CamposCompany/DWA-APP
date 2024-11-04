@@ -1,14 +1,8 @@
 <?php
 namespace App\Exceptions;
 
-use Exception;
-use Illuminate\Http\JsonResponse;
-
-class DocumentOrPasswordInvalidsException extends Exception
+class DocumentOrPasswordInvalidsException extends CustomException
 { 
-    public function render(): JsonResponse {
-        return response()->json([
-            'message' => 'Documento ou senha inválidos.'
-        ], 401);
-    }
+    protected $message = 'Documento ou senha inválidos.';
+    protected $code = 401;
 }
