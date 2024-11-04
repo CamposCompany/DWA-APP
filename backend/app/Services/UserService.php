@@ -4,6 +4,7 @@ namespace App\Services;
 use App\Repositories\UserRepository;
 use App\Exceptions\UserNotFoundException;
 use Illuminate\Http\JsonResponse;
+use App\Services\TwilioService;
 
 class UserService
 {
@@ -60,5 +61,44 @@ class UserService
         
         $this->userRepository->softDelete($user);
         return $this->responseService->success('Usuário removido com sucesso.');
+    }
+
+    public function forgotPasswordStep1(string $document) {
+        $user = $this->userRepository->findActiveUserByDocument($document);
+
+        if (!$user) throw new UserNotFoundException();
+
+        return $this->responseService->success('Usuário encontrado.', ['userID' => $user->id, 'telephone' => $user->telephone]);
+    }
+
+    public function forgotPasswordStep2(array $data) :JsonResponse {
+        $user = $this->userRepository->findActiveUserByDocument($data["document"]);
+
+        if (!$user) throw new UserNotFoundException();
+
+        $token = $user->createToken($user->document)->plainTextToken;
+        $user->setRememberToken($token);
+        $user->save();
+
+        $link = url('reset-password' . $user->document . '/' . $token);
+
+        $twilio = new TwilioService();
+        $twilio->sendSms($user->telephone, 'Link para redefinir sua senha: ' . $link);
+
+        return $this->responseService->success('Um link foi enviado para redefinir sua senha foi enviado para seu telefone.');
+    }
+
+    public function resetPassword(array $data) :JsonResponse {
+        $user = $this->userRepository->findActiveUserByDocument($data['document']);
+
+        if (!$user || $user->getRememberToken() != $data['token']) {
+            return $this->responseService->error('Token inválido ou expirado.', 401);
+        }
+
+        $user->password = bcrypt($data['password']);
+        $user->setRememberToken(null);
+        $user->save();
+
+        return $this->responseService->success('Senha redefinida com sucesso.');
     }
 }
