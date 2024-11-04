@@ -27,6 +27,9 @@ class AuthService
             $token = $user->createToken($data['document'])->plainTextToken;
             Auth::login($user);
             
+            $user->last_login = now();
+            $user->save();
+            
             return $this->responseService->success('Usuário autenticado com sucesso.', [
                 'user' => $user,
                 'token' => $token,
