@@ -42,11 +42,8 @@ RUN chown -R www-data:www-data storage bootstrap/cache
 # Expose port 80 for Apache.
 EXPOSE 80
 
+RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
+
 # Start Apache web server.
 CMD ["apache2-foreground"]
 
-# COPY entrypoint.sh /usr/local/bin/
-# RUN chmod +x /usr/local/bin/entrypoint.sh
-# ENTRYPOINT ["entrypoint.sh"]
-
-# RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
