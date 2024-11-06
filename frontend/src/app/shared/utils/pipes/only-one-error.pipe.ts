@@ -17,7 +17,6 @@ export class OnlyOneErrorPipe implements PipeTransform {
   }
 
   private getError(errorKey: string): string {
-    console.log(errorKey);
     switch (errorKey) {
       case 'required':
         return 'Esse campo é obrigatório.';
@@ -26,9 +25,9 @@ export class OnlyOneErrorPipe implements PipeTransform {
       case 'passwordMismatch':
         return 'Senhas não conferem.';
       case 'mask':
-        return ''
+        return 'Formato inválido'
       default:
-        return 'Invalid input.';
+        return 'Valor inválido.';
     }
   }
 

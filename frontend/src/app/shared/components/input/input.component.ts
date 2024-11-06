@@ -37,7 +37,6 @@ export class InputComponent implements AfterContentInit, OnChanges {
   }
 
   onInput($event: any): void {
-    console.log(this.control)
     this.input.emit($event);
   }
 

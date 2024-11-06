@@ -31,20 +31,22 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const password = this.loginForm.get('password')?.value;
-      const encodedPassword = btoa(password);
+      const formValues = { ...this.loginForm.getRawValue() };
 
-      this.loginForm.patchValue({ password: encodedPassword });
-      const auth$ = this.authService.authenticate(this.loginForm.getRawValue());
+      const encodedPassword = btoa(formValues.password);
+      formValues.password = encodedPassword;
+
+      const auth$ = this.authService.authenticate(formValues);
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: ((res) => {
+        next: (res) => {
           localStorage.setItem('token', res.data.token);
-        }),
-        error: ((err) => {
+        },
+        error: (err) => {
           this.errorMessage = err.error.message;
-        })
+        },
       });
     }
   }
+
 }
