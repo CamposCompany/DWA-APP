@@ -6,6 +6,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,7 @@ export class LoginComponent {
   loginForm: FormGroup = new FormGroup({});
   errorMessage: string = '';
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -40,8 +41,8 @@ export class LoginComponent {
         next: ((res) => {
           localStorage.setItem('token', res.data.token);
 
-          if(!res.data.user.last_login) {
-            
+          if (!res.data.user.last_login) {
+            this.router.navigateByUrl('/on-boarding');
           }
         }),
         error: ((err) => {
