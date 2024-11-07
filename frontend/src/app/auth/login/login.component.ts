@@ -39,6 +39,10 @@ export class LoginComponent {
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: ((res) => {
           localStorage.setItem('token', res.data.token);
+
+          if(!res.data.user.last_login) {
+            
+          }
         }),
         error: ((err) => {
           this.errorMessage = err.error.message;
