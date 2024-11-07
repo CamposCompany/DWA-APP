@@ -3,6 +3,7 @@
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
+use App\Http\Middleware\Cors; 
 
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthenticationException;
@@ -20,6 +21,8 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->api(prepend: [
             \App\Http\Middleware\ApiForceJsonResponse::class
         ]);
+
+        $middleware->append(Cors::class);
 
         $middleware->redirectGuestsTo(function (Request $request) {
             if (!$request->is('api/*')) {
