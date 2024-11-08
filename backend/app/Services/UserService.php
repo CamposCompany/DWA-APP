@@ -84,9 +84,9 @@ class UserService
         $link = url('reset-password' . $user->document . '/' . $token);
 
         $twilio = new TwilioService();
-        $twilio->sendSms($user->telephone, 'Link para redefinir sua senha: ' . $link);
+        $twilio->sendSms("+55" . $user->telephone, 'Link para redefinir sua senha: ' . $link);
 
-        return $this->responseService->success('Um link foi enviado para redefinir sua senha foi enviado para seu telefone.');
+        return $this->responseService->success('Um link foi enviado ao seu telefone para redefinir sua senha.');
     }
 
     public function resetPassword(array $data) :JsonResponse {
