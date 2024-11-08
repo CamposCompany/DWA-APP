@@ -26,12 +26,13 @@ class AuthService
         if (Hash::check($decryptedPassword, $user->password)) {
             $token = $user->createToken($data['document'])->plainTextToken;
             Auth::login($user);
-            
+
+            $userBase = $user->replicate();
             $user->last_login = now();
             $user->save();
             
             return $this->responseService->success('Usuário autenticado com sucesso.', [
-                'user' => $user,
+                'user' =>  $userBase,
                 'token' => $token,
             ]);
         }
