@@ -98,7 +98,7 @@ class UserService
             return $this->responseService->error('Token inválido ou expirado.', 401);
         }
 
-        $user->password = bcrypt($data['password']);
+        $user->password = base64_decode($data['password']);
         $user->setRememberToken(null);
         $user->save();
 

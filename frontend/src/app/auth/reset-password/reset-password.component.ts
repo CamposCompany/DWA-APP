@@ -4,13 +4,13 @@ import { LoadingService } from '../../shared/services/loading.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { OnlyOneErrorPipe } from '../../shared/utils/pipes/only-one-error.pipe';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ForgotPasswordRes } from '../../shared/models/authenticate';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { UserService } from '../../shared/services/user.service';
 
 @Component({
@@ -39,24 +39,27 @@ export class ResetPasswordComponent implements OnInit {
   secondStepForm: FormGroup = new FormGroup({});
   fourthStepForm: FormGroup = new FormGroup({});
 
-  token: string | null = null;
-
   currentStep: number = 1;
-  errorMessage: string = '';
-  sentSmsMessage: string = '';
-  userPhone: string = '';
-  userId: number = 0;
+  token: string | null = null;
+  userId: string | null = '';
+
+  errorMessage$ = new BehaviorSubject<string | null>(null);
+  successMessage$ = new BehaviorSubject<string | null>(null);
+  sentSmsMessage$ = new BehaviorSubject<string | null>(null);
+  userPhone$ = new BehaviorSubject<string | null>(null);
 
   constructor(
     private fb: FormBuilder,
     private loadingService: LoadingService,
     private authService: AuthService,
-    private route: ActivatedRoute,
-    private userService: UserService
+    private activatedRoute: ActivatedRoute,
+    private route: Router
   ) { }
 
   ngOnInit(): void {
-    this.token = this.route.snapshot.paramMap.get('token');
+    this.token = this.activatedRoute.snapshot.paramMap.get('token');
+    this.userId = this.activatedRoute.snapshot.paramMap.get('id');
+
     if (this.token) this.currentStep = 4;
 
     this.initForms();
@@ -85,7 +88,7 @@ export class ResetPasswordComponent implements OnInit {
   handleBackButtonClick(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
-      this.errorMessage = '';
+      this.errorMessage$.next(null);
     }
   }
 
@@ -100,31 +103,24 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   getCurrentStepTemplate(): TemplateRef<any> | null {
-    switch (this.currentStep) {
-      case 1:
-        return this.firstStepTemplate;
-      case 2:
-        return this.secondStepTemplate;
-      case 3:
-        return this.thirdStepTemplate;
-      case 4:
-        return this.fourthStepTemplate;
-      default:
-        return null;
-    }
+    const templates: { [key: number]: TemplateRef<any> } = {
+      1: this.firstStepTemplate,
+      2: this.secondStepTemplate,
+      3: this.thirdStepTemplate,
+      4: this.fourthStepTemplate,
+    };
+    return templates[this.currentStep] || null;
   }
-
 
   private executeStep1(): void {
     const auth$: Observable<ForgotPasswordRes> = this.authService.resetPasswordStep1(this.firstStepForm.value);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res: ForgotPasswordRes) => {
-        this.userPhone = this.formatPhoneNumber(res.data.telephone)
-        this.userId = res.data.userId;
+        this.userPhone$.next(this.formatPhoneNumber(res.data.telephone));
         this.currentStep++
       },
-      error: (err) => this.errorMessage = err.error?.message || 'Erro inesperado.',
+      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -138,10 +134,10 @@ export class ResetPasswordComponent implements OnInit {
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res) => {
-        this.sentSmsMessage = res.message;
+        this.sentSmsMessage$.next(res.message);
         this.currentStep++
       },
-      error: (err) => this.errorMessage = err.error?.message || 'Erro inesperado.',
+      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -161,18 +157,22 @@ export class ResetPasswordComponent implements OnInit {
 
     const payload = {
       ...formValues,
-      token: this.token
+      token: this.token,
+      id: this.userId
     }
 
-    console.log(payload);
+    if (this.token && this.userId) {
+      const auth$ = this.authService.resetPasswordLastStep(payload);
 
-    if (this.token) {
-      const auth$ = this.userService.updateUser(payload, this.userId);
-      
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: (res) => {
-          console.log(res);
-        }
+          this.successMessage$.next(res.message);
+
+          setTimeout(() => {
+            this.route.navigateByUrl('login');
+          }, 1500);
+        },
+        error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
       })
     }
   }
