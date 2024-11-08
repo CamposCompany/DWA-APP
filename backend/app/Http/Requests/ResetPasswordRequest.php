@@ -23,16 +23,16 @@ class ResetPasswordRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'id' => 'required|string',
             'token' => 'required|string',
-            'document' => 'required|string',
             'password' => 'required|string|min:6|confirmed',
         ];
     }
 
     public function messages() {
         return [
+            'id.required' => 'O campo documento é obrigatório.',
             'token.required' => 'O campo token é obrigatório.',
-            'document.required' => 'O campo documento é obrigatório.',
             'password.required' => 'O campo senha é obrigatório.',
             'password.confirmed' => 'As senhas não coincidem.',
         ];
