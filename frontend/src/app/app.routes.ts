@@ -17,6 +17,10 @@ export const routes: Routes = [
       import('./auth/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
   },
   {
+    path: 'reset-password/:id/:token',
+    loadComponent: () =>
+      import('./auth/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
+  },
     path: 'first-login',
     loadComponent: () =>
       import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
