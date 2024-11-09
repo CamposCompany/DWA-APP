@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { tokenGuard } from './shared/utils/guards/token.guard';
 import { authGuard } from './shared/utils/guards/auth.guard';
 
 export const routes: Routes = [
@@ -7,10 +6,6 @@ export const routes: Routes = [
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
-  },
-  {
-    path: '**',
-    redirectTo: 'login',
   },
   {
     path: 'login',
@@ -42,5 +37,9 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
     canActivate: [authGuard]
-  }
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
+  },
 ];
