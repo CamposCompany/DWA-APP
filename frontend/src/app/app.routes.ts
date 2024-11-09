@@ -1,10 +1,16 @@
 import { Routes } from '@angular/router';
+import { tokenGuard } from './shared/utils/guards/token.guard';
+import { authGuard } from './shared/utils/guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
     redirectTo: 'login'
+  },
+  {
+    path: '**',
+    redirectTo: 'login',
   },
   {
     path: 'login',
@@ -21,8 +27,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./auth/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
   },
-    path: 'first-login',
+  {
+    path: 'first-access/:id',
     loadComponent: () =>
       import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
+    canActivate: [authGuard]
   }
 ];

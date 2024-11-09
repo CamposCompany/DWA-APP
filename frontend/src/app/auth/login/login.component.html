@@ -18,10 +18,14 @@
         [required]="true"
         [control]="$any(loginForm).controls['password']"
       ></app-input>
-      <p class="error-message" *ngIf="errorMessage">{{ errorMessage }}</p>
+      <p class="error-message" *ngIf="errorMessage$ | async as error">
+        {{ error }}
+      </p>
     </form>
     <div>
-      <p class="text-center forgot-password" routerLink="/reset-password">Esqueceu sua senha?</p>
+      <p class="text-center forgot-password" routerLink="/reset-password">
+        Esqueceu sua senha?
+      </p>
       <app-button (clicked)="onSubmit()"></app-button>
     </div>
   </div>

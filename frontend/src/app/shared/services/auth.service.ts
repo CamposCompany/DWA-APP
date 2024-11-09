@@ -29,4 +29,9 @@ export class AuthService {
   resetPasswordLastStep(payload: { password: string, confirm_password: string, token: string, id: number }): Observable<ForgotPasswordRes> {
     return this.http.post(`${this.routeResetLastStep}`, payload);
   }
+
+  isLoggedIn(): boolean {
+    const token = localStorage.getItem('token');
+    return !!token;
+  }
 }
