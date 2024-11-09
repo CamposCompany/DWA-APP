@@ -5,8 +5,10 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
+import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-first-login',
@@ -20,47 +22,68 @@ export class FirstLoginComponent {
   firstLoginForm: FormGroup = new FormGroup({});
   passwordFieldType: string = 'password';
 
-  private token: string = 'seu-token-de-autenticacao';
-  private userId: number = 123; 
+  errorMessage = new BehaviorSubject<string | null>(null);
+  successMessage = new BehaviorSubject<string | null>(null);
+
+  errorMessage$ = this.errorMessage.asObservable();
+  successMessage$ = this.successMessage.asObservable();
+
+  private token: string | null = '';
+  private userId: string | null = '';
 
   constructor(
     private fb: FormBuilder,
-    private userService: UserService
-  ) {}
+    private userService: UserService,
+    private activatedRoute: ActivatedRoute,
+    private router: Router,
+    private loadingService: LoadingService,
+  ) { }
 
   ngOnInit(): void {
-    this.firstLoginForm = this.fb.group({
-      name: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      email: ['', [Validators.email]],
-      password: ['', [Validators.required]],
-      passwordConfirmation: ['', [Validators.required]]
-    }, { validators: this.passwordMatchValidator });
+    this.token = localStorage.getItem('token');
+    this.userId = this.activatedRoute.snapshot.paramMap.get('id');
+
+    this.initForm();
   }
 
-  passwordMatchValidator(form: FormGroup) {
-    return form.get('password')?.value === form.get('passwordConfirmation')?.value
-      ? null : { mismatch: true };
+  public initForm() {
+    this.firstLoginForm = this.fb.group({
+      name: ['', [Validators.required]],
+      telephone: ['', [Validators.required]],
+      email: ['', [Validators.email]],
+      password: ['', [Validators.required]],
+      password_confirmation: ['', [Validators.required]]
+    }, { validators: passwordMatchValidator() });
   }
 
   onSubmit(): void {
-    if (this.firstLoginForm.valid) {
-      const { password, passwordConfirmation } = this.firstLoginForm.value;
+    if (this.firstLoginForm.valid && this.token && this.userId) {
+      const formValues = encodePasswordFields(this.firstLoginForm.getRawValue(), [
+        'password',
+        'password_confirmation',
+      ]);
 
-      this.userService.updateUser(
-        { password, confirm_password: passwordConfirmation },
+      const payload = {
+        ...formValues
+      }
+
+      const auth$ = this.userService.updateUser(
+        payload,
         this.token,
         this.userId
-      ).subscribe({
-        next: (response) => {
-          console.log('Usuário atualizado com sucesso!', response);
-        },
-        error: (error) => {
-          console.error('Erro ao atualizar o usuário', error);
-        }
-      });
-    } else {
-      console.log('Formulário inválido');
+      )
+
+      this.loadingService.showLoaderUntilCompleted(auth$)
+        .subscribe({
+          next: (res) => {
+            this.errorMessage.next(null);
+            this.router.navigateByUrl('on-boarding');
+            this.successMessage.next(res.message)
+          },
+          error: (err) => {
+            this.errorMessage.next(err.error?.message || 'Erro inesperado.')
+          }
+        });
     }
   }
 }

@@ -7,7 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class UserUpdateRequest extends FormRequest
 {
     public function authorize() :bool {
-        return in_array(auth()->user()->role->name, ['receptionist', 'owner', 'admin', 'personal']);
+        return true;
     }
 
     public function rules() :array {
