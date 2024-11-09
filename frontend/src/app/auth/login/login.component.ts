@@ -47,7 +47,7 @@ export class LoginComponent {
           localStorage.setItem('token', res.data.token);
 
           if (!res.data.user.last_login) {
-            this.router.navigateByUrl('/first-access');
+            this.router.navigateByUrl(`/first-access/${res.data.user.id}`);
           } else {
             this.router.navigateByUrl('/on-boarding');
           }

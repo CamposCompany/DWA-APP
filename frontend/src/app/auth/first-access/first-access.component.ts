@@ -9,6 +9,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-first-login',
@@ -16,7 +17,7 @@ import { BehaviorSubject } from 'rxjs';
   imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './first-access.component.html',
   styleUrl: './first-access.component.scss',
-  providers: [LoadingService]
+  providers: [LoadingService, AuthService]
 })
 export class FirstLoginComponent {
   firstAccessForm: FormGroup = new FormGroup({});

@@ -39,6 +39,7 @@
         [required]="true"
         placeholder="********"
         [control]="$any(firstAccessForm).controls['password']"
+        type="password"
       ></app-input>
 
       <app-input
@@ -46,14 +47,18 @@
         [required]="true"
         placeholder="********"
         [control]="$any(firstAccessForm).controls['password_confirmation']"
+        type="password"
       ></app-input>
+
+      <p class="error-message" *ngIf="errorMessage$ | async as error">
+        {{ error }}
+      </p>
 
       <span class="text-left" id="policy-link"
         >Ao continuar você aceita nosso <a>Termos de Uso</a> e
         <a>Política de Privacidade.</a></span
       >
     </form>
-
     <div>
       <app-button (clicked)="onSubmit()"></app-button>
     </div>
