@@ -11,7 +11,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ForgotPasswordRes } from '../../shared/models/authenticate';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserService } from '../../shared/services/user.service';
+
 
 @Component({
   selector: 'app-reset-password',
@@ -174,5 +174,6 @@ export class ResetPasswordComponent implements OnInit {
         },
         error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
       })
+    }
   }
 }
