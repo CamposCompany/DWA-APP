@@ -17,7 +17,7 @@ export const routes: Routes = [
       import('./auth/onboarding/onboarding.component').then((m) => m.OnboardingComponent),
   },
   {
-    path: 'first-login',
+    path: 'first-access',
     loadComponent: () =>
       import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
   },
