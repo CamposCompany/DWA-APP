@@ -10,6 +10,7 @@ export class AuthService {
 
   private routeResetPasswordStep1: string = 'forgot-password-step1';
   private routeResetPasswordStep2: string = 'forgot-password-step2';
+  private routeResetLastStep: string = 'reset-password';
 
   constructor(private http: Http) { }
 
@@ -23,5 +24,9 @@ export class AuthService {
 
   resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
     return this.http.post(`${this.routeResetPasswordStep2}`, payload);
+  }
+
+  resetPasswordLastStep(payload: { password: string, confirm_password: string, token: string, id: number }): Observable<ForgotPasswordRes> {
+    return this.http.post(`${this.routeResetLastStep}`, payload);
   }
 }

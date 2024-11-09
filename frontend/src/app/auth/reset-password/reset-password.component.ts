@@ -4,13 +4,14 @@ import { LoadingService } from '../../shared/services/loading.service';
 import { AuthService } from '../../shared/services/auth.service';
 import { passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { OnlyOneErrorPipe } from '../../shared/utils/pipes/only-one-error.pipe';
-import { RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ForgotPasswordRes } from '../../shared/models/authenticate';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { UserService } from '../../shared/services/user.service';
 
 @Component({
   selector: 'app-reset-password',
@@ -32,47 +33,62 @@ export class ResetPasswordComponent implements OnInit {
   @ViewChild('firstStepTemplate', { static: true }) firstStepTemplate!: TemplateRef<any>;
   @ViewChild('secondStepTemplate', { static: true }) secondStepTemplate!: TemplateRef<any>;
   @ViewChild('thirdStepTemplate', { static: true }) thirdStepTemplate!: TemplateRef<any>;
+  @ViewChild('fourthStepTemplate', { static: true }) fourthStepTemplate!: TemplateRef<any>;
 
   firstStepForm: FormGroup = new FormGroup({});
   secondStepForm: FormGroup = new FormGroup({});
-  thirdStepForm: FormGroup = new FormGroup({});
+  fourthStepForm: FormGroup = new FormGroup({});
 
-  currentStep = 1;
-  errorMessage = '';
-  userPhone = '';
+  currentStep: number = 1;
+  token: string | null = null;
+  userId: string | null = '';
+
+  errorMessage$ = new BehaviorSubject<string | null>(null);
+  successMessage$ = new BehaviorSubject<string | null>(null);
+  sentSmsMessage$ = new BehaviorSubject<string | null>(null);
+  userPhone$ = new BehaviorSubject<string | null>(null);
 
   constructor(
     private fb: FormBuilder,
     private loadingService: LoadingService,
-    private authService: AuthService
+    private authService: AuthService,
+    private activatedRoute: ActivatedRoute,
+    private route: Router
   ) { }
 
   ngOnInit(): void {
+    this.token = this.activatedRoute.snapshot.paramMap.get('token');
+    this.userId = this.activatedRoute.snapshot.paramMap.get('id');
+
+    if (this.token) this.currentStep = 4;
+
     this.initForms();
   }
 
   private initForms(): void {
-    this.firstStepForm = this.fb.group({
-      document: ['', [Validators.required]]
-    });
+    if (this.currentStep === 1) {
+      this.firstStepForm = this.fb.group({
+        document: ['', [Validators.required]]
+      });
 
-    this.secondStepForm = this.fb.group({
-      telephone: ['', [Validators.required]]
-    });
-
-    this.thirdStepForm = this.fb.group(
-      {
-        password: ['', [Validators.required]],
-        password_confirmation: ['', Validators.required],
-      },
-      { validators: [passwordMatchValidator()] }
-    );
+      this.secondStepForm = this.fb.group({
+        telephone: ['', [Validators.required]]
+      });
+    } else if (this.currentStep === 4) {
+      this.fourthStepForm = this.fb.group(
+        {
+          password: ['', [Validators.required]],
+          password_confirmation: ['', Validators.required],
+        },
+        { validators: [passwordMatchValidator()] }
+      );
+    }
   }
 
   handleBackButtonClick(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
-      this.errorMessage = '';
+      this.errorMessage$.next(null);
     }
   }
 
@@ -81,34 +97,30 @@ export class ResetPasswordComponent implements OnInit {
       this.executeStep1();
     } else if (this.currentStep === 2 && this.secondStepForm.valid) {
       this.executeStep2();
-    } else if (this.currentStep === 3 && this.thirdStepForm.valid) {
+    } else if (this.currentStep === 4 && this.fourthStepForm.valid) {
       this.finalizeReset();
     }
   }
 
   getCurrentStepTemplate(): TemplateRef<any> | null {
-    switch (this.currentStep) {
-      case 1:
-        return this.firstStepTemplate;
-      case 2:
-        return this.secondStepTemplate;
-      case 3:
-        return this.thirdStepTemplate;
-      default:
-        return null;
-    }
+    const templates: { [key: number]: TemplateRef<any> } = {
+      1: this.firstStepTemplate,
+      2: this.secondStepTemplate,
+      3: this.thirdStepTemplate,
+      4: this.fourthStepTemplate,
+    };
+    return templates[this.currentStep] || null;
   }
-
 
   private executeStep1(): void {
     const auth$: Observable<ForgotPasswordRes> = this.authService.resetPasswordStep1(this.firstStepForm.value);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res: ForgotPasswordRes) => {
-        this.userPhone = this.formatPhoneNumber(res.data.telephone)
+        this.userPhone$.next(this.formatPhoneNumber(res.data.telephone));
         this.currentStep++
       },
-      error: (err) => this.errorMessage = err.error?.message || 'Erro inesperado.',
+      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -121,10 +133,11 @@ export class ResetPasswordComponent implements OnInit {
     const auth$: Observable<ForgotPasswordRes> = this.authService.resetPasswordStep2(payload);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-      next: () => {
+      next: (res) => {
+        this.sentSmsMessage$.next(res.message);
         this.currentStep++
       },
-      error: (err) => this.errorMessage = err.error?.message || 'Erro inesperado.',
+      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -134,6 +147,33 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   private finalizeReset(): void {
-    alert('Senha alterada com sucesso!');
+    const formValues = { ...this.fourthStepForm.getRawValue() };
+
+    const encodedPassword = btoa(formValues.password);
+    formValues.password = encodedPassword;
+
+    const encodedPasswordConfirmation = btoa(formValues.password_confirmation);
+    formValues.password_confirmation = encodedPasswordConfirmation;
+
+    const payload = {
+      ...formValues,
+      token: this.token,
+      id: this.userId
+    }
+
+    if (this.token && this.userId) {
+      const auth$ = this.authService.resetPasswordLastStep(payload);
+
+      this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
+        next: (res) => {
+          this.successMessage$.next(res.message);
+
+          setTimeout(() => {
+            this.route.navigateByUrl('login');
+          }, 1500);
+        },
+        error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
+      })
+    }
   }
 }
