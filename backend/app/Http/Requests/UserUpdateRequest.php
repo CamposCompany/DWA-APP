@@ -19,7 +19,7 @@ class UserUpdateRequest extends FormRequest
             'username' => "sometimes|required|string|unique:users,username,{$userId}|max:255",
             'email' => "sometimes|required|string|email|unique:users,email,{$userId}|max:255",
             'document' => "sometimes|required|string|unique:users,document,{$userId}|max:20",
-            'password' => 'sometimes|nullable|string|min:6|confirmed',
+            'password' => 'sometimes|nullable|string|min:8|confirmed',
             'telephone' => 'nullable|string|max:15',
             'gender' => 'nullable|string|in:male,female,other',
             'profile_image' => 'nullable|string|max:255',
