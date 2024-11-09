@@ -174,5 +174,6 @@ export class ResetPasswordComponent implements OnInit {
         },
         error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
       })
+    }
   }
 }

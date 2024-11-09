@@ -16,17 +16,17 @@ import { RouterModule } from '@angular/router';
   providers: [LoadingService]
 })
 export class FirstLoginComponent {
-  firstLoginForm: FormGroup = new FormGroup({});
+  firstAccessForm: FormGroup = new FormGroup({});
 
   constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.firstLoginForm = this.fb.group({
+    this.firstAccessForm = this.fb.group({
       name: ['', [Validators.required]],
-      phone: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
+      telephone: ['', [Validators.required]],
+      email: ['', [Validators.email]],
       password: ['', [Validators.required]],
-      passwordConfirmation: ['', [Validators.required]]
+      password_confirmation: ['', [Validators.required]]
     });
     
   }

@@ -45,6 +45,8 @@ export class LoginComponent {
 
           if (!res.data.user.last_login) {
             this.router.navigateByUrl('/first-access');
+          } else {
+            this.router.navigateByUrl('/on-boarding');
           }
         },
         error: (err) => {

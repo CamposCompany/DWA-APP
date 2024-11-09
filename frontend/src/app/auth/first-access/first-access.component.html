@@ -3,58 +3,61 @@
 >
   <div class="d-flex">
     <a routerLink="/login">
-        <img class="backButton" src="../../../assets/backButton.png"/>
-      </a>
+      <img class="backButton" src="../../../assets/backButton.png" />
+    </a>
     <h1 class="text-center">Primeiro acesso</h1>
   </div>
 
   <span class="text-left">Preencha seus dados para finalizar seu cadastro</span>
 
-    <div class="d-flex flex-column justify-content-between w-100 h-100">
-      <form [formGroup]="firstLoginForm" class="d-flex flex-column gap-4">
-        <app-input
+  <div class="d-flex flex-column justify-content-between w-100 h-100">
+    <form [formGroup]="firstAccessForm" class="d-flex flex-column">
+      <app-input
         label="Como quer ser chamado?"
         [required]="true"
-        placeholder="exemplo: paulo"
-        [control]="$any(firstLoginForm).controls['name']"
-        ></app-input>
+        placeholder="exemplo: Paulo"
+        [control]="$any(firstAccessForm).controls['name']"
+      ></app-input>
 
-        <app-input
+      <app-input
         label="Seu telefone para contato"
         [required]="true"
         placeholder="(12) 98765-4321"
         mask="(00) 00000-0000"
-        [control]="$any(firstLoginForm).controls['phone']"
-        ></app-input>
+        [control]="$any(firstAccessForm).controls['telephone']"
+      ></app-input>
 
-        <app-input
+      <app-input
         label="Seu melhor e-mail (opcional)"
         [required]="false"
         placeholder="paulo@email.com.br"
-        [control]="$any(firstLoginForm).controls['email']"
-        ></app-input>
+        [control]="$any(firstAccessForm).controls['email']"
+      ></app-input>
 
-        <app-input
+      <app-input
         label="Senha"
         [required]="true"
         placeholder="********"
-        [control]="$any(firstLoginForm).controls['password']"
-        ></app-input>
+        [control]="$any(firstAccessForm).controls['password']"
+      ></app-input>
 
-        <app-input
+      <app-input
         label="Confirme sua senha"
         [required]="true"
         placeholder="********"
-        [control]="$any(firstLoginForm).controls['passwordConfirmation']"
-        ></app-input>
-      </form>
+        [control]="$any(firstAccessForm).controls['password_confirmation']"
+      ></app-input>
 
-      <span class="text-left" id="policy-link">Ao continuar você aceita nosso <a>Termos de Uso</a> e <a>Política de Privacidade.</a></span>
+      <span class="text-left" id="policy-link"
+        >Ao continuar você aceita nosso <a>Termos de Uso</a> e
+        <a>Política de Privacidade.</a></span
+      >
+    </form>
 
-      <div>
-        <app-button (clicked)="onSubmit()"></app-button>
-      </div>
+    <div>
+      <app-button (clicked)="onSubmit()"></app-button>
     </div>
+  </div>
 </div>
 
 <app-loading></app-loading>
