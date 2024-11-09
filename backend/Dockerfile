@@ -44,6 +44,10 @@ EXPOSE 80
 
 RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
 
+RUN addgroup --gid 1000 laravel
+RUN adduser --ingroup laravel --shell /bin/sh laravel
+USER laravel
+
 # Start Apache web server.
 CMD ["apache2-foreground"]
 

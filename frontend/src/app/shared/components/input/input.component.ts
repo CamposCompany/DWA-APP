@@ -2,11 +2,12 @@ import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Input, Output, AfterContentInit, OnChanges } from '@angular/core';
 import { FormControl, ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { NgxMaskDirective, NgxMaskPipe, provideNgxMask } from 'ngx-mask';
+import { OnlyOneErrorPipe } from '../../utils/pipes/only-one-error.pipe';
 
 @Component({
   selector: 'app-input',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, CommonModule, NgxMaskDirective, NgxMaskPipe],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, NgxMaskDirective, NgxMaskPipe, OnlyOneErrorPipe],
   providers: [provideNgxMask()],
   templateUrl: './input.component.html',
   styleUrls: ['./input.component.scss']
@@ -22,6 +23,8 @@ export class InputComponent implements AfterContentInit, OnChanges {
   @Input() control: FormControl = new FormControl();
 
   @Output() input = new EventEmitter();
+
+  showPassword: boolean = false;
 
   ngAfterContentInit(): void {
     if (this.mask) this.type = 'text';

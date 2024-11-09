@@ -7,11 +7,12 @@ import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule],
+  imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
   providers: [AuthService, LoadingService],
@@ -31,24 +32,26 @@ export class LoginComponent {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const password = this.loginForm.get('password')?.value;
-      const encodedPassword = btoa(password);
+      const formValues = { ...this.loginForm.getRawValue() };
 
-      this.loginForm.patchValue({ password: encodedPassword });
-      const auth$ = this.authService.authenticate(this.loginForm.getRawValue());
+      const encodedPassword = btoa(formValues.password);
+      formValues.password = encodedPassword;
+
+      const auth$ = this.authService.authenticate(formValues);
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: ((res) => {
+        next: (res) => {
           localStorage.setItem('token', res.data.token);
 
           if (!res.data.user.last_login) {
-            this.router.navigateByUrl('/on-boarding');
+            this.router.navigateByUrl('/first-access');
           }
-        }),
-        error: ((err) => {
+        },
+        error: (err) => {
           this.errorMessage = err.error.message;
-        })
+        },
       });
     }
   }
+
 }

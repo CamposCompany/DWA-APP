@@ -1,23 +1,40 @@
 <div class="form-group">
   <label *ngIf="label">{{ label }}</label>
-  <input
-    class="w-100"
-    [placeholder]="placeholder"
-    [required]="required"
-    [formControl]="control"
-    (input)="onInput($event)"
-    [type]="type"
-    [mask]="mask"
-    [name]="label"
-    *ngIf="
-      type == 'text' ||
-      type == 'email' ||
-      type == 'password' ||
-      type == 'color' ||
-      type == 'number' ||
-      type == 'time'
-    "
-  />
+  <div>
+    <input
+      class="w-100"
+      [placeholder]="placeholder"
+      [required]="required"
+      [formControl]="control"
+      (input)="onInput($event)"
+      [type]="
+        type === 'password' ? (this.showPassword ? 'text' : 'password') : type
+      "
+      [mask]="mask"
+      [name]="label"
+      autocomplete="on"
+      *ngIf="
+        type == 'text' ||
+        type == 'email' ||
+        type == 'password' ||
+        type == 'color' ||
+        type == 'number' ||
+        type == 'time'
+      "
+    />
+
+    <img
+      class="position-absolute"
+      *ngIf="type === 'password'"
+      [src]="
+        showPassword
+          ? 'assets/images/password-eye-on.png'
+          : 'assets/images/password-eye-off.png'
+      "
+      (click)="this.showPassword = !this.showPassword"
+      [attr.alt]="showPassword ? 'Hide password' : 'Show password'"
+    />
+  </div>
 
   <select
     class="form-control"
@@ -29,4 +46,8 @@
       {{ option }}
     </option>
   </select>
+
+  <p *ngIf="control.errors && control.touched">
+    {{ control.errors | onlyOneError }}
+  </p>
 </div>
