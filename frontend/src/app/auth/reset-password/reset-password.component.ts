@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoadingService } from '../../shared/services/loading.service';
 import { AuthService } from '../../shared/services/auth.service';
-import { passwordMatchValidator } from '../../shared/utils/validators/password.validator';
+import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { OnlyOneErrorPipe } from '../../shared/utils/pipes/only-one-error.pipe';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
@@ -11,7 +11,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ForgotPasswordRes } from '../../shared/models/authenticate';
 import { BehaviorSubject, Observable } from 'rxjs';
-import { UserService } from '../../shared/services/user.service';
+
 
 @Component({
   selector: 'app-reset-password',
@@ -43,10 +43,15 @@ export class ResetPasswordComponent implements OnInit {
   token: string | null = null;
   userId: string | null = '';
 
-  errorMessage$ = new BehaviorSubject<string | null>(null);
-  successMessage$ = new BehaviorSubject<string | null>(null);
-  sentSmsMessage$ = new BehaviorSubject<string | null>(null);
-  userPhone$ = new BehaviorSubject<string | null>(null);
+  errorMessage = new BehaviorSubject<string | null>(null);
+  successMessage = new BehaviorSubject<string | null>(null);
+  sentSmsMessage = new BehaviorSubject<string | null>(null);
+  userPhone = new BehaviorSubject<string | null>(null);
+
+  errorMessage$ = this.errorMessage.asObservable();
+  successMessage$ = this.successMessage.asObservable();
+  sentSmsMessage$ = this.sentSmsMessage.asObservable();
+  userPhone$ = this.userPhone.asObservable();
 
   constructor(
     private fb: FormBuilder,
@@ -88,7 +93,7 @@ export class ResetPasswordComponent implements OnInit {
   handleBackButtonClick(): void {
     if (this.currentStep > 1) {
       this.currentStep--;
-      this.errorMessage$.next(null);
+      this.errorMessage.next(null);
     }
   }
 
@@ -117,10 +122,10 @@ export class ResetPasswordComponent implements OnInit {
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res: ForgotPasswordRes) => {
-        this.userPhone$.next(this.formatPhoneNumber(res.data.telephone));
+        this.userPhone.next(this.formatPhoneNumber(res.data.telephone));
         this.currentStep++
       },
-      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
+      error: (err) => this.errorMessage.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -134,10 +139,10 @@ export class ResetPasswordComponent implements OnInit {
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res) => {
-        this.sentSmsMessage$.next(res.message);
+        this.sentSmsMessage.next(res.message);
         this.currentStep++
       },
-      error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
+      error: (err) => this.errorMessage.next(err.error?.message || 'Erro inesperado.'),
     });
   }
 
@@ -147,13 +152,10 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   private finalizeReset(): void {
-    const formValues = { ...this.fourthStepForm.getRawValue() };
-
-    const encodedPassword = btoa(formValues.password);
-    formValues.password = encodedPassword;
-
-    const encodedPasswordConfirmation = btoa(formValues.password_confirmation);
-    formValues.password_confirmation = encodedPasswordConfirmation;
+    const formValues = encodePasswordFields(this.fourthStepForm.getRawValue(), [
+      'password',
+      'password_confirmation',
+    ]);
 
     const payload = {
       ...formValues,
@@ -166,13 +168,13 @@ export class ResetPasswordComponent implements OnInit {
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: (res) => {
-          this.successMessage$.next(res.message);
+          this.successMessage.next(res.message);
 
           setTimeout(() => {
             this.route.navigateByUrl('login');
           }, 1500);
         },
-        error: (err) => this.errorMessage$.next(err.error?.message || 'Erro inesperado.'),
+        error: (err) => this.errorMessage.next(err.error?.message || 'Erro inesperado.'),
       })
     }
   }

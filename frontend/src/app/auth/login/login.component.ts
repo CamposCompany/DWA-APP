@@ -8,6 +8,7 @@ import { LoadingComponent } from "../../shared/components/loading/loading.compon
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,9 @@ import { RouterModule } from '@angular/router';
 })
 export class LoginComponent {
   loginForm: FormGroup = new FormGroup({});
-  errorMessage: string = '';
+  errorMessage = new BehaviorSubject<string | null>(null);
+
+  errorMessage$ = this.errorMessage.asObservable();
 
   constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService, private router: Router) { }
 
@@ -50,7 +53,7 @@ export class LoginComponent {
           }
         },
         error: (err) => {
-          this.errorMessage = err.error.message;
+          this.errorMessage.next(err.error.message || "Erro inesperado");
         },
       });
     }
