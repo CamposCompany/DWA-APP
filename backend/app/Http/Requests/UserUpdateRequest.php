@@ -7,7 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class UserUpdateRequest extends FormRequest
 {
     public function authorize() :bool {
-        return collect(['receptionist', 'owner', 'admin', 'personal'])->contains(function ($role) {
+        $userId = $this->route('user');
+
+        return auth()->user()->id === (int) $userId || collect(['receptionist', 'owner', 'admin', 'personal'])->contains(function ($role) {
             return auth()->user()->hasRole($role);
         });
     }
