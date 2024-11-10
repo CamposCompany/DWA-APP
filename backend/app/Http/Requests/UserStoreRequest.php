@@ -6,8 +6,10 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class UserStoreRequest extends FormRequest
 {
-    public function authorize() {
-        return auth()->user()->roles()->whereIn('name', ['receptionist', 'owner', 'admin', 'personal'])->exists();
+    public function authorize() :bool {
+        return collect(['receptionist', 'owner', 'admin', 'personal'])->contains(function ($role) {
+            return auth()->user()->hasRole($role);
+        });
     }
 
     public function rules() {
@@ -15,7 +17,7 @@ class UserStoreRequest extends FormRequest
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'username' => 'required|string|unique:users|max:255',
-            'email' => 'required|string|email|unique:users|max:255',
+            'email' => 'sometimes|nullable|required|string|email|unique:users|max:255',
             'document' => 'required|string|unique:users|max:20',
             'password' => 'required|string|min:8|confirmed',
             'telephone' => 'nullable|string|max:15',
