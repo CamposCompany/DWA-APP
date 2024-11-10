@@ -49,7 +49,7 @@ export class FirstLoginComponent {
 
   public initForm() {
     this.firstAccessForm = this.fb.group({
-      name: ['', [Validators.required]],
+      username: ['', [Validators.required]],
       telephone: ['', [Validators.required]],
       email: ['', [Validators.email]],
       password: ['', [Validators.required]],
