@@ -22,7 +22,7 @@ export interface GenericData {
 }
 
 export interface User {
-  id: 16,
+  id: number,
   first_name: string,
   last_name: string,
   username: string,
