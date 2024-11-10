@@ -21,6 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropColumns('last_login');
+        Schema::dropColumns('users','last_login');
     }
 };

@@ -7,7 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 class UserUpdateRequest extends FormRequest
 {
     public function authorize() :bool {
-        return in_array(auth()->user()->role->name, ['receptionist', 'owner', 'admin', 'personal']);
+        return collect(['receptionist', 'owner', 'admin', 'personal'])->contains(function ($role) {
+            return auth()->user()->hasRole($role);
+        });
     }
 
     public function rules() :array {
@@ -17,7 +19,7 @@ class UserUpdateRequest extends FormRequest
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
             'username' => "sometimes|required|string|unique:users,username,{$userId}|max:255",
-            'email' => "sometimes|required|string|email|unique:users,email,{$userId}|max:255",
+            'email' => "sometimes|nullable|string|email|unique:users,email,{$userId}|max:255",
             'document' => "sometimes|required|string|unique:users,document,{$userId}|max:20",
             'password' => 'sometimes|nullable|string|min:8|confirmed',
             'telephone' => 'nullable|string|max:15',
