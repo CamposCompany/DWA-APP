@@ -28,6 +28,8 @@ class AuthService
             Auth::login($user);
 
             $userBase = $user->replicate();
+            $userBase->id = $user->id;
+            
             $user->last_login = now();
             $user->save();
             
