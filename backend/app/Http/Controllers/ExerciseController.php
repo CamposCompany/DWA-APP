@@ -6,6 +6,14 @@ use Illuminate\Http\Request;
 
 class ExerciseController extends Controller
 {
+    protected $userService;
+    protected $exceptionHandlerService;
+
+    public function __construct(UserService $userService, ExceptionHandlerService $exceptionHandlerService) {
+        $this->userService = $userService;
+        $this->exceptionHandlerService = $exceptionHandlerService;
+    }
+
     /**
      * Display a listing of the resource.
      */

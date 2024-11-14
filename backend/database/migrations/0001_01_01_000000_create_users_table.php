@@ -12,7 +12,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('first_name');
             $table->string('last_name');
-            $table->string('username')->unique();
+            $table->string('username');
             $table->string('email')->nullable()->unique();
             $table->string('document')->unique();
             $table->string('password');
@@ -24,6 +24,16 @@ class CreateUsersTable extends Migration
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
+
+            // Indexes
+            $table->index('first_name');
+            $table->index('last_name');
+            $table->index('username');
+            $table->index('email');
+            $table->index('document');
+            $table->index('active');
+            $table->index('points');
+            $table->index('deleted_at');
         });
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {

@@ -11,17 +11,21 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('trainings', function (Blueprint $table) {
+        Schema::create('exercises', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->string('equipment');
             $table->string('category');
-            $table->integer('duration');
+            $table->string('image');
+            $table->string('video');
             $table->timestamps();
 
             // Indexes
-            $table->index('name');
+            $table->index('name'); 
+            $table->index('category');
         });
+
     }
 
     /**
@@ -29,6 +33,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('trainings');
+        Schema::dropIfExists('exercises');
     }
 };

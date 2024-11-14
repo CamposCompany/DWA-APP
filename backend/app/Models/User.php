@@ -37,6 +37,19 @@ class User extends Authenticatable implements Auditable
     ];
 
     /**
+     * The attributes that should be cast to specific types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'active' => 'boolean',
+        'points' => 'integer',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
+    ];
+
+    /**
      * The attributes that should be hidden for arrays.
      *
      * @var array
@@ -44,16 +57,6 @@ class User extends Authenticatable implements Auditable
     protected $hidden = [
         'password',
         'remember_token',
-    ];
-
-    /**
-     * The attributes that should be cast to specific types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'active' => 'boolean',
-        'deleted_at' => 'datetime',
     ];
 
     /**

@@ -3,27 +3,45 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Training implements Auditable
+class Training extends Model implements Auditable
 {
-    use HasApiTokens, Notifiable, HasFactory, \OwenIt\Auditing\Auditable;
+    use HasFactory, 
+        \OwenIt\Auditing\Auditable;
 
     protected $fillable = [
         'name',
         'description',,
         'category',
-        'duration',
-        'active',
-        'deleted_at',
+        'duration'
     ];
 
-    public function exercises() {
-        // TODO: Implement exercises relationship
-        // return $this->hasMany(Exercise::class);
-    }
+    /**
+     * The attributes that should be cast to specific types.
+     *
+     * @var array
+     */
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+    ];
 
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [];
+
+    /**
+     * Many-to-many relationship with the exercises table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function exercises() {
+        return $this->belongsToMany(Exercise::class, 'exercise_training');
+    }
 
 }

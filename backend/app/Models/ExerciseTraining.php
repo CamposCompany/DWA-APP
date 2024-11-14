@@ -6,9 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class Exercise extends Model implements Auditable
+class ExerciseTraining extends Model implements Auditable
 {
-    use HasFactory, \OwenIt\Auditing\Auditable;
+    use HasFactory,
+        \OwenIt\Auditing\Auditable;
 
     /**
      * The attributes that are mass assignable.
@@ -16,12 +17,12 @@ class Exercise extends Model implements Auditable
      * @var array
      */
     protected $fillable = [
-        'name',
-        'description',
-        'equipment',
-        'category',
-        'image',
-        'video',
+        'exercise_id', 
+        'training_id', 
+        'series', 
+        'repetitions',
+        'rest',
+        'comments',
     ];
 
     /**
@@ -42,11 +43,20 @@ class Exercise extends Model implements Auditable
     protected $hidden = [];
 
     /**
-     * Many-to-many relationship with the trainings table.
+     * one-to-one relationship with the exercise table.
      *
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function trainings() {
-        return $this->belongsToMany(Training::class, 'exercise_training');
+    public function exercise() {
+        return $this->belongsTo(Exercise::class);
+    }
+
+    /**
+     * one-to-one relationship with the training table.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */    
+    public function training() {
+        return $this->belongsTo(Training::class);
     }
 }

@@ -36,18 +36,21 @@ COPY . .
 # Install Laravel dependencies using Composer.
 RUN composer install --no-interaction --optimize-autoloader
 
-# Set permissions for Laravel.
-RUN chown -R www-data:www-data storage bootstrap/cache
+# Set permissions for Laravel files.
+RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache
 
 # Expose port 80 for Apache.
 EXPOSE 80
 
 RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
 
+# Create and configure user and group.
 RUN addgroup --gid 1000 laravel
 RUN adduser --ingroup laravel --shell /bin/sh laravel
+RUN chown -R laravel:laravel /var/www/html
+
+# Switch to 'laravel' user to run application.
 USER laravel
 
 # Start Apache web server.
 CMD ["apache2-foreground"]
-
