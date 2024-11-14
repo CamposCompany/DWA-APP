@@ -20,48 +20,72 @@ class UserController extends Controller
         $this->exceptionHandlerService = $exceptionHandlerService;
     }
 
+    /**
+     * Display a listing of the resource.
+     */
     public function index(): JsonResponse {
         return $this->exceptionHandlerService->handle(function () {
             return $this->userService->getAllUsers();
         });
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function show(int $id): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($id) {
             return $this->userService->getUserById($id);
         });
     }
 
+    /**
+     * Display the specified resource.
+     */
     public function store(UserStoreRequest $request): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($request) {
             return $this->userService->createUser($request->validated());
         });
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(UserUpdateRequest $request, int $id): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($request, $id) {
             return $this->userService->updateUser($request->validated(), $id);
         });
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy(int $id): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($id) {
             return $this->userService->deleteUser($id);
         });
     }
 
+    /**
+     * First step to recover password.
+     */
     public function forgotPasswordStep1(ForgotPasswordRequestS1 $request): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($request) {
             return $this->userService->forgotPasswordStep1($request->validated()["document"]);
         });
     }
 
+    /**
+     * Second step to recover password.
+     */
     public function forgotPasswordStep2(ForgotPasswordRequestS2 $request): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($request) {
             return $this->userService->forgotPasswordStep2($request->validated());
         });
     }
 
+    /**
+     * Last step to recover password / change the password.
+     */
     public function resetPassword(ResetPasswordRequest $request): JsonResponse {
         return $this->exceptionHandlerService->handle(function () use ($request) {
             return $this->userService->resetPassword($request->validated());
