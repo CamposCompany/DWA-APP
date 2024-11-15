@@ -2,17 +2,39 @@
 
 namespace Database\Seeders;
 
-use App\Models\Exercise;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ExerciseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
-    public function run() {
-        Exercise::factory()->count(50)->create();
+    public function run(): void
+    {
+        $csvPath = storage_path('assets/exercises.csv');
+
+        if (!file_exists($csvPath)) {
+            $this->command->error("CSV not found on: $csvPath");
+            return;
+        }
+
+        $data = array_map('str_getcsv', file($csvPath));
+
+        $headers = array_map('trim', $data[0]);
+        $rows = array_slice($data, 1);
+
+        foreach ($rows as $row) {
+            $rowData = array_combine($headers, $row);
+
+            DB::table('exercises')->insert([
+                'name'        => $rowData['name'] ?? null,
+                'category'    => $rowData['category'] ?? null,
+                'equipment'   => $rowData['equipment'] ?? null,
+                'description' => $rowData['description'] ?? null,
+                'created_at'  => now(),
+                'updated_at'  => now(),
+            ]);
+        }
     }
 }
