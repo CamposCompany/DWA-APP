@@ -12,7 +12,7 @@ class ExerciseSeeder extends Seeder
      */
     public function run(): void
     {
-        $csvPath = storage_path('app/assets/exercises.csv');
+        $csvPath = storage_path('assets/exercises.csv');
 
         if (!file_exists($csvPath)) {
             $this->command->error("CSV not found on: $csvPath");
