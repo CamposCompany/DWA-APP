@@ -17,8 +17,8 @@ return new class extends Migration
             $table->text('description');
             $table->string('equipment');
             $table->string('category');
-            $table->string('image');
-            $table->string('video');
+            $table->string('image')->nullable();
+            $table->string('video')->nullable();
             $table->timestamps();
 
             // Indexes
@@ -33,6 +33,7 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('training_exercises');
         Schema::dropIfExists('exercises');
     }
 };
