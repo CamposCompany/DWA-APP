@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     { 
-        Schema::create('exercise_training', function (Blueprint $table) {
+        Schema::create('training_exercises', function (Blueprint $table) {
             $table->id();
             $table->foreignId('exercise_id')->constrained()->onDelete('cascade');
             $table->foreignId('training_id')->constrained()->onDelete('cascade');
             $table->integer('series');
             $table->integer('repetitions');
             $table->integer('rest');
-            $table->integer('comments');
+            $table->integer('comments')->nullable();
             $table->timestamps();
 
             // Indexes
@@ -35,6 +35,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('exercise_training');
+        Schema::dropIfExists('training_exercises');
     }
 };

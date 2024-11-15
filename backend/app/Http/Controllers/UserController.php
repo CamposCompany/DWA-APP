@@ -1,11 +1,11 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Requests\UserStoreRequest;
-use App\Http\Requests\UserUpdateRequest;
-use App\Http\Requests\ForgotPasswordRequestS1;
-use App\Http\Requests\ForgotPasswordRequestS2;
-use App\Http\Requests\ResetPasswordRequest;
+use App\Http\Requests\User\UserStoreRequest;
+use App\Http\Requests\User\UserUpdateRequest;
+use App\Http\Requests\User\ForgotPasswordRequestS1;
+use App\Http\Requests\User\ForgotPasswordRequestS2;
+use App\Http\Requests\User\ResetPasswordRequest;
 use App\Services\UserService;
 use App\Services\ExceptionHandlerService;
 use Illuminate\Http\JsonResponse;
@@ -15,6 +15,12 @@ class UserController extends Controller
     protected $userService;
     protected $exceptionHandlerService;
 
+    /**
+     * Constructor to inject dependencies.
+     *
+     * @param UserService $userService
+     * @param ExceptionHandlerService $exceptionHandlerService
+     */
     public function __construct(UserService $userService, ExceptionHandlerService $exceptionHandlerService) {
         $this->userService = $userService;
         $this->exceptionHandlerService = $exceptionHandlerService;

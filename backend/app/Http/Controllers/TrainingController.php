@@ -2,24 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\Exercise\ExerciseStoreRequest;
-use App\Http\Requests\Exercise\ExerciseUpdateRequest;
+use App\Http\Requests\Training\TrainingStoreRequest;
+use App\Http\Requests\Training\TrainingUpdateRequest;
 use App\Services\ExceptionHandlerService;
-use App\Services\ExerciseService;
+use App\Services\TrainingService;
 
-class ExerciseController extends Controller
+class TrainingController extends Controller
 {
-    protected $exerciseService;
+    protected $trainingService;
     protected $exceptionHandlerService;
 
     /**
      * Constructor to inject dependencies.
      *
-     * @param ExerciseService $exerciseService
+     * @param TrainingService $trainingService
      * @param ExceptionHandlerService $exceptionHandlerService
      */
-    public function __construct(ExerciseService $exerciseService, ExceptionHandlerService $exceptionHandlerService) {
-        $this->exerciseService = $exerciseService;
+    public function __construct(TrainingService $trainingService, ExceptionHandlerService $exceptionHandlerService) {
+        $this->trainingService = $trainingService;
         $this->exceptionHandlerService = $exceptionHandlerService;
     }
 
@@ -28,16 +28,16 @@ class ExerciseController extends Controller
      */
     public function index() {
         return $this->exceptionHandlerService->handle(function () {
-            return $this->exerciseService->getAll();
+            return $this->trainingService->getAll();
         });
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ExerciseStoreRequest $request) {
+    public function store(TrainingStoreRequest $request) {
         return $this->exceptionHandlerService->handle(function () use ($request) {
-            return $this->exerciseService->store($request->validated());
+            return $this->trainingService->create($request->all());
         });
     }
 
@@ -46,16 +46,16 @@ class ExerciseController extends Controller
      */
     public function show(string $id) {
         return $this->exceptionHandlerService->handle(function () use ($id) {
-            return $this->exerciseService->getById($id);
+            return $this->trainingService->getById($id);
         });
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(ExerciseUpdateRequest $request, string $id) {
+    public function update(TrainingUpdateRequest $request, string $id) {
         return $this->exceptionHandlerService->handle(function () use ($request, $id) {
-            return $this->exerciseService->update($request->all(), $id);
+            return $this->trainingService->update($request->all(), $id);
         });
     }
 
@@ -64,7 +64,7 @@ class ExerciseController extends Controller
      */
     public function destroy(string $id) {
         return $this->exceptionHandlerService->handle(function () use ($id) {
-            return $this->exerciseService->delete($id);
+            return $this->trainingService->delete($id);
         });
     }
 }

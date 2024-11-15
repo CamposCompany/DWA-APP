@@ -47,6 +47,6 @@ class Exercise extends Model implements Auditable
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
     public function trainings() {
-        return $this->belongsToMany(Training::class, 'exercise_training');
+        return $this->belongsToMany(Training::class, 'training_exercises');
     }
 }

@@ -5,15 +5,15 @@ use Illuminate\Support\Facades\Route;
 // Controllers
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExerciseController;
+use App\Http\Controllers\TrainingController;
+use App\Http\Controllers\TrainingExerciseController;
 use App\Http\Controllers\UserController;
 
 // Auth routes
 Route::prefix('auth')->group(function () {
-    // Public routes for login and password reset
     Route::post('/login', [AuthController::class, 'login'])->name('auth.login');
     Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum')->name('auth.logout');
     
-    // Password recovery routes
     Route::post('/reset-password', [UserController::class, 'resetPassword'])->name('auth.reset-password');
     Route::post('/forgot-password-step1', [UserController::class, 'forgotPasswordStep1'])->name('auth.forgot-password-step1');
     Route::post('/forgot-password-step2', [UserController::class, 'forgotPasswordStep2'])->name('auth.forgot-password-step2');
@@ -36,4 +36,18 @@ Route::middleware('auth:sanctum')->group(function () {
         'update' => 'exercises.update',
         'destroy' => 'exercises.destroy',
     ]);
+
+    Route::apiResource('/trainings', TrainingController::class)->names([
+        'index' => 'trainings.index',
+        'store' => 'trainings.store',
+        'show' => 'trainings.show',
+        'update' => 'trainings.update',
+        'destroy' => 'trainings.destroy',
+    ]);
+    Route::prefix('trainings')->group(function () {
+        Route::post('{training}/exercises', [TrainingExerciseController::class, 'attachExercises'])->name('training.exercises.attach');
+        Route::delete('{training}/exercises/{exercise}', [TrainingExerciseController::class, 'detachExercise'])->name('training.exercises.detach');
+        Route::put('{training}/exercises/{exercise}', [TrainingExerciseController::class, 'updateExercise'])->name('training.exercises.update');
+    });
 });
+ 

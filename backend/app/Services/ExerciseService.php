@@ -27,8 +27,8 @@ class ExerciseService
      *
      * @return JsonResponse
      */
-    public function getAllExercises(): JsonResponse {
-        $exercises = $this->exerciseRepository->paginatedAllExercises();
+    public function getAll(): JsonResponse {
+        $exercises = $this->exerciseRepository->paginatedAll();
         
         $customData = [
             'current_page' => $exercises->currentPage(),
@@ -50,10 +50,9 @@ class ExerciseService
      * @return JsonResponse
      * @throws NotFoundException
      */
-    public function getExerciseById(int $id): JsonResponse {
-        $exercise = $this->exerciseRepository->findExerciseById($id);
-        
-        if (!$exercise) throw new NotFoundException();
+    public function getById(int $id): JsonResponse {
+        $exercise = $this->exerciseRepository->findById($id);
+        if (!$exercise) throw new NotFoundException('Exercício');
         
         return $this->responseService->success('Exercício encontrado', $exercise);
     }
@@ -64,7 +63,7 @@ class ExerciseService
      * @param array $data
      * @return JsonResponse
      */
-    public function createUser(array $data): JsonResponse {
+    public function store(array $data): JsonResponse {
         $exercise = $this->exerciseRepository->create($data);
         return $this->responseService->success('Exercício criado', $exercise, 201);
     }
@@ -77,10 +76,10 @@ class ExerciseService
      * @return JsonResponse
      * @throws NotFoundException
      */
-    public function updateUser(array $data, int $id): JsonResponse {
-        $exercise = $this->exerciseRepository->findExerciseById($id);
+    public function update(array $data, int $id): JsonResponse {
+        $exercise = $this->exerciseRepository->findById($id);
         
-        if (!$exercise) throw new NotFoundException();
+        if (!$exercise) throw new NotFoundException('Exercício');
         
         $this->exerciseRepository->update($exercise, $data);
         return $this->responseService->success('Exercício atualizado', $exercise);
@@ -93,10 +92,10 @@ class ExerciseService
      * @return JsonResponse
      * @throws NotFoundException
      */
-    public function deleteUser(int $id): JsonResponse {
-        $exercise = $this->exerciseRepository->findExerciseById($id);
+    public function delete(int $id): JsonResponse {
+        $exercise = $this->exerciseRepository->findById($id);
 
-        if (!$exercise) throw new NotFoundException();
+        if (!$exercise) throw new NotFoundException('Exercício');
         
         $this->exerciseRepository->delete($exercise);
         return $this->responseService->success('Exercício removido');

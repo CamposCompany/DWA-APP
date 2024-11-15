@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use OwenIt\Auditing\Contracts\Auditable;
 
-class ExerciseTraining extends Model implements Auditable
+class TrainingExercise extends Model implements Auditable
 {
     use HasFactory,
         \OwenIt\Auditing\Auditable;

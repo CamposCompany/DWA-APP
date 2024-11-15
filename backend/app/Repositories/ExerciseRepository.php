@@ -12,7 +12,7 @@ class ExerciseRepository
      * @param int $perPage Number of exercises per page (default is 50)
      * @return \Illuminate\Pagination\LengthAwarePaginator
      */
-    public function paginatedAllExercises(int $perPage = 50) {
+    public function paginatedAll(int $perPage = 50) {
         return Exercise::paginate($perPage);
     }
 
@@ -22,18 +22,8 @@ class ExerciseRepository
      * @param int $id Exercise's ID
      * @return Exercise|null
      */
-    public function findExerciseById(int $id): ?Exercise {
+    public function findById(int $id): ?Exercise {
         return Exercise::where('id', $id)->first();
-    }
-
-    /**
-     * Find an active exercise by its ID. Active exercises are those that are not soft deleted.
-     *
-     * @param int $id Exercise's ID
-     * @return Exercise|null
-     */
-    public function findActiveExerciseById(int $id): ?Exercise {
-        return Exercise::where('id', $id)->whereNull('deleted_at')->first();
     }
 
     /**
@@ -58,9 +48,9 @@ class ExerciseRepository
     }
 
     /**
-     * Soft delete an exercise by marking it as deleted (setting 'deleted_at' field).
+     * Delete an exercise by marking it as deleted.
      *
-     * @param Exercise $exercise The exercise to be soft deleted
+     * @param Exercise $exercise The exercise to be deleted
      * @return bool
      */
     public function delete(Exercise $exercise): bool {

@@ -2,7 +2,7 @@
 namespace App\Services;
 
 use App\Repositories\UserRepository;
-use App\Exceptions\UserNotFoundException;
+use App\Exceptions\NotFoundException;
 use App\Exceptions\DocumentOrPasswordInvalidsException;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -20,7 +20,7 @@ class AuthService
     public function login(array $data) {
         $user = $this->userRepository->findActiveUserByDocument($data['document']);
         
-        if (!$user) throw new UserNotFoundException();
+        if (!$user) throw new NotFoundException('Usuário');
         $decryptedPassword = $this->decryptPassword($data['password']);
 
         if (Hash::check($decryptedPassword, $user->password)) {
@@ -33,7 +33,7 @@ class AuthService
             $user->last_login = now();
             $user->save();
             
-            return $this->responseService->success('Usuário autenticado com sucesso.', [
+            return $this->responseService->success('Usuário autenticado', [
                 'user' =>  $userBase,
                 'token' => $token,
             ]);
@@ -45,12 +45,12 @@ class AuthService
     public function logout() {
         $user = Auth::user();
 
-        if (!$user) throw new UserNotFoundException();
+        if (!$user) throw new NotFoundException('Usuário');
 
         if ($user) {
             $user->tokens()->delete();
     
-            return $this->responseService->success('Usuário desconectado com sucesso.');
+            return $this->responseService->success('Usuário desconectado');
         }
     
         return $this->responseService->error('Não foi possível desconectar o usuário.', 400);
