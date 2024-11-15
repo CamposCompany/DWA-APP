@@ -6,7 +6,6 @@ services:
       - "8000:80"
     volumes:
       - ./backend:/var/www/html
-    user: "1000:1000"
     environment:
       - DB_CONNECTION=mysql
       - DB_HOST=db
