@@ -13,7 +13,7 @@ class Training extends Model implements Auditable
 
     protected $fillable = [
         'name',
-        'description',,
+        'description',
         'category',
         'duration'
     ];

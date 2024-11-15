@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\ExceptionHandlerService;
+use App\Services\ExerciseService;
 use Illuminate\Http\Request;
 
 class ExerciseController extends Controller
 {
-    protected $userService;
+    protected $exerciseService;
     protected $exceptionHandlerService;
 
-    public function __construct(UserService $userService, ExceptionHandlerService $exceptionHandlerService) {
-        $this->userService = $userService;
+    public function __construct(ExerciseService $exerciseService, ExceptionHandlerService $exceptionHandlerService) {
+        $this->exerciseService = $exerciseService;
         $this->exceptionHandlerService = $exceptionHandlerService;
     }
 

@@ -1,107 +1,104 @@
 <?php
 namespace App\Services;
 
-use App\Repositories\UserRepository;
-use App\Exceptions\UserNotFoundException;
+use App\Exceptions\NotFoundException;
+use App\Repositories\ExerciseRepository;
 use Illuminate\Http\JsonResponse;
-use App\Services\TwilioService;
 use App\Services\ResponseService;
 
-class UserService
+class ExerciseService
 {
-    protected $userRepository;
+    protected $exerciseRepository;
     protected $responseService;
 
-    public function __construct(UserRepository $userRepository, ResponseService $responseService) {
-        $this->userRepository = $userRepository;
+    /**
+     * Constructor to inject dependencies.
+     *
+     * @param ExerciseRepository $exerciseRepository
+     * @param ResponseService $responseService
+     */
+    public function __construct(ExerciseRepository $exerciseRepository, ResponseService $responseService) {
+        $this->exerciseRepository = $exerciseRepository;
         $this->responseService = $responseService;
     }
 
-    public function getAllUsers(): JsonResponse {
-        $users = $this->userRepository->paginatedAllUsers();
+    /**
+     * Retrieve all exercises with pagination.
+     *
+     * @return JsonResponse
+     */
+    public function getAllExercises(): JsonResponse {
+        $exercises = $this->exerciseRepository->paginatedAllExercises();
         
         $customData = [
-            'current_page' => $users->currentPage(),
-            'users' => $users->items(),
-            'total' => $users->total(),
-            'per_page' => $users->perPage(),
-            'last_page' => $users->lastPage(),
-            'next_page_url' => $users->nextPageUrl(),
-            'prev_page_url' => $users->previousPageUrl()
+            'current_page' => $exercises->currentPage(),
+            'exercises' => $exercises->items(),
+            'total' => $exercises->total(),
+            'per_page' => $exercises->perPage(),
+            'last_page' => $exercises->lastPage(),
+            'next_page_url' => $exercises->nextPageUrl(),
+            'prev_page_url' => $exercises->previousPageUrl()
         ];
 
-        return $this->responseService->success('Usuários encontrados com sucesso.', $customData);
+        return $this->responseService->success('Exercícios encontrados', $customData);
     }
 
-    public function getUserById(int $id): JsonResponse {
-        $user = $this->userRepository->findActiveUserById($id);
+    /**
+     * Retrieve an exercise by its ID.
+     *
+     * @param int $id
+     * @return JsonResponse
+     * @throws NotFoundException
+     */
+    public function getExerciseById(int $id): JsonResponse {
+        $exercise = $this->exerciseRepository->findExerciseById($id);
         
-        if (!$user) throw new UserNotFoundException();
+        if (!$exercise) throw new NotFoundException();
         
-        return $this->responseService->success('Usuário encontrado com sucesso.', $user);
+        return $this->responseService->success('Exercício encontrado', $exercise);
     }
 
+    /**
+     * Create a new exercise.
+     *
+     * @param array $data
+     * @return JsonResponse
+     */
     public function createUser(array $data): JsonResponse {
-        $user = $this->userRepository->create($data);
-        return $this->responseService->success('Usuário criado com sucesso.', $user, 201);
+        $exercise = $this->exerciseRepository->create($data);
+        return $this->responseService->success('Exercício criado', $exercise, 201);
     }
 
+    /**
+     * Update an existing exercise.
+     *
+     * @param array $data
+     * @param int $id
+     * @return JsonResponse
+     * @throws NotFoundException
+     */
     public function updateUser(array $data, int $id): JsonResponse {
-        $user = $this->userRepository->findActiveUserById($id);
+        $exercise = $this->exerciseRepository->findExerciseById($id);
         
-        if (!$user) throw new UserNotFoundException();
+        if (!$exercise) throw new NotFoundException();
         
-        $this->userRepository->update($user, $data);
-        return $this->responseService->success('Usuário atualizado com sucesso.', $user);
+        $this->exerciseRepository->update($exercise, $data);
+        return $this->responseService->success('Exercício atualizado', $exercise);
     }
 
+    /**
+     * Delete an exercise by its ID.
+     *
+     * @param int $id
+     * @return JsonResponse
+     * @throws NotFoundException
+     */
     public function deleteUser(int $id): JsonResponse {
-        $user = $this->userRepository->findActiveUserById($id);
+        $exercise = $this->exerciseRepository->findExerciseById($id);
 
-        if (!$user) throw new UserNotFoundException();
+        if (!$exercise) throw new NotFoundException();
         
-        $this->userRepository->softDelete($user);
-        return $this->responseService->success('Usuário removido com sucesso.');
-    }
-
-    public function forgotPasswordStep1(string $document) {
-        $user = $this->userRepository->findActiveUserByDocument($document);
-
-        if (!$user) throw new UserNotFoundException();
-
-        return $this->responseService->success('Usuário encontrado.', ['userID' => $user->id, 'telephone' => $user->telephone]);
-    }
-
-    public function forgotPasswordStep2(array $data) :JsonResponse {
-        $user = $this->userRepository->findActiveUserByDocument($data["document"]);
-
-        if (!$user) throw new UserNotFoundException();
-
-        $token = $user->createToken($user->document)->plainTextToken;
-        $safeToken = rtrim(strtr(base64_encode($token), '+/', '-_'), '=');
-
-        $user->setRememberToken($safeToken);
-        $user->save(); 
-
-        $link = url('reset-password/' . $user->id . '/' . $safeToken);
-
-        $twilio = new TwilioService();
-        $twilio->sendSms("+55" . $user->telephone, "Link para redefinir sua senha: $link");
-
-        return $this->responseService->success('Um link foi enviado ao seu telefone para redefinir sua senha.');
-    }
-
-    public function resetPassword(array $data) :JsonResponse {
-        $user = $this->userRepository->findActiveUserById($data['id']);
-
-        if (!$user || $user->getRememberToken() != $data['token']) {
-            return $this->responseService->error('Token inválido ou expirado.', 401);
-        }
-
-        $user->password = base64_decode($data['password']);
-        $user->setRememberToken(null);
-        $user->save();
-
-        return $this->responseService->success('Senha redefinida com sucesso.');
+        $this->exerciseRepository->delete($exercise);
+        return $this->responseService->success('Exercício removido');
     }
 }
