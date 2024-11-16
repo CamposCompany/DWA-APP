@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -24,5 +24,19 @@ class LoginRequest extends FormRequest
             'password.required' => 'O campo senha é obrigatório.',
             'password.string' => 'O campo senha deve ser uma string.',
         ];
+    }
+
+    protected function withValidator($validator) {
+        $validator->after(function ($validator) {
+            $allowedFields = ['document', 'password'];
+            $extraFields = array_diff(array_keys($this->all()), $allowedFields);
+
+            if (!empty($extraFields)) {
+                $validator->errors()->add(
+                    'fields',
+                    'Os seguintes campos não são permitidos: ' . implode(', ', $extraFields)
+                );
+            }
+        });
     }
 }
