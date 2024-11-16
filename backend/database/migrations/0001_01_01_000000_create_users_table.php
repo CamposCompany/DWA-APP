@@ -31,8 +31,6 @@ class CreateUsersTable extends Migration
             $table->index('username');
             $table->index('email');
             $table->index('document');
-            $table->index('active');
-            $table->index('points');
             $table->index('deleted_at');
         });
 
