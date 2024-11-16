@@ -12,6 +12,13 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('role_id')->constrained();
             $table->timestamps();
+
+            // Indexes
+            $table->index('user_id');
+            $table->index('role_id');
+
+            // Unique constraints
+            $table->unique(['user_id', 'role_id']);
         });
     }
 

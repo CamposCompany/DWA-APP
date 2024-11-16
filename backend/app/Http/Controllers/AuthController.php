@@ -1,7 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
-use App\Http\Requests\LoginRequest;
+use App\Http\Requests\Auth\LoginRequest;
 use Illuminate\Http\JsonResponse;
 use App\Services\AuthService;
 use App\Services\ExceptionHandlerService;
