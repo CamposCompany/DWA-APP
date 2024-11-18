@@ -1,3 +1,14 @@
+import { GenericData } from "./authenticate"
+
+export interface Roles {
+  name: string,
+  pivot: { user_id: number, role_id: number }
+}
+
+export interface UserData extends GenericData {
+  data: Data
+}
+
 export interface User {
   id: number,
   first_name: string,
@@ -11,10 +22,15 @@ export interface User {
   active: number,
   points?: number,
   last_login?: string
-  roles: roles[]
+  roles: Roles[]
 }
 
-export interface roles {
-  name: string,
-  pivot: { user_id: number, role_id: number }
+export interface Data {
+  current_page: 1,
+  last_page: 1,
+  next_page_url: null,
+  per_page: 50,
+  prev_page_url: null,
+  total: 14,
+  users: User[]
 }

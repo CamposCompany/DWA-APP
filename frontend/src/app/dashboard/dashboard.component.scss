@@ -11,3 +11,46 @@ h1 {
 i {
   font-size: 9px;
 }
+
+.header {
+  padding: 10px;
+}
+
+.content {
+  margin-top: 20px;
+
+  .dashboard-cards {
+    background-color: #FFFFFF;
+    border-radius: 16px;
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  .card-dashboard {
+    padding: 8px;
+    border-right: 1px solid #E9E9E9;
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  .card-icon img {
+    width: 19px;
+    height: 10px;
+    margin-bottom: 10px;
+  }
+
+  .card-number {
+    font-size: 28px;
+    font-weight: bold;
+    color: #4A4A4A;
+  }
+
+  .card-label {
+    font-size: 8px;
+    font-weight: 400;
+    color: #888888;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+}

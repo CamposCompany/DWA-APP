@@ -15,8 +15,6 @@ export class OnboardingComponent {
   ngOnInit(): void {
     this.usersStore.loadAllUsers();
 
-    console.log(this.usersStore.getCurrentUser());
-
     setTimeout(() => {
       this.router.navigateByUrl('/dashboard');
     }, 2500);

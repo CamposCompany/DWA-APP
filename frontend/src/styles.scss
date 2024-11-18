@@ -12,12 +12,15 @@ div.not-logged-in {
 }
 
 div.logged-in {
-  background-color: #333333;
+  background-color: #212020;
 }
 
-div.not-logged-in,
-div.logged-in {
+div.not-logged-in {
   padding: 30px;
+}
+
+div.logged-in {
+  padding: 16px;
 }
 
 h6,
@@ -48,5 +51,4 @@ h1,
   margin-bottom: 0;
 }
 
-/* Importing Bootstrap SCSS file. */
 @import 'bootstrap/scss/bootstrap';

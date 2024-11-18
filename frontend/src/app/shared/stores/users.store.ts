@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
-import { User } from '../models/users';
+import { User, UserData } from '../models/users';
 import { Http } from '../services/http.service';
 import { HttpHeaders } from '@angular/common/http';
 import { LoadingService } from '../services/loading.service';
@@ -31,7 +31,7 @@ export class UsersStore {
   constructor(private http: Http, private loadingService: LoadingService) { }
 
   public loadAllUsers() {
-    const loadUsers$ = this.http.get<User[]>(`${this.route}`, {
+    const loadUsers$ = this.http.get<UserData>(`${this.route}`, {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
@@ -43,7 +43,7 @@ export class UsersStore {
           alert(message);
           return throwError(() => err);
         }),
-        tap((users) => this.userSubject.next(users))
+        tap((users) => this.userSubject.next(users.data.users))
       );
 
 
@@ -52,7 +52,6 @@ export class UsersStore {
 
   public loadCurrentUser() {
     const user: User = JSON.parse(localStorage.getItem('currentUser')!);
-    console.log(user);
     if (user)
       this.currentUserSubject.next(user);
 
