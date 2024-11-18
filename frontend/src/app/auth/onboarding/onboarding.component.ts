@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { UsersStore } from '../../shared/stores/users.store';
 
 @Component({
   selector: 'app-onboarding',
@@ -9,11 +10,15 @@ import { Router } from '@angular/router';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  // uncomment this when we have a dashboard page
+  constructor(private router: Router, private usersStore: UsersStore) {}
 
-  // constructor(private router: Router) {
-  //   setTimeout(() => {
-  //     this.router.navigateByUrl('/path-to-dashboard')
-  //   }, 2000);
-  //  }
+  ngOnInit(): void {
+    this.usersStore.loadAllUsers();
+
+    console.log(this.usersStore.getCurrentUser());
+
+    setTimeout(() => {
+      this.router.navigateByUrl('/dashboard');
+    }, 2500);
+  }
 }

@@ -57,7 +57,7 @@ class UserUpdateRequest extends FormRequest
 
     protected function withValidator(Validator $validator) {
         $validator->after(function ($validator) {
-            $allowedFields = ['first_name', 'last_name', 'username', 'email', 'document', 'password', 'telephone', 'gender', 'profile_image', 'active', 'points'];
+            $allowedFields = ['first_name', 'last_name', 'username', 'email', 'document', 'password', 'password_confirmation', 'telephone', 'gender', 'profile_image', 'active', 'points'];
             $extraFields = array_diff(array_keys($this->all()), $allowedFields);
 
             if (!empty($extraFields)) {

@@ -8,11 +8,11 @@ import { FormGroup } from '@angular/forms';
   providedIn: 'root'
 })
 export class AuthService {
-  private routeLogin: string = 'login';
+  private routeLogin: string = 'auth/login';
 
-  private routeResetPasswordStep1: string = 'forgot-password-step1';
-  private routeResetPasswordStep2: string = 'forgot-password-step2';
-  private routeResetLastStep: string = 'reset-password';
+  private routeResetPasswordStep1: string = 'auth/forgot-password-step1';
+  private routeResetPasswordStep2: string = 'auth/forgot-password-step2';
+  private routeResetLastStep: string = 'auth/reset-password';
 
   constructor(private http: Http) { }
 

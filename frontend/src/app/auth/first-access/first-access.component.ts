@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -36,9 +36,10 @@ export class FirstLoginComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private loadingService: LoadingService,
+    private router: Router
   ) { }
+
+  private loadingService = inject(LoadingService);
 
   ngOnInit(): void {
     this.token = localStorage.getItem('token');
@@ -70,18 +71,18 @@ export class FirstLoginComponent {
 
       const auth$ = this.userService.updateUser(
         payload,
-        this.token,
         this.userId
       )
 
       this.loadingService.showLoaderUntilCompleted(auth$)
         .subscribe({
-          next: (res) => {
+          next: (res: any) => {
+            localStorage.setItem('currentUser', JSON.stringify(res.data));
             this.errorMessage.next(null);
             this.router.navigateByUrl('on-boarding');
             this.successMessage.next(res.message)
           },
-          error: (err) => {
+          error: (err: any) => {
             this.errorMessage.next(err.error?.message || 'Erro inesperado.')
           }
         });

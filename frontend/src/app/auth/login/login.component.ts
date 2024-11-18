@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -20,11 +20,13 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class LoginComponent {
   loginForm: FormGroup = new FormGroup({});
-  errorMessage = new BehaviorSubject<string | null>(null);
+  errorMessageSubject = new BehaviorSubject<string | null>(null);
 
-  errorMessage$ = this.errorMessage.asObservable();
+  errorMessage$ = this.errorMessageSubject.asObservable();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService, private router: Router) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+
+  private loadingService = inject(LoadingService);
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -49,11 +51,12 @@ export class LoginComponent {
           if (!res.data.user.last_login) {
             this.router.navigateByUrl(`/first-access/${res.data.user.id}`);
           } else {
+            localStorage.setItem('currentUser', JSON.stringify(res.data.user));
             this.router.navigateByUrl('/on-boarding');
           }
         },
         error: (err) => {
-          this.errorMessage.next(err.error.message || "Erro inesperado");
+          this.errorMessageSubject.next(err.error.message || "Erro inesperado");
         },
       });
     }

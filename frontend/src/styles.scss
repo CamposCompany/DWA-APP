@@ -1,12 +1,22 @@
 @import url("https://fonts.googleapis.com/css2?family=Exo+2:wght@100;200;300;400;500;600;700;800;900&family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
 
 html,
-html body {
+html body,
+div.not-logged-in,
+div.logged-in {
   height: 100%;
 }
 
-html body {
+div.not-logged-in {
   background-color: #0f0f0f;
+}
+
+div.logged-in {
+  background-color: #333333;
+}
+
+div.not-logged-in,
+div.logged-in {
   padding: 30px;
 }
 

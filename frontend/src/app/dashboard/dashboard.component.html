@@ -1,0 +1,11 @@
+<ng-container *ngIf="currentUser$ | async as currentUser">
+  <div class="header d-flex justify-content-between">
+    <div class="text">
+      <h1>Oi, {{ currentUser.username }}!</h1>
+      <i>{{ currentUser.roles[0].name }}</i>
+    </div>
+    <div class="icons">
+      <img src="assets/icons/user.svg" alt="ícone do usuário" />
+    </div>
+  </div>
+</ng-container>

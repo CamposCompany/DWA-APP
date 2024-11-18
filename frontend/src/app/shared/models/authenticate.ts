@@ -1,3 +1,5 @@
+import { User } from "./users";
+
 export interface AuthenticateLogin extends GenericData {
   data: AuthenticateLoginData;
 }
@@ -19,19 +21,4 @@ export interface ForgotPasswordData {
 export interface GenericData {
   message: string;
   error?: boolean;
-}
-
-export interface User {
-  id: number,
-  first_name: string,
-  last_name: string,
-  username: string,
-  email: string,
-  document: string,
-  telephone: string,
-  gender: string,
-  profile_image: string,
-  active: number,
-  points: number,
-  last_login: string
 }

@@ -16,6 +16,7 @@ export const routes: Routes = [
     path: 'on-boarding',
     loadComponent: () =>
       import('./auth/onboarding/onboarding.component').then((m) => m.OnboardingComponent),
+    canActivate: [authGuard]
   },
   {
     path: 'first-access',
@@ -36,6 +37,12 @@ export const routes: Routes = [
     path: 'first-access/:id',
     loadComponent: () =>
       import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'dashboard',
+    loadComponent: () =>
+      import('./dashboard/dashboard.component').then((m) => m.DashboardComponent),
     canActivate: [authGuard]
   },
   {
