@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_training', function (Blueprint $table) {
+        Schema::create('user_trainings', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('name')->index();
             $table->text('description')->nullable();
-            $table->string('category');
+            $table->string('category', 100)->index();
             $table->integer('duration')->nullable();
-            $table->foreignId('plan_ID')->constrained('user_plan_training')->onDelete('cascade');
-            $table->foreignId('origin_training')->nullable()->constrained('user_training')->onDelete('cascade');
-            $table->foreignId('userID')->constrained('users')->onDelete('cascade');
-            $table->integer('position')->nullable();
+            $table->foreignId('planID')->index()->constrained('user_plan_trainings')->onDelete('cascade');
+            $table->foreignId('origin_trainingID')->nullable()->index()->constrained('user_trainings')->onDelete('cascade');
+            $table->foreignId('userID')->index()->constrained('users')->onDelete('cascade');
+            $table->integer('position')->nullable()->index();
             $table->boolean('active')->default(true);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +32,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_training');
+        Schema::dropIfExists('user_trainings');
     }
 };
