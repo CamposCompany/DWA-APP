@@ -4,13 +4,38 @@ html,
 html body {
   height: 100%;
 }
+
 html body {
   background-color: #0f0f0f;
   padding: 30px;
 }
 
-h6, .h6, h5, .h5, h4, .h4, h3, .h3, h2, .h2, h1, .h1 {
+h6,
+.h6,
+h5,
+.h5,
+h4,
+.h4,
+h3,
+.h3,
+h2,
+.h2,
+h1,
+.h1 {
   margin: 0 !important;
+}
+
+.error-message {
+  color: red;
+}
+
+.sucess-message {
+  color: lightgreen;
+}
+
+.error-message,
+.sucess-message {
+  margin-bottom: 0;
 }
 
 /* Importing Bootstrap SCSS file. */

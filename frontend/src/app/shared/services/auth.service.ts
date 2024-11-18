@@ -4,7 +4,9 @@ import { Observable } from 'rxjs';
 import { AuthenticateLogin, ForgotPasswordRes } from '../models/authenticate';
 import { FormGroup } from '@angular/forms';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class AuthService {
   private routeLogin: string = 'login';
 

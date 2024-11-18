@@ -47,7 +47,7 @@
     </option>
   </select>
 
-  <p *ngIf="control.errors && control.touched">
+  <p *ngIf="control.errors && control.touched && control.invalid">
     {{ control.errors | onlyOneError }}
   </p>
 </div>

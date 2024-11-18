@@ -4,7 +4,7 @@ export interface AuthenticateLogin extends GenericData {
 
 export interface AuthenticateLoginData extends GenericData {
   token: string;
-  user: any;
+  user: User;
 }
 
 export interface ForgotPasswordRes extends GenericData {
@@ -19,4 +19,19 @@ export interface ForgotPasswordData {
 export interface GenericData {
   message: string;
   error?: boolean;
+}
+
+export interface User {
+  id: number,
+  first_name: string,
+  last_name: string,
+  username: string,
+  email: string,
+  document: string,
+  telephone: string,
+  gender: string,
+  profile_image: string,
+  active: number,
+  points: number,
+  last_login: string
 }

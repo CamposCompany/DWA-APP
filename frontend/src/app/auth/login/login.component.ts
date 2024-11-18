@@ -6,6 +6,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 
@@ -23,7 +24,7 @@ export class LoginComponent {
 
   errorMessage$ = this.errorMessage.asObservable();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private loadingService: LoadingService, private router: Router) { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -44,6 +45,12 @@ export class LoginComponent {
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: (res) => {
           localStorage.setItem('token', res.data.token);
+
+          if (!res.data.user.last_login) {
+            this.router.navigateByUrl(`/first-access/${res.data.user.id}`);
+          } else {
+            this.router.navigateByUrl('/on-boarding');
+          }
         },
         error: (err) => {
           this.errorMessage.next(err.error.message || "Erro inesperado");

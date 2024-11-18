@@ -9,6 +9,7 @@ import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { UserService } from '../../shared/services/user.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { BehaviorSubject } from 'rxjs';
+import { AuthService } from '../../shared/services/auth.service';
 
 @Component({
   selector: 'app-first-login',
@@ -16,10 +17,10 @@ import { BehaviorSubject } from 'rxjs';
   imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './first-access.component.html',
   styleUrl: './first-access.component.scss',
-  providers: [LoadingService]
+  providers: [LoadingService, AuthService]
 })
 export class FirstLoginComponent {
-  firstLoginForm: FormGroup = new FormGroup({});
+  firstAccessForm: FormGroup = new FormGroup({});
   passwordFieldType: string = 'password';
 
   errorMessage = new BehaviorSubject<string | null>(null);
@@ -47,8 +48,8 @@ export class FirstLoginComponent {
   }
 
   public initForm() {
-    this.firstLoginForm = this.fb.group({
-      name: ['', [Validators.required]],
+    this.firstAccessForm = this.fb.group({
+      username: ['', [Validators.required]],
       telephone: ['', [Validators.required]],
       email: ['', [Validators.email]],
       password: ['', [Validators.required]],
@@ -57,8 +58,8 @@ export class FirstLoginComponent {
   }
 
   onSubmit(): void {
-    if (this.firstLoginForm.valid && this.token && this.userId) {
-      const formValues = encodePasswordFields(this.firstLoginForm.getRawValue(), [
+    if (this.firstAccessForm.valid && this.token && this.userId) {
+      const formValues = encodePasswordFields(this.firstAccessForm.getRawValue(), [
         'password',
         'password_confirmation',
       ]);
