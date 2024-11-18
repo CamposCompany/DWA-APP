@@ -23,34 +23,51 @@ i {
     background-color: #FFFFFF;
     border-radius: 16px;
     grid-template-columns: 1fr 1fr 1fr;
-  }
 
-  .card-dashboard {
-    padding: 8px;
-    border-right: 1px solid #E9E9E9;
+    .card-dashboard {
+      padding: 8px;
+      border-right: 1px solid #E9E9E9;
 
-    &:last-child {
-      border-right: none;
+      &:last-child {
+        border-right: none;
+      }
+
+      .card-number {
+        font-size: 28px;
+        font-weight: bold;
+        color: #4A4A4A;
+      }
+
+      .card-label {
+        font-size: 8px;
+        font-weight: 400;
+        color: #888888;
+        text-transform: uppercase;
+        white-space: nowrap;
+      }
     }
   }
 
-  .card-icon img {
-    width: 19px;
-    height: 10px;
-    margin-bottom: 10px;
-  }
+  .dashboard-actions {
+    .action-card {
+      background-color: #F5A623;
+      width: 110px;
+      height: 74px;
+      border-radius: 8px;
+      padding: 8px;
+    }
 
-  .card-number {
-    font-size: 28px;
-    font-weight: bold;
-    color: #4A4A4A;
-  }
+    .card-action-title {
+      font-size: 12px;
+      color: black;
+      font-weight: 600;
+      font-family: "Poppins", sans-serif;
+      margin-top: 8px;
+    }
 
-  .card-label {
-    font-size: 8px;
-    font-weight: 400;
-    color: #888888;
-    text-transform: uppercase;
-    white-space: nowrap;
+    img {
+      width: 20px;
+      filter: invert(0%) brightness(0) saturate(100%);
+    }
   }
 }
