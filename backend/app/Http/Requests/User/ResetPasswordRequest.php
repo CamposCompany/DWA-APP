@@ -2,22 +2,21 @@
 
 namespace App\Http\Requests\User;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
 
-class ResetPasswordRequest extends FormRequest
+class ResetPasswordRequest extends BaseRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
-    public function authorize(): bool
-    {
-        return true;
-    }
+    protected array $allowedRoles = [];
+
+    protected array $allowedFields = [
+        'id',
+        'token',
+        'password',
+        'password_confirmation'
+    ];
 
     /**
      * Get the validation rules that apply to the request.
-     *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
@@ -28,26 +27,13 @@ class ResetPasswordRequest extends FormRequest
         ];
     }
 
-    public function messages() {
-        return [
-            'id.required' => 'O campo documento é obrigatório.',
-            'token.required' => 'O campo token é obrigatório.',
-            'password.required' => 'O campo senha é obrigatório.',
-            'password.confirmed' => 'As senhas não coincidem.',
-        ];
-    }
-
-    protected function withValidator($validator) {
-        $validator->after(function ($validator) {
-            $allowedFields = ['id', 'token', 'password', 'password_confirmation'];
-            $extraFields = array_diff(array_keys($this->all()), $allowedFields);
-
-            if (!empty($extraFields)) {
-                $validator->errors()->add(
-                    'fields',
-                    'Os seguintes campos não são permitidos: ' . implode(', ', $extraFields)
-                );
-            }
-        });
-    }
+    /**
+     * Get the validation messages.
+     */
+    protected array $customMessages = [
+        'id.required' => 'O campo documento é obrigatório.',
+        'token.required' => 'O campo token é obrigatório.',
+        'password.required' => 'O campo senha é obrigatório.',
+        'password.confirmed' => 'As senhas não coincidem.',
+    ];
 }

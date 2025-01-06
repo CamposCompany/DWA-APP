@@ -19,7 +19,7 @@ class AuthService
 
     public function login(array $data) {
         $user = $this->userRepository->findActiveUserByDocument($data['document']);
-        
+
         if (!$user) throw new NotFoundException('Usuário');
         $decryptedPassword = $this->decryptPassword($data['password']);
 
@@ -29,10 +29,10 @@ class AuthService
 
             $userBase = $user->replicate();
             $userBase->id = $user->id;
-            
+
             $user->last_login = now();
             $user->save();
-            
+
             return $this->responseService->success('Usuário autenticado', [
                 'user' =>  $userBase,
                 'token' => $token,
@@ -49,15 +49,15 @@ class AuthService
 
         if ($user) {
             $user->tokens()->delete();
-    
+
             return $this->responseService->success('Usuário desconectado');
         }
-    
+
         return $this->responseService->error('Não foi possível desconectar o usuário.', 400);
     }
 
     private function decryptPassword($password) {
         return base64_decode($password);
     }
-   
+
 }

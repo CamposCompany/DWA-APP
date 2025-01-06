@@ -7,6 +7,8 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ExerciseController;
 use App\Http\Controllers\TrainingController;
 use App\Http\Controllers\TrainingExerciseController;
+use App\Http\Controllers\UserTrainingExerciseController;
+use App\Http\Controllers\UserTrainingController;
 use App\Http\Controllers\UserController;
 
 // Auth routes
@@ -44,6 +46,22 @@ Route::middleware('auth:sanctum')->group(function () {
         'update' => 'trainings.update',
         'destroy' => 'trainings.destroy',
     ]);
+
+    Route::apiResource('/user-training', UserTrainingController::class)->names([
+        'index' => 'userTrainings.index',
+        'store' => 'userTrainings.store',
+        'show' => 'userTrainings.show',
+        'update' => 'userTrainings.update',
+        'destroy' => 'userTrainings.destroy',
+    ]);
+
+    Route::prefix('/user-training')->group(function () {
+        Route::post('{userTraining}/exercises', [UserTrainingExerciseController::class, 'attachExercises'])->name('userTraining.exercises.attach');
+        Route::delete('{userTraining}/exercises/{exercise}', [UserTrainingExerciseController::class, 'detachExercise'])->name('userTraining.exercises.detach');
+        Route::put('{userTraining}/exercises/{exercise}', [UserTrainingExerciseController::class, 'updateExercise'])->name('userTraining.exercises.update');
+        Route::put('{exercice}/repetition/{repetition}', [UserTrainingExerciseController::class, 'exerciseSerieRepetition'])->name('userTraining.exerciseSerieRepetition.update');
+    });
+
     Route::prefix('trainings')->group(function () {
         Route::post('{training}/exercises', [TrainingExerciseController::class, 'attachExercises'])->name('training.exercises.attach');
         Route::delete('{training}/exercises/{exercise}', [TrainingExerciseController::class, 'detachExercise'])->name('training.exercises.detach');

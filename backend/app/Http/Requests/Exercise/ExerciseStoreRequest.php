@@ -2,54 +2,53 @@
 
 namespace App\Http\Requests\Exercise;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
-
-class ExerciseStoreRequest extends FormRequest
+use App\Http\Requests\BaseRequest;
+class ExerciseStoreRequest extends BaseRequest
 {
-    public function authorize() :bool {
-        return collect(['owner', 'admin', 'personal'])->contains(function ($role) {
-            return auth()->user()->hasRole($role);
-        });
-    }
+    protected array $allowedRoles = ['owner', 'admin', 'personal'];
+    protected array $allowedFields = [
+        'name',
+        'description',
+        'equipment',
+        'category',
+        'image',
+        'video',
+        'video_url'
+    ];
 
-    public function rules() {
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
+    public function rules(): array
+    {
         return [
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'equipment' => 'required|string',
             'category' => 'required|string',
-            'image' => 'string',
-            'video' => 'string',
+            'image' => 'nullable|file|mimes:jpeg,png,jpg|max:5120',
+            'video' => 'nullable',
+            'video.*' => 'mimes:mp4,mov,avi,wmv|max:102400|file',
+            'video_url' => 'nullable|string|url',
         ];
     }
 
-    public function messages() {
-        return [
-            'name.required' => 'O campo nome é obrigatório.',
-            'description.required' => 'O campo descrição é obrigatório.',
-            'equipment.required' => 'O campo equipamento é obrigatório.',
-            'category.required' => 'O campo categoria é obrigatório.',
-            'name.string' => 'O campo nome deve ser uma string.',
-            'description.string' => 'O campo descrição deve ser uma string.',
-            'equipment.string' => 'O campo equipamento deve ser uma string.',
-            'category.string' => 'O campo categoria deve ser uma string.',
-            'image.string' => 'O campo imagem deve ser uma string.',
-            'video.string' => 'O campo vídeo deve ser uma string.',
-        ];
-    }
-
-    protected function withValidator(Validator $validator) {
-        $validator->after(function ($validator) {
-            $allowedFields = ['name', 'description', 'equipment', 'category', 'image', 'video'];
-            $extraFields = array_diff(array_keys($this->all()), $allowedFields);
-
-            if (!empty($extraFields)) {
-                $validator->errors()->add(
-                    'fields',
-                    'Os seguintes campos não são permitidos: ' . implode(', ', $extraFields)
-                );
-            }
-        });
-    }
+    /**
+     * Get the validation messages.
+     */
+    protected array $customMessages = [
+        'name.required' => 'O campo nome é obrigatório.',
+        'description.required' => 'O campo descrição é obrigatório.',
+        'equipment.required' => 'O campo equipamento é obrigatório.',
+        'category.required' => 'O campo categoria é obrigatório.',
+        'name.string' => 'O campo nome deve ser uma string.',
+        'description.string' => 'O campo descrição deve ser uma string.',
+        'equipment.string' => 'O campo equipamento deve ser uma string.',
+        'category.string' => 'O campo categoria deve ser uma string.',
+        'video.*.mimes' => 'O arquivo de vídeo deve ser do tipo: mp4, mov, avi ou wmv.',
+        'video.*.max' => 'O arquivo de vídeo não pode ser maior que 100MB.',
+        'video_url.url' => 'O link do vídeo deve ser uma URL válida.',
+    ];
 }

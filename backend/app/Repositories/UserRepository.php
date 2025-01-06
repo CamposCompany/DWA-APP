@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class UserRepository
 {
@@ -10,9 +11,10 @@ class UserRepository
      * Retrieve all users with pagination and roles information.
      *
      * @param int $perPage Number of users per page (default is 50)
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
-    public function paginatedAllUsers(int $perPage = 50) {
+    public function paginatedAllUsers(int $perPage = 50): LengthAwarePaginator
+    {
         return User::with(['roles' => function ($query) {
             $query->select('name');
         }])->paginate($perPage);
@@ -24,7 +26,8 @@ class UserRepository
      * @param int $id User's ID
      * @return User|null
      */
-    public function findUserById(int $id): ?User {
+    public function findUserById(int $id): ?User
+    {
         return User::with(['roles' => function ($query) {
             $query->select('name');
         }])->where('id', $id)->first();
@@ -36,7 +39,8 @@ class UserRepository
      * @param int $id User's ID
      * @return User|null
      */
-    public function findActiveUserById(int $id): ?User {
+    public function findActiveUserById(int $id): ?User
+    {
         return User::with(['roles' => function ($query) {
             $query->select('name');
         }])->where('id', $id)->whereNull('deleted_at')->first();
@@ -48,7 +52,8 @@ class UserRepository
      * @param string $document User's document number (e.g. CPF or ID)
      * @return User|null
      */
-    public function findActiveUserByDocument(string $document): ?User {
+    public function findActiveUserByDocument(string $document): ?User
+    {
         return User::with(['roles' => function ($query) {
             $query->select('name');
         }])->where('document', $document)->whereNull('deleted_at')->first();
@@ -58,9 +63,10 @@ class UserRepository
      * Retrieve all active users with pagination and roles information.
      *
      * @param int $perPage Number of users per page (default is 50)
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
-    public function paginateAllActiveUsers(int $perPage = 50) {
+    public function paginateAllActiveUsers(int $perPage = 50): LengthAwarePaginator
+    {
         return User::with(['roles' => function ($query) {
             $query->select('name');
         }])->whereNull('deleted_at')->paginate($perPage);
@@ -72,7 +78,8 @@ class UserRepository
      * @param array $data Data for the new user
      * @return User
      */
-    public function create(array $data): User {
+    public function create(array $data): User
+    {
         return User::create($data);
     }
 
@@ -83,7 +90,11 @@ class UserRepository
      * @param array $data The new data to update the user with
      * @return bool
      */
-    public function update(User $user, array $data): bool {
+    public function update(User $user, array $data): bool
+    {
+        if (isset($data['password'])) {
+            $data['password'] = base64_decode($data['password']);
+        }
         return $user->update($data);
     }
 
@@ -93,7 +104,8 @@ class UserRepository
      * @param User $user The user to be soft deleted
      * @return bool
      */
-    public function softDelete(User $user): bool {
+    public function softDelete(User $user): bool
+    {
         return $user->update(['deleted_at' => now()]);
     }
 }

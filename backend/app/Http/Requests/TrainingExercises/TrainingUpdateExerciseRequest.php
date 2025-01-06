@@ -2,17 +2,23 @@
 
 namespace App\Http\Requests\TrainingExercises;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Validator;
+use App\Http\Requests\BaseRequest;
 
-class TrainingUpdateExerciseRequest extends FormRequest
+class TrainingUpdateExerciseRequest extends BaseRequest
 {
-    public function authorize(): bool {
-        return collect(['owner', 'admin', 'personal'])->contains(function ($role) {
-            return auth()->user()->hasRole($role);
-        });
-    }
+    protected array $allowedRoles = ['owner', 'admin', 'personal'];
+    protected array $allowedFields = [
+        'series',
+        'repetitions',
+        'rest',
+        'comments'
+    ];
 
+    /**
+     * Get the validation rules that apply to the request.
+     *
+     * @return array
+     */
     public function rules(): array {
         return [
             'id' => 'prohibited',
@@ -23,29 +29,16 @@ class TrainingUpdateExerciseRequest extends FormRequest
         ];
     }
 
-    public function messages(): array {
-        return [
-            'series.integer' => 'O campo series deve ser um número inteiro.',
-            'series.min' => 'O campo series deve ser pelo menos 1.',
-            'repetitions.integer' => 'O campo repetitions deve ser um número inteiro.',
-            'repetitions.min' => 'O campo repetitions deve ser pelo menos 1.',
-            'rest.integer' => 'O campo rest deve ser um número inteiro.',
-            'rest.min' => 'O campo rest deve ser pelo menos 1 segundo.',
-            'comments.string' => 'O campo comments deve ser uma string.',
-        ];
-    }
-
-    protected function withValidator(Validator $validator) {
-        $validator->after(function ($validator) {
-            $allowedFields = ['series', 'repetitions', 'rest', 'comments'];
-            $extraFields = array_diff(array_keys($this->all()), $allowedFields);
-
-            if (!empty($extraFields)) {
-                $validator->errors()->add(
-                    'fields',
-                    'Os seguintes campos não são permitidos: ' . implode(', ', $extraFields)
-                );
-            }
-        });
-    }
+    /**
+     * Get the validation messages.
+     */
+    protected array $customMessages = [
+        'series.integer' => 'O campo series deve ser um número inteiro.',
+        'series.min' => 'O campo series deve ser pelo menos 1.',
+        'repetitions.integer' => 'O campo repetitions deve ser um número inteiro.',
+        'repetitions.min' => 'O campo repetitions deve ser pelo menos 1.',
+        'rest.integer' => 'O campo rest deve ser um número inteiro.',
+        'rest.min' => 'O campo rest deve ser pelo menos 1 segundo.',
+        'comments.string' => 'O campo comments deve ser uma string.',
+    ];
 }

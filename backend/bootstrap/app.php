@@ -18,8 +18,9 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withMiddleware(function (Middleware $middleware) {
         $middleware->statefulApi();
         $middleware->api(prepend: [
-            \App\Http\Middleware\ApiForceJsonResponse::class,
-            \App\Http\Middleware\Cors::class
+            // \App\Http\Middleware\ApiForceJsonResponse::class,
+            // \App\Http\Middleware\Cors::class,
+            // \App\Http\Middleware\DisableCsrfForApi::class,
         ]);
 
         $middleware->redirectGuestsTo(function (Request $request) {

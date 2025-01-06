@@ -4,16 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\TrainingExercises\TrainingAttachExerciseRequest;
 use App\Http\Requests\TrainingExercises\TrainingUpdateExerciseRequest;
+use Illuminate\Http\JsonResponse;
 use App\Services\ExceptionHandlerService;
 use App\Services\ExerciseService;
 use App\Services\TrainingExercisesService;
-use App\Services\TrainingService;
 
-class TrainingExerciseController extends Controller
+class TrainingExerciseController extends BaseController
 {
     protected $trainingExercisesService;
     protected $exerciseService;
-    protected $exceptionHandlerService;
 
     /**
      * Constructor to inject dependencies.
@@ -22,10 +21,14 @@ class TrainingExerciseController extends Controller
      * @param ExerciseService $exerciseService
      * @param ExceptionHandlerService $exceptionHandlerService
      */
-    public function __construct(TrainingExercisesService $trainingExercisesService, ExerciseService $exerciseService, ExceptionHandlerService $exceptionHandlerService) {
+    public function __construct(
+        TrainingExercisesService $trainingExercisesService,
+        ExerciseService $exerciseService,
+        ExceptionHandlerService $exceptionHandlerService
+    ) {
+        parent::__construct($exceptionHandlerService);
         $this->trainingExercisesService = $trainingExercisesService;
         $this->exerciseService = $exerciseService;
-        $this->exceptionHandlerService = $exceptionHandlerService;
     }
 
     /**
@@ -33,12 +36,13 @@ class TrainingExerciseController extends Controller
      *
      * @param int $trainingId
      * @param TrainingAttachExerciseRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function attachExercises(TrainingAttachExerciseRequest $request, string $trainingId) {
-        return $this->exceptionHandlerService->handle(function () use ($request, $trainingId) {
-            return $this->trainingExercisesService->attachExercises($trainingId, $request->validated()['exercises']);
-        });
+    public function attachExercises(TrainingAttachExerciseRequest $request, string $trainingId): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->trainingExercisesService->attachExercises($trainingId, $request->validated()['exercises'])
+        );
     }
 
     /**
@@ -46,12 +50,12 @@ class TrainingExerciseController extends Controller
      *
      * @param int $trainingId
      * @param int $exerciseId
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
     public function detachExercise(string $trainingId, string $exerciseId) {
-        return $this->exceptionHandlerService->handle(function () use ($trainingId, $exerciseId) {
-            return $this->trainingExercisesService->detachExercise($trainingId, $exerciseId);
-        });
+        return $this->handleRequest(fn () =>
+            $this->trainingExercisesService->detachExercise($trainingId, $exerciseId)
+        );
     }
 
     /**
@@ -60,12 +64,13 @@ class TrainingExerciseController extends Controller
      * @param int $trainingId
      * @param int $exerciseId
      * @param TrainingAttachExerciseRequest $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return JsonResponse
      */
-    public function updateExercise(TrainingUpdateExerciseRequest $request, string $trainingId, string $exerciseId) {
-        return $this->exceptionHandlerService->handle(function () use ($request, $trainingId, $exerciseId) {
-            return $this->trainingExercisesService->updateExercise($trainingId, $exerciseId, $request->validated());
-        });
+    public function updateExercise(TrainingUpdateExerciseRequest $request, string $trainingId, string $exerciseId): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->trainingExercisesService->updateExercise($trainingId, $exerciseId, $request->validated())
+        );
     }
 
 }

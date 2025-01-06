@@ -10,10 +10,9 @@ use App\Services\UserService;
 use App\Services\ExceptionHandlerService;
 use Illuminate\Http\JsonResponse;
 
-class UserController extends Controller
+class UserController extends BaseController
 {
     protected $userService;
-    protected $exceptionHandlerService;
 
     /**
      * Constructor to inject dependencies.
@@ -21,80 +20,114 @@ class UserController extends Controller
      * @param UserService $userService
      * @param ExceptionHandlerService $exceptionHandlerService
      */
-    public function __construct(UserService $userService, ExceptionHandlerService $exceptionHandlerService) {
+    public function __construct(
+        UserService $userService,
+        ExceptionHandlerService $exceptionHandlerService
+    ) {
+        parent::__construct($exceptionHandlerService);
         $this->userService = $userService;
-        $this->exceptionHandlerService = $exceptionHandlerService;
     }
 
     /**
      * Display a listing of the resource.
+     * @return JsonResponse
      */
-    public function index(): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () {
-            return $this->userService->getAllUsers();
-        });
+    public function index(): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->getAllUsers()
+        );
     }
 
     /**
      * Store a newly created resource in storage.
+     *
+     * @param int $id
+     * @return JsonResponse
      */
-    public function show(int $id): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($id) {
-            return $this->userService->getUserById($id);
-        });
+    public function show(int $id): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->getUserById($id)
+        );
     }
 
     /**
      * Display the specified resource.
+     *
+     * @param UserStoreRequest $request
+     * @return JsonResponse
      */
-    public function store(UserStoreRequest $request): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($request) {
-            return $this->userService->createUser($request->validated());
-        });
+    public function store(UserStoreRequest $request): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->createUser($request->validated())
+        );
     }
 
     /**
      * Update the specified resource in storage.
+     *
+     * @param UserUpdateRequest $request
+     * @param int $id
+     * @return JsonResponse
      */
-    public function update(UserUpdateRequest $request, int $id): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($request, $id) {
-            return $this->userService->updateUser($request->validated(), $id);
-        });
+    public function update(UserUpdateRequest $request, int $id): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->updateUser($request->validated(), $id)
+        );
     }
 
     /**
      * Remove the specified resource from storage.
+     *
+     * @param int $id
+     * @return JsonResponse
      */
-    public function destroy(int $id): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($id) {
-            return $this->userService->deleteUser($id);
-        });
+    public function destroy(int $id): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->deleteUser($id)
+        );
     }
 
     /**
      * First step to recover password.
+     *
+     * @param ForgotPasswordRequestS1 $request
+     * @return JsonResponse
      */
-    public function forgotPasswordStep1(ForgotPasswordRequestS1 $request): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($request) {
-            return $this->userService->forgotPasswordStep1($request->validated()["document"]);
-        });
+    public function forgotPasswordStep1(ForgotPasswordRequestS1 $request): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->forgotPasswordStep1($request->validated()["document"])
+        );
     }
 
     /**
      * Second step to recover password.
+     *
+     * @param ForgotPasswordRequest2 $request
+     * @return JsonResponse
      */
-    public function forgotPasswordStep2(ForgotPasswordRequestS2 $request): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($request) {
-            return $this->userService->forgotPasswordStep2($request->validated());
-        });
+    public function forgotPasswordStep2(ForgotPasswordRequestS2 $request): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->forgotPasswordStep2 ($request->validated())
+        );
     }
 
     /**
      * Last step to recover password / change the password.
+     *
+     * @param ResetPasswordRequest $request
+     * @return JsonResponse
      */
-    public function resetPassword(ResetPasswordRequest $request): JsonResponse {
-        return $this->exceptionHandlerService->handle(function () use ($request) {
-            return $this->userService->resetPassword($request->validated());
-        });
+    public function resetPassword(ResetPasswordRequest $request): JsonResponse
+    {
+        return $this->handleRequest(fn () =>
+            $this->userService->resetPassword ($request->validated())
+        );
     }
 }

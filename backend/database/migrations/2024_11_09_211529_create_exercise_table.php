@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             // Indexes
-            $table->index('name'); 
+            $table->index('name');
             $table->index('category');
         });
 
@@ -33,6 +33,8 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('user_exercise_logs');
+        Schema::dropIfExists('user_training_exercises');
         Schema::dropIfExists('training_exercises');
         Schema::dropIfExists('exercises');
     }

@@ -68,6 +68,10 @@ class User extends Authenticatable implements Auditable
         return $this->belongsToMany(Role::class);
     }
 
+    public function userTrainings() {
+        return $this->hasMany(UserTraining::class);
+    }
+
     /**
      * Check if the user has a specific role.
      *

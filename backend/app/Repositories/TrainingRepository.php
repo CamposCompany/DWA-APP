@@ -4,15 +4,18 @@ namespace App\Repositories;
 
 use App\Models\Training;
 
+use Illuminate\Pagination\LengthAwarePaginator;
+
 class TrainingRepository
 {
     /**
      * Retrieve all trainings with pagination and roles information.
      *
      * @param int $perPage Number of trainings per page (default is 50)
-     * @return \Illuminate\Pagination\LengthAwarePaginator
+     * @return LengthAwarePaginator
      */
-    public function paginatedAll(int $perPage = 50) {
+    public function paginatedAll(int $perPage = 50): LengthAwarePaginator
+    {
         return Training::with('exercises')->paginate($perPage);
     }
 
@@ -22,7 +25,8 @@ class TrainingRepository
      * @param int $id training's ID
      * @return Training|null
      */
-    public function findById(int $id): ?Training {
+    public function findById(int $id): ?Training
+    {
         return Training::with('exercises')->where('id', $id)->first();
     }
 
@@ -30,9 +34,10 @@ class TrainingRepository
      * Create a new training.
      *
      * @param array $data Data for the new training
-     * @return Training
+     * @return Training|null
      */
-    public function create(array $data): Training {
+    public function create(array $data): Training
+    {
         return Training::create($data);
     }
 
@@ -43,7 +48,8 @@ class TrainingRepository
      * @param array $data The new data to update the training with
      * @return bool
      */
-    public function update(Training $training, array $data): bool {
+    public function update(Training $training, array $data): bool
+    {
         return $training->update($data);
     }
 
@@ -53,7 +59,8 @@ class TrainingRepository
      * @param Training $training The training to be deleted
      * @return bool
      */
-    public function delete(Training $training): bool {
+    public function delete(Training $training): bool
+    {
         return $training->delete();
     }
 }

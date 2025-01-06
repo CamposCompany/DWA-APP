@@ -9,6 +9,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     git \
+    libzip-dev \
     && rm -rf /var/lib/apt/lists/*
 
 # Enable Apache modules required for Laravel.
@@ -22,7 +23,11 @@ COPY apache-config.conf /etc/apache2/sites-available/000-default.conf
 
 # Install PHP extensions.
 RUN docker-php-ext-configure gd --with-freetype --with-jpeg \
-    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql
+    && docker-php-ext-install -j$(nproc) gd pdo pdo_mysql zip
+
+# Install Xdebug for better testing and debugging
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
 
 # Install Composer globally.
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -30,7 +35,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 # Create a directory for your Laravel application.
 WORKDIR /var/www/html
 
-# Copy the Laravel application files into the container.
+# Copy the entire project
 COPY . .
 
 # Install Laravel dependencies using Composer.
@@ -39,10 +44,18 @@ RUN composer install --no-interaction --optimize-autoloader
 # Set permissions for Laravel.
 RUN chown -R www-data:www-data storage bootstrap/cache
 
+# Create a script to run tests
+RUN echo '#!/bin/bash\n\
+php artisan test "$@"' > /usr/local/bin/run-tests \
+    && chmod +x /usr/local/bin/run-tests
+
+# Configure Xdebug
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
 # Expose port 80 for Apache.
 EXPOSE 80
-
-RUN find /var/www/html -name "*.gitignore" -exec rm -f {} +
 
 # Start Apache web server.
 CMD ["apache2-foreground"]

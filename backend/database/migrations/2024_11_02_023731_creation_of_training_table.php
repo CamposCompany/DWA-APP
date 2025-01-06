@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('description');
             $table->string('category');
-            $table->integer('duration');
             $table->timestamps();
 
             // Indexes
@@ -29,6 +28,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::dropIfExists('user_exercise_logs');
+        Schema::dropIfExists('user_training_exercises');
+        Schema::dropIfExists('user_trainings');
+        Schema::dropIfExists('training_exercises');
         Schema::dropIfExists('trainings');
     }
 };
