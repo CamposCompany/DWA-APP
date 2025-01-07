@@ -32,8 +32,7 @@
   &__grid {
     swiper-slide {
       height: auto;
-      width: 130px !important;
-      margin-right: 30px;
+      flex-shrink: 0 !important;
     }
   }
 }
@@ -58,5 +57,9 @@
         }
       }
     }
+  }
+
+  swiper-container {
+    padding: 0 !important;
   }
 }

@@ -27,8 +27,6 @@ export class CostumersPanelComponent implements OnInit {
   private readonly destroy$ = new Subject<void>();
 
   swiperConfig: SwiperOptions = {
-    slidesPerView: 4,
-    spaceBetween: 20,
     grid: {
       rows: 3,
       fill: 'row'

@@ -1,0 +1,66 @@
+.members-container {
+  .members-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+
+    .member-card {
+      background: #1e1e1e;
+      border-radius: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+
+      .member-info {
+        display: flex;
+        gap: 16px;
+        align-items: center;
+
+        .profile-pic {
+          border-bottom-left-radius: 16px;
+          object-fit: cover;
+        }
+
+        .member-details {
+          h2 {
+            color: #f5a623;
+            font-size: 18px;
+            margin: 0 0 4px 0;
+            font-family: "Poppins", sans-serif;
+          }
+
+          .plan {
+            color: #fff;
+            font-size: 14px;
+            margin: 0 0 8px 0;
+          }
+
+          .contact-info {
+            display: flex;
+            gap: 16px;
+            color: #6c7072;
+
+            span {
+              display: flex;
+              align-items: center;
+              gap: 4px;
+              font-size: 12px;
+              font-family: "League Spartan", sans-serif;
+              font-weight: 300;
+              color: white;
+
+              img {
+                width: 16px;
+                height: 16px;
+                filter: brightness(0) saturate(100%) invert(73%) sepia(41%)
+                  saturate(1511%) hue-rotate(338deg) brightness(101%)
+                  contrast(96%);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

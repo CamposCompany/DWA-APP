@@ -12,6 +12,7 @@ import { ActionsPanelComponent } from './components/actions-panel/actions-panel.
 import { CostumersPanelComponent } from './components/costumers-panel/costumers-panel.component';
 import { TrainingsPanelComponent } from './components/trainings-panel/trainings-panel.component';
 import { LoadingService } from '../../shared/services/loading.service';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -22,6 +23,7 @@ import { LoadingService } from '../../shared/services/loading.service';
     ActionsPanelComponent,
     TrainingsPanelComponent,
     CostumersPanelComponent,
+    RouterModule
 ],
   providers: [LoadingService],
   templateUrl: './home.component.html',

@@ -9,11 +9,12 @@
   <swiper-container
     class="costumers-panel__grid"
     [config]="swiperConfig"
+    [slidesPerView]="3"
   >
     <swiper-slide *ngFor="let costumer of filteredCostumers$ | async">
       <app-card
         [title]="costumer.username"
-        [subtitle]="costumer.telephone"
+        [subtitle]="costumer.telephone || 'Não informado'"
         validity="12/06/2024"
         imageSrc="assets/images/default-user-profile.png"
         iconSrc="assets/icons/lit.svg"

@@ -23,12 +23,12 @@ export class ActionsPanelComponent implements OnInit {
       {
         icon: 'assets/icons/shoes.svg',
         title: 'Meus Alunos',
-        route: '/students'
+        route: 'personal/gym-members'
       },
       {
         icon: 'assets/icons/verified-list.svg',
         title: 'Treinos',
-        route: '/trainings',
+        route: '/personal/trainings',
       }
     ];
   }
