@@ -10,7 +10,7 @@
     line-height: 24px;
   }
 
-  input {
+  input, select {
     height: 40px;
     padding: 0 16px;
     border-radius: 15px;
@@ -19,6 +19,10 @@
 
     &:focus-visible {
       outline: none;
+    }
+
+    &:disabled {
+      color: white;
     }
   }
 

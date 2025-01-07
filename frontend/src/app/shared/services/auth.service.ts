@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Http } from './http.service';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of, tap } from 'rxjs';
 import { AuthenticateLogin, ForgotPasswordRes } from '../models/authenticate';
 import { FormGroup } from '@angular/forms';
 
@@ -9,6 +9,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class AuthService {
   private routeLogin: string = 'auth/login';
+  private routeLogout: string = 'auth/logout';
 
   private routeResetPasswordStep1: string = 'auth/forgot-password-step1';
   private routeResetPasswordStep2: string = 'auth/forgot-password-step2';
@@ -44,7 +45,8 @@ export class AuthService {
     this.authStateSubject.next(true);
   }
 
-  logout(): void {
+  logout(): Observable<void> {
     this.authStateSubject.next(false);
+    return this.http.post(`${this.routeLogout}`, {});
   }
 }

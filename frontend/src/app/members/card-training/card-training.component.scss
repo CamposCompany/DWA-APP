@@ -1,0 +1,50 @@
+.training-card {
+  border-radius: 16px;
+  overflow: hidden;
+  background: #1E1E1E;
+  color: white;
+
+  .card-img-top {
+    object-fit: cover;
+  }
+
+  .card-body {
+    padding: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    border-top: 0;
+    border-radius: 0px 0px 16px 16px;
+  }
+
+  .training-title {
+    color: #F7A046;
+    font-size: 12px;
+    font-weight: bold;
+    margin: 0;
+  }
+
+  .validity {
+    font-family: "League Spartan", sans-serif;
+    color: #FFFFFF;
+    font-size: 10px;
+    opacity: 0.8;
+  }
+
+  .training-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    img {
+      width: 10px;
+      height: 10px;
+    }
+
+    span {
+      color: #FFFFFF;
+      font-size: 12px;
+      opacity: 0.8;
+    }
+  }
+
+  
+}

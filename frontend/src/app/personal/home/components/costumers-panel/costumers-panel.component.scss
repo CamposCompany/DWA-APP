@@ -1,0 +1,62 @@
+.costumers-panel {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+
+      img {
+        width: 24px;
+        height: auto;
+      }
+
+      h1 {
+        margin: 0;
+        font-size: 22px;
+        font-weight: 600;
+        color: white;
+        font-family: "Poppins", sans-serif;
+      }
+    }
+
+    .search {
+      width: 300px;
+    }
+  }
+
+  &__grid {
+    swiper-slide {
+      height: auto;
+      width: 130px !important;
+      margin-right: 30px;
+    }
+  }
+}
+
+:host ::ng-deep {
+  .search {
+    app-input {
+      .form-group {
+        height: auto;
+
+        input {
+          padding: 8px 12px;
+          border-radius: 20px;
+          border: 1px solid var(--border-color, #ddd);
+          transition: all 0.2s ease;
+
+          &:focus {
+            outline: none;
+            border-color: var(--accent-color, #F5A623);
+            box-shadow: 0 0 0 2px rgba(#F5A623, 0.1);
+          }
+        }
+      }
+    }
+  }
+}

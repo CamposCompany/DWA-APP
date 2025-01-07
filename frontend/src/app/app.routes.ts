@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './shared/utils/guards/auth.guard';
+import { memberGuard } from './shared/utils/guards/member.guard';
 
 export const routes: Routes = [
   {
@@ -40,6 +41,24 @@ export const routes: Routes = [
     path: 'reset-password/:id/:token',
     loadComponent: () =>
       import('./auth/reset-password/reset-password.component').then((m) => m.ResetPasswordComponent),
+  },
+  {
+    path: 'members',
+    loadChildren: () =>
+      import('./members/members.routes').then((m) => m.MEMBERS_ROUTES),
+    canActivate: [authGuard, memberGuard]
+  },
+  {
+    path: 'menu',
+    loadChildren: () =>
+      import('./menu/menu.routes').then((m) => m.MENU_ROUTES),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'personal',
+    loadChildren: () =>
+      import('./personal/personal.routes').then((m) => m.PERSONAL_ROUTES),
+    canActivate: [authGuard]
   },
   {
     path: '**',

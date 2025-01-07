@@ -20,8 +20,14 @@ export class OnboardingComponent {
     this.traningsStore.loadAllTrainings();
     this.exerciseStore.loadAllExercises();
 
-    setTimeout(() => {
-      this.router.navigateByUrl('/dashboard');
-    }, 2500);
+    this.usersStore.getCurrentUser().subscribe(user => {
+      setTimeout(() => {
+        if (user.roles.some(role => role.name === 'user')) {
+          this.router.navigateByUrl('/members/home');
+        } else {
+          this.router.navigateByUrl('/personal/home');
+        }
+      }, 2500);
+    });
   }
 }
