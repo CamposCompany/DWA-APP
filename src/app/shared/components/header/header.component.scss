@@ -1,0 +1,24 @@
+.header {
+  display: flex;
+  align-items: center;
+  padding: 15px 20px;
+  color: white;
+
+  .back-button {
+    margin-right: 10px;
+
+    img {
+      width: 12px;
+    }
+  }
+
+  .header-title {
+    font-size: 22px;
+    font-weight: bold;
+    font-family: "League Spartan", sans-serif;
+  }
+
+  img {
+    filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%) hue-rotate(9deg) brightness(96%) contrast(97%);
+  }
+}

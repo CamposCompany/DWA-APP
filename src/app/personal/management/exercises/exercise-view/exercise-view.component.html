@@ -1,0 +1,46 @@
+<div class="h-100" *ngIf="exercise$ | async as exercise">
+  <app-header
+    [hasHome]="exerciseId > 1"
+    routeName="/personal/exercises"
+    title="Exercício"
+  ></app-header>
+  <div class="view-container d-flex w-100 justify-content-center">
+    <div class="d-flex flex-column justify-content-around w-100 align-items-start">
+      <div class="w-100 text-center">
+        <h3>{{ exercise.name }}</h3>
+      </div>
+
+      <div class="exercise-image-container border border-warning rounded d-flex flex-column justify-content-center align-items-center p-3 mb-3">
+        <img
+          [src]="exercise.image || 'assets/images/default-trained-muscles.png'"
+          alt="Exercise Image"
+          class="img-fluid rounded mb-2 w-100"
+        />
+      </div>
+
+      <div class="w-100">
+        <h4>Descrição:</h4>
+        <p class="mt-2">{{ exercise.description }}</p>
+      </div>
+
+      <div class="w-100">
+        <h4>Músculos Trabalhados:</h4>
+        <p class="mt-2">{{ exercise.category }}</p>
+      </div>
+
+      <div class="w-100">
+        <h4>Equipamento:</h4>
+        <p class="mt-2">{{ exercise.equipment }}</p>
+      </div>
+
+      <div class="w-100 d-flex flex-column gap-2 mt-4">
+        <app-button
+          class="w-100"
+          *ngIf="hasNextExercise"
+          label="PRÓXIMO"
+          [routerLink]="['/personal/exercises', exerciseId + 1]"
+        ></app-button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,17 @@
+<div class="header d-flex align-items-center flex-column w-100">
+  <div class="d-flex w-100 justify-content-between mb-4">
+    <div class="d-flex">
+      <a
+        (click)="goBack()"
+        class="back-button"
+        [routerLink]="routeNameBack ? routeNameBack : null"
+      >
+        <img src="assets/icons/arrow-back.svg" />
+      </a>
+      <h1 class="header-title">{{ title }}</h1>
+    </div>
+    <a *ngIf="hasHome" [routerLink]="routeName">
+      <img src="assets/icons/home-icon.svg" />
+    </a>
+  </div>
+</div>
