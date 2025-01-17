@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { User, UserData } from '../models/users';
 import { Http } from '../services/http.service';
-import { HttpHeaders } from '@angular/common/http';
 import { LoadingService } from '../services/loading.service';
 
 @Injectable({
@@ -10,7 +9,7 @@ import { LoadingService } from '../services/loading.service';
 })
 export class UsersStore {
   private route: string = 'users';
-  private userSubject = new BehaviorSubject<User[]>([]);
+  private usersSubject = new BehaviorSubject<User[]>([]);
   private currentUserSubject = new BehaviorSubject<User>({
     id: 0,
     first_name: '',
@@ -25,37 +24,28 @@ export class UsersStore {
   }
   );
 
-  users$: Observable<User[]> = this.userSubject.asObservable();
+  users$: Observable<User[]> = this.usersSubject.asObservable();
   currentUser$: Observable<User> = this.currentUserSubject.asObservable();
 
   constructor(private http: Http, private loadingService: LoadingService) { }
 
   public loadAllUsers() {
-    const loadUsers$ = this.http.get<UserData>(`${this.route}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-      }),
-    })
+    const loadUsers$ = this.http.get<UserData>(`${this.route}`)
       .pipe(
         catchError((err) => {
           const message = "Could not load users";
           alert(message);
           return throwError(() => err);
         }),
-        tap((users) => this.userSubject.next(users.data.users))
+        tap((users) => this.usersSubject.next(users.data.users))
       );
 
 
     this.loadingService.showLoaderUntilCompleted(loadUsers$).subscribe();
   }
 
-  public loadCurrentUser() {
-    const user: User = JSON.parse(localStorage.getItem('currentUser')!);
-    if (user)
-      this.currentUserSubject.next(user);
-
-    // localStorage.removeItem('currentUser');
+  public loadCurrentUser(user: User) {
+    this.currentUserSubject.next(user);
   }
 
   getUsers(): Observable<User[]> {

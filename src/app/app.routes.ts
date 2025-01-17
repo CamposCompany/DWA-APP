@@ -56,6 +56,11 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard]
   },
   {
+    path: 'trainings/:id',
+    loadComponent: () => 
+      import('./personal/management/trainings/training-view/training-view.component').then((m) => m.TrainingViewComponent)
+  },
+  {
     path: 'menu',
     loadChildren: () =>
       import('./menu/menu.routes').then((m) => m.MENU_ROUTES),

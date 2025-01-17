@@ -4,6 +4,9 @@ import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../shared/components/header/header.component';
 import { AuthService } from '../shared/services/auth.service';
 import { LoadingService } from '../shared/services/loading.service';
+import { UsersStore } from '../shared/stores/users.store';
+import { Observable } from 'rxjs';
+import { User } from '../shared/models/users';
 
 @Component({
   selector: 'app-menu',
@@ -17,12 +20,13 @@ import { LoadingService } from '../shared/services/loading.service';
   ]
 })
 export class MenuComponent {
-  currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  currentUser$: Observable<User> = this.usersStore.currentUser$;
 
   constructor(
     private router: Router,
     private authService: AuthService,
-    private loadingService: LoadingService
+    private loadingService: LoadingService,
+    private usersStore: UsersStore
   ) { }
 
   logout(): void {

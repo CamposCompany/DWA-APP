@@ -12,5 +12,5 @@ import { BodyClassDirective } from './shared/directives/body-class.directive';
   styleUrl: './app.component.scss'
 })
 export class AppComponent {
-  title = 'frontend';
+  title = 'DWAPP';
 }

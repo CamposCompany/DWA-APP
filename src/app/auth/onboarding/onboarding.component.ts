@@ -16,11 +16,11 @@ export class OnboardingComponent {
 
   ngOnInit(): void {
     this.usersStore.loadAllUsers();
-    this.usersStore.loadCurrentUser();
     this.traningsStore.loadAllTrainings();
     this.exerciseStore.loadAllExercises();
 
     this.usersStore.getCurrentUser().subscribe(user => {
+      console.log(user);
       setTimeout(() => {
         if (user.roles.some(role => role.name === 'user')) {
           this.router.navigateByUrl('/members/home');

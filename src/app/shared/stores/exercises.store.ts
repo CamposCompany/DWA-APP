@@ -21,12 +21,7 @@ export class ExercisesStore {
   }
 
   public loadAllExercises(paginate: boolean = false): void {
-    const loadExercises$ = this.http.get<ExerciseData>(`${this.route}?paginate=${paginate}`, {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token') || ''}`,
-      }),
-    })
+    const loadExercises$ = this.http.get<ExerciseData>(`${this.route}?paginate=${paginate}`)
       .pipe(
         catchError((err) => {
           const message = "Could not load exercises";
@@ -43,11 +38,7 @@ export class ExercisesStore {
     let createdExerciseId: number = 0;
 
     const addExercise$ = this.http
-      .post<FormData, any>(`${this.route}`, newExercise, {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
-        }),
-      })
+      .post<FormData, any>(`${this.route}`, newExercise)
       .pipe(
         catchError((err) => {
           alert('Error adding exercise');
@@ -81,11 +72,7 @@ export class ExercisesStore {
 
   updateExercise(id: number, exerciseData: FormData): Observable<any> {
     return this.http
-      .post<FormData, any>(`${this.route}/${id}?_method=PUT`, exerciseData, {
-        headers: new HttpHeaders({
-          Authorization: `Bearer ${localStorage.getItem('token') || ''}`,
-        }),
-      })
+      .post<FormData, any>(`${this.route}/${id}?_method=PUT`, exerciseData)
       .pipe(
         catchError((err) => {
           alert('Error updating exercise');

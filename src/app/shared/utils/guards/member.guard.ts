@@ -1,19 +1,19 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
+import { UsersStore } from '../../stores/users.store';
 
-export const memberGuard: CanActivateFn = (route, state) => {
+export const memberGuard: CanActivateFn = async (route, state) => {
   const router = inject(Router);
-  
-  const currentUser = localStorage.getItem('currentUser');
-  
+  const usersStore = inject(UsersStore);
+  const currentUser = await firstValueFrom(usersStore.currentUser$);
+
   if (!currentUser) {
     router.navigate(['/login']);
     return false;
   }
 
-  const user = JSON.parse(currentUser);
-  
-  if (!user.roles || user.roles.length === 0) {
+  if (currentUser.roles.some(role => role.name !== 'user')) {
     router.navigate(['/login']);
     return false;
   }

@@ -10,19 +10,13 @@ import { RouterModule } from '@angular/router';
   templateUrl: './card-exercise.component.html',
   styleUrls: ['./card-exercise.component.scss'],
 })
-export class CardExerciseComponent implements OnChanges {
+export class CardExerciseComponent {
   @Input() exercises: Exercise[] = [];
   @Input() exerciseAdded: Exercise[] = [];
   @Input() isInteractive: boolean = false
   @Input() showReps: boolean = false;
   @Output() exerciseClicked = new EventEmitter<number>();
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['exerciseAdded']) {
-      console.log('Exercícios adicionados atualizados:', this.exerciseAdded);
-    }
-  }
-
+  
   onExerciseClick(exerciseId: number): void {
     this.exerciseClicked.emit(exerciseId);
   }

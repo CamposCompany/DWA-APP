@@ -17,11 +17,6 @@ export const PERSONAL_ROUTES: Routes = [
       import('./management/trainings/trainings.component').then((m) => m.TrainingsComponent)
   },
   {
-    path: 'trainings/:id',
-    loadComponent: () => 
-      import('./management/trainings/training-view/training-view.component').then((m) => m.TrainingViewComponent)
-  },
-  {
     path: 'exercises',
     loadComponent: () => 
       import('./management/exercises/exercises.component').then((m) => m.ExercisesComponent)

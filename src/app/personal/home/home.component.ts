@@ -61,19 +61,7 @@ export class HomeComponent {
   }
 
   private initializeData(): void {
-    this.checkAndLoadCurrentUser();
     this.checkAndLoadAllUsers();
-  }
-
-
-  private checkAndLoadCurrentUser(): void {
-    this.currentUser$
-      .pipe(take(1))
-      .subscribe((currentUser: User) => {
-        if (!currentUser || currentUser.id === 0) {
-          this.usersStore.loadCurrentUser();
-        }
-      });
   }
 
 

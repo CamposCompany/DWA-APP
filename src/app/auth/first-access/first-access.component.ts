@@ -10,6 +10,7 @@ import { UserService } from '../../shared/services/user.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
+import { UsersStore } from '../../shared/stores/users.store';
 
 @Component({
   selector: 'app-first-login',
@@ -36,7 +37,8 @@ export class FirstLoginComponent {
     private fb: FormBuilder,
     private userService: UserService,
     private activatedRoute: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private usersStore: UsersStore
   ) { }
 
   private loadingService = inject(LoadingService);
@@ -77,7 +79,7 @@ export class FirstLoginComponent {
       this.loadingService.showLoaderUntilCompleted(auth$)
         .subscribe({
           next: (res: any) => {
-            localStorage.setItem('currentUser', JSON.stringify(res.data));
+            this.usersStore.loadCurrentUser(res.data);
             this.errorMessage.next(null);
             this.router.navigateByUrl('on-boarding');
             this.successMessage.next(res.message)

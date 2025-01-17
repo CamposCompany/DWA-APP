@@ -1,6 +1,6 @@
 <app-header title="Menu"> </app-header>
 <div class="d-flex flex-column align-items-start mt-4">
-  <h3>Oi, {{ currentUser.username }}!</h3>
+  <h3>Oi, {{ (currentUser$ | async)?.username }}!</h3>
 
   <div class="menu-items w-100">
     <div class="menu-item d-flex align-items-center" routerLink="user-data">

@@ -5,6 +5,8 @@ import { User } from '../../shared/models/users';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
+import { UsersStore } from '../../shared/stores/users.store';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-user-data',
@@ -22,10 +24,9 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 export class UserDataComponent implements OnInit {
   userForm: FormGroup;
   genderOptions = ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'];
-  currentUser: User;
+  currentUser$: Observable<User> = this.usersStore.getCurrentUser();
 
-  constructor(private fb: FormBuilder) {
-    this.currentUser = JSON.parse(localStorage.getItem('currentUser') || '{}');
+  constructor(private fb: FormBuilder, private usersStore: UsersStore) {
     
     this.userForm = this.fb.group({
       document: [{value: '', disabled: true}],
@@ -38,12 +39,14 @@ export class UserDataComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.userForm.patchValue({
-      document: this.currentUser.document,
-      username: this.currentUser.username,
-      telephone: this.currentUser.telephone,
-      email: this.currentUser.email,
-      gender: this.currentUser.gender
+    this.currentUser$.subscribe(user => {
+      this.userForm.patchValue({
+        document: user.document,
+        username: user.username,
+        telephone: user.telephone,
+        email: user.email,
+        gender: user.gender
+      });
     });
 
     this.userForm.get('document')?.disable();
@@ -52,7 +55,6 @@ export class UserDataComponent implements OnInit {
   onSubmit(): void {
     if (this.userForm.valid) {
       const formValues = this.userForm.getRawValue();
-      console.log(formValues);
     }
   }
 }

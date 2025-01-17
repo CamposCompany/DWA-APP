@@ -1,6 +1,6 @@
 <header class="header">
   <div class="header-left">
-    <h1>Oi, {{ currentUser.username }}!</h1>
+    <h1>Oi, {{ (currentUser$ | async)?.username }}!</h1>
     <p class="subtitle">Persistência hoje, resultados amanhã.</p>
 
     <!-- <div class="points-container">
@@ -34,9 +34,25 @@
   </div>
 </header>
 <div class="content-container mt-4">
-  <div class="d-flex gap-2 mb-2">
-    <img src="assets/icons/lit.svg" />
-    <h3>TREINO DO DIA</h3>
+  <div class="d-flex flex-column gap-2 mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <img src="assets/icons/lit.svg" />
+      <h3>TREINO DO DIA</h3>
+    </div>
   </div>
-  <app-card-training></app-card-training>
+  <div class="d-flex flex-column gap-2">
+    <div class="d-flex align-items-center gap-2">
+      <img src="assets/icons/lit.svg" />
+      <h3>MEUS TREINOS</h3>
+    </div>
+    <ng-container *ngFor="let training of userTrainings$ | async">
+      <app-card
+        [title]="training.name.toLocaleUpperCase()"
+        imageSrc="assets/images/default-training-profile.png"
+        iconSrc="assets/icons/clock.svg"
+        size="large"
+        [routerLink]="['/members/trainings', training.id]"
+      ></app-card>
+    </ng-container>
+  </div>
 </div>

@@ -9,6 +9,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
+import { UsersStore } from '../../shared/stores/users.store';
 
 @Component({
   selector: 'app-login',
@@ -24,7 +25,7 @@ export class LoginComponent {
 
   errorMessage$ = this.errorMessageSubject.asObservable();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private usersStore: UsersStore) { }
 
   private loadingService = inject(LoadingService);
 
@@ -51,11 +52,12 @@ export class LoginComponent {
           if (!res.data.user.last_login) {
             this.router.navigateByUrl(`/first-access/${res.data.user.id}`);
           } else {
-            localStorage.setItem('currentUser', JSON.stringify(res.data.user));
+            this.usersStore.loadCurrentUser(res.data.user);
             this.router.navigateByUrl('/on-boarding');
           }
         },
         error: (err) => {
+          console.log(err);
           this.errorMessageSubject.next(err.error.message || "Erro inesperado");
         },
       });
