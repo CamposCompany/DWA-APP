@@ -17,7 +17,7 @@ import { Training } from '../../shared/models/training';
 export class HomeComponent {
 
   currentUser$: Observable<User> = this.usersStore.currentUser$;
-  userTrainings$: Observable<Training[]> = this.trainingStore.getUserTrainings();
+  userTrainings$: Observable<Training[]> = this.trainingStore.getTrainings();
 
   constructor(private usersStore: UsersStore, private trainingStore: TrainingStore) { }
 }

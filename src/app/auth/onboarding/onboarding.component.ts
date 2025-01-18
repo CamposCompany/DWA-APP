@@ -15,18 +15,21 @@ export class OnboardingComponent {
   constructor(private router: Router, private usersStore: UsersStore, private traningsStore: TrainingStore, private exerciseStore: ExercisesStore) { }
 
   ngOnInit(): void {
-    this.usersStore.loadAllUsers();
-    this.traningsStore.loadAllTrainings();
-    this.exerciseStore.loadAllExercises();
-
     this.usersStore.getCurrentUser().subscribe(user => {
-      console.log(user);
+      const targetRoute = user.roles.some(role => role.name === 'user')
+        ? '/members/home'
+        : '/personal/home';
+
+      if (user.roles.some(role => role.name === 'user')) {
+        this.traningsStore.loadUserTrainings();
+      } else {
+        this.usersStore.loadAllUsers();
+        this.traningsStore.loadAllTrainings();
+        this.exerciseStore.loadAllExercises();
+      }
+
       setTimeout(() => {
-        if (user.roles.some(role => role.name === 'user')) {
-          this.router.navigateByUrl('/members/home');
-        } else {
-          this.router.navigateByUrl('/personal/home');
-        }
+        this.router.navigateByUrl(targetRoute);
       }, 2500);
     });
   }

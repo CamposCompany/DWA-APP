@@ -19,8 +19,8 @@ export class TrainingStore {
   currentUser$: Observable<User> = this.usersStore.currentUser$;
   userId$: Observable<number> = this.currentUser$.pipe(map(user => user.id));
   userId: number = 0;
+
   constructor(private http: Http, private loadingService: LoadingService, private usersStore: UsersStore) {
-    this.loadAllTrainings();
     this.userId$.subscribe(id => this.userId = id);
   }
 
@@ -43,9 +43,18 @@ export class TrainingStore {
     return this.trainings$;
   }
 
-  public getUserTrainings(): Observable<Training[]> {
-    return this.http.get<TrainingData>(`${this.routeUserTraining}/${this.userId}`).pipe(
-      map((res: TrainingData) => res.data.trainings)
-    );
+  public loadUserTrainings() {
+    const loadUserTrainings$ = this.http
+      .get<TrainingData>(`${this.routeUserTraining}/${this.userId}`)
+      .pipe(
+        catchError((err) => {
+          const message = 'Could not load user trainings';
+          alert(message);
+          return throwError(() => err);
+        }),
+        tap((res: TrainingData) => this.trainingSubject.next(res.data.trainings))
+      );
+
+    this.loadingService.showLoaderUntilCompleted(loadUserTrainings$).subscribe();
   }
 }

@@ -9,7 +9,7 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
 @Component({
   selector: 'app-gym-members',
   standalone: true,
-  imports: [CommonModule, ButtonComponent, HeaderComponent],
+  imports: [CommonModule, HeaderComponent],
   templateUrl: './gym-members.component.html',
   styleUrl: './gym-members.component.scss'
 })
