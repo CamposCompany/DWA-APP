@@ -6,11 +6,12 @@ import { User } from '../../shared/models/users';
 import { Observable } from 'rxjs';
 import { TrainingStore } from '../../shared/stores/trainings.store';
 import { Training } from '../../shared/models/training';
+import { CardComponent } from '../../shared/components/card/card.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, CardComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -19,5 +20,6 @@ export class HomeComponent {
   currentUser$: Observable<User> = this.usersStore.currentUser$;
   userTrainings$: Observable<Training[]> = this.trainingStore.getTrainings();
 
-  constructor(private usersStore: UsersStore, private trainingStore: TrainingStore) { }
+  constructor(private usersStore: UsersStore, private trainingStore: TrainingStore) {
+  }
 }

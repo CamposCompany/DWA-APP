@@ -26,7 +26,6 @@
       </div>
     </div> -->
   </div>
-
   <div class="header-right">
     <button class="icon-button" routerLink="/menu">
       <img src="assets/icons/user.svg" alt="User profile" class="icon" />
@@ -39,6 +38,17 @@
       <img src="assets/icons/lit.svg" />
       <h3>TREINO DO DIA</h3>
     </div>
+    <ng-container *ngFor="let training of userTrainings$ | async">
+      <ng-container *ngIf="training.todayTraining">
+        <app-card
+          [title]="training.name.toLocaleUpperCase()"
+          imageSrc="assets/images/default-training-profile.png"
+          iconSrc="assets/icons/clock.svg"
+          size="large"
+          [routerLink]="['/trainings', training.id]"
+        ></app-card>
+      </ng-container>
+    </ng-container>
   </div>
   <div class="d-flex flex-column gap-2">
     <div class="d-flex align-items-center gap-2">
@@ -46,13 +56,15 @@
       <h3>MEUS TREINOS</h3>
     </div>
     <ng-container *ngFor="let training of userTrainings$ | async">
-      <app-card
-        [title]="training.name.toLocaleUpperCase()"
-        imageSrc="assets/images/default-training-profile.png"
-        iconSrc="assets/icons/clock.svg"
-        size="large"
-        [routerLink]="['/trainings', training.id]"  
-      ></app-card>
+      <ng-container *ngIf="!training.todayTraining">
+        <app-card
+          [title]="training.name.toLocaleUpperCase()"
+          imageSrc="assets/images/default-training-profile.png"
+          iconSrc="assets/icons/clock.svg"
+          size="large"
+          [routerLink]="['/trainings', training.id]"
+        ></app-card>
+      </ng-container>
     </ng-container>
   </div>
 </div>

@@ -7,7 +7,7 @@
   <ng-container *ngFor="let training of filteredTrainings$ | async">
     <div
       class="card-training d-flex justify-content-between align-items-center mb-3"
-      [routerLink]="['/personal/trainings', training.id]"
+      [routerLink]="['/trainings', training.id]"
     >
       <img src="assets/images/default-training-card.png" />
       <h3>

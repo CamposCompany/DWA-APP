@@ -6,6 +6,10 @@ export interface TrainingData extends GenericData {
   data: Data
 }
 
+export interface UserTrainingData extends GenericData {
+  data: Training[];
+}
+
 export interface Data extends GenericListResult {
   trainings: Training[]
 }
@@ -16,6 +20,7 @@ export interface Training {
   description: string,
   category: string,
   duration: number,
+  todayTraining: boolean,
   exercises: Exercise[]
 }
 

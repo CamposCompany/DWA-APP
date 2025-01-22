@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { UsersStore } from '../../../shared/stores/users.store';
 import { User } from '../../../shared/models/users';
 import { Observable } from 'rxjs';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 
 @Component({

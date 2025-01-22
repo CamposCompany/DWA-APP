@@ -16,4 +16,13 @@ export interface Exercise {
   category: string,
   image: string,
   video: string,
+  series: number,
+  repetitions: Repetition[],
+  methodology: string,
+  rest: number
+}
+
+export interface Repetition {
+  id: number,
+  repetitions: number
 }
