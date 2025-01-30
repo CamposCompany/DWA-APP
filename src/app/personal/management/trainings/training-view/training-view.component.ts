@@ -6,7 +6,7 @@ import { map } from 'rxjs/operators';
 import { Training } from '../../../../shared/models/training';
 import { TrainingStore } from '../../../../shared/stores/trainings.store';
 
-import { CardExerciseComponent } from "../shared/components/card-exercise/card-exercise.component";
+import { CardExerciseComponent } from "../../exercises/shared/components/card-exercise/card-exercise.component";
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 
 @Component({

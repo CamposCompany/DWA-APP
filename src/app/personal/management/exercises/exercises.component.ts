@@ -7,7 +7,7 @@ import { ExercisesStore } from '../../../shared/stores/exercises.store';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule } from '@angular/router';
-import { CardExerciseComponent } from '../trainings/shared/components/card-exercise/card-exercise.component';
+import { CardExerciseComponent } from './shared/components/card-exercise/card-exercise.component';
 
 @Component({
   selector: 'app-exercises',
