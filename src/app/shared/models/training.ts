@@ -17,6 +17,7 @@ export interface Data extends GenericListResult {
 export interface Training {
   id: number,
   name: string,
+  expire_date: string,
   description: string,
   category: string,
   duration: number,

@@ -13,7 +13,6 @@ export class TrainingStore {
   private route: string = 'trainings';
   private routeUserTraining: string = 'user-training/user';
   private trainingSubject = new BehaviorSubject<Training[]>([]);
-
   trainings$: Observable<Training[]> = this.trainingSubject.asObservable();
 
   currentUser$: Observable<User> = this.usersStore.currentUser$;
@@ -38,21 +37,25 @@ export class TrainingStore {
 
     this.loadingService.showLoaderUntilCompleted(loadTrainings$).subscribe();
   }
-  
-    public loadUserTrainings() {
-      const loadUserTrainings$ = this.http
-        .get<UserTrainingData>(`${this.routeUserTraining}/${this.userId}`)
-        .pipe(
-          catchError((err) => {
-            const message = 'Could not load user trainings';
-            alert(message);
-            return throwError(() => err);
-          }),
-          tap((res: UserTrainingData) => this.trainingSubject.next(res.data))
-        );
-  
-      this.loadingService.showLoaderUntilCompleted(loadUserTrainings$).subscribe();
-    }
+
+  public loadUserTrainings() {
+    const loadUserTrainings$ = this.http
+      .get<UserTrainingData>(`${this.routeUserTraining}/${this.userId}`)
+      .pipe(
+        catchError((err) => {
+          const message = 'Could not load user trainings';
+          alert(message);
+          return throwError(() => err);
+        }),
+        tap((res: UserTrainingData) => this.trainingSubject.next(res.data))
+      );
+
+    this.loadingService.showLoaderUntilCompleted(loadUserTrainings$).subscribe();
+  }
+
+  completeTraining(trainingId: number) {
+    return this.http.post(`user-training/${trainingId}/complete`, {});
+  }
 
   getTrainings(): Observable<Training[]> {
     return this.trainings$;

@@ -2,13 +2,14 @@ import { Component } from '@angular/core';
 import { Training } from '../../../shared/models/training';
 import { TrainingStore } from '../../../shared/stores/trainings.store';
 import { map } from 'rxjs/operators';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { CommonModule } from '@angular/common';
 import { UserCardExerciseComponent } from '../../shared/user-card-exercise/user-card-exercise.component';
 import { Exercise } from '../../../shared/models/exercise';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-user-training-view',
@@ -24,7 +25,8 @@ export class UserTrainingViewComponent {
 
   constructor(
     private route: ActivatedRoute,
-    private trainingStore: TrainingStore
+    private trainingStore: TrainingStore,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -48,6 +50,22 @@ export class UserTrainingViewComponent {
   }
 
   onTrainingComplete() {
-    console.log('Treino concluído!');
+    this.training$.subscribe(training => {
+      if (training) {
+        this.trainingStore.completeTraining(training.id).subscribe(() => {
+          Swal.fire({
+            title: 'Parabéns!',
+            text: 'Você concluiu seu treino com sucesso!',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#4CAF50'
+          }).then((result) => {
+            if (result.isConfirmed) {
+              this.router.navigate(['/members/home']);
+            }
+          });
+        });
+      }
+    });
   }
 }

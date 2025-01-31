@@ -10,6 +10,9 @@ import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { UsersStore } from '../../shared/stores/users.store';
+import { AppState } from '../../reducers';
+import { Store } from '@ngrx/store';
+import { login } from './login.action';
 
 @Component({
   selector: 'app-login',
@@ -25,7 +28,7 @@ export class LoginComponent {
 
   errorMessage$ = this.errorMessageSubject.asObservable();
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private usersStore: UsersStore) { }
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private usersStore: UsersStore, private store: Store<AppState>) { }
 
   private loadingService = inject(LoadingService);
 
@@ -47,12 +50,14 @@ export class LoginComponent {
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: (res) => {
-          localStorage.setItem('token', res.data.token);
+          const user = res.data.user
 
-          if (!res.data.user.last_login) {
-            this.router.navigateByUrl(`/first-access/${res.data.user.id}`);
+          localStorage.setItem('token', res.data.token);
+          
+          if (!user.last_login) {
+            this.router.navigateByUrl(`/first-access/${user.id}`);
           } else {
-            this.usersStore.loadCurrentUser(res.data.user);
+            this.store.dispatch(login({user}));
             this.router.navigateByUrl('/on-boarding');
           }
         },

@@ -1,8 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { UsersStore } from '../../shared/stores/users.store';
 import { TrainingStore } from '../../shared/stores/trainings.store';
 import { ExercisesStore } from '../../shared/stores/exercises.store';
+import { AppState } from '../../reducers';
+import { select, Store } from '@ngrx/store';
+import { isAdminSelector } from '../login/login.selectors';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-onboarding',
@@ -12,20 +16,26 @@ import { ExercisesStore } from '../../shared/stores/exercises.store';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  constructor(private router: Router, private usersStore: UsersStore, private traningsStore: TrainingStore, private exerciseStore: ExercisesStore) { }
+  private isUserAdmin$: Observable<any>;
+  private store = inject(Store)
 
-  ngOnInit(): void {
-    this.usersStore.getCurrentUser().subscribe(user => {
-      const targetRoute = user.roles.some(role => role.name === 'user')
-        ? '/members/home'
-        : '/personal/home';
+  constructor(private router: Router, private usersStore: UsersStore, private traningsStore: TrainingStore, private exerciseStore: ExercisesStore) {
+    this.isUserAdmin$ = this.store.pipe(select(isAdminSelector));
+    let isUserAdmin: boolean;
 
-      if (user.roles.some(role => role.name === 'user')) {
-        this.traningsStore.loadUserTrainings();
-      } else {
+    this.isUserAdmin$.subscribe(isAdminValue => {
+      isUserAdmin = isAdminValue;
+
+      const targetRoute = isUserAdmin
+        ? '/personal/home'
+        : '/members/home';
+
+      if (isUserAdmin) {
         this.usersStore.loadAllUsers();
         this.traningsStore.loadAllTrainings();
         this.exerciseStore.loadAllExercises();
+      } else {
+        this.traningsStore.loadUserTrainings();
       }
 
       setTimeout(() => {

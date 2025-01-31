@@ -22,4 +22,8 @@ export class HomeComponent {
 
   constructor(private usersStore: UsersStore, private trainingStore: TrainingStore) {
   }
+
+  formatDate(date: string) {
+    return new Date(date).toLocaleDateString('pt-BR');
+  }
 }
