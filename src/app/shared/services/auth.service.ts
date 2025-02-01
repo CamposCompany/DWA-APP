@@ -1,67 +1,66 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { Http } from './http.service';
-import { BehaviorSubject, Observable, of, tap } from 'rxjs';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthenticateLogin, ForgotPasswordRes } from '../models/authenticate';
-import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { login, logout } from '../../auth/login/store/auth.action';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private routeLogin: string = 'auth/login';
-  private routeLogout: string = 'auth/logout';
+  private readonly http = inject(Http);
+  private readonly store = inject(Store);
 
-  private routeResetPasswordStep1: string = 'auth/forgot-password-step1';
-  private routeResetPasswordStep2: string = 'auth/forgot-password-step2';
-  private routeResetLastStep: string = 'auth/reset-password';
+  private readonly routes = {
+    login: 'auth/login',
+    logout: 'auth/logout',
+    resetPasswordStep1: 'auth/forgot-password-step1',
+    resetPasswordStep2: 'auth/forgot-password-step2',
+    resetLastStep: 'auth/reset-password'
+  } as const;
 
-  private authStateSubject = new BehaviorSubject<boolean>(false);
-  authState$ = this.authStateSubject.asObservable();
+  private readonly authStateSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
+  readonly authState$ = this.authStateSubject.asObservable();
 
-  constructor(private http: Http, private router: Router) { }
-
-  authenticate(auth: FormGroup): Observable<AuthenticateLogin> {
-    return this.http.post(`${this.routeLogin}`, auth);
-  }
-
-  resetPasswordStep1(document: string): Observable<ForgotPasswordRes> {
-    return this.http.post(`${this.routeResetPasswordStep1}`, document);
-  }
-
-  resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
-    return this.http.post(`${this.routeResetPasswordStep2}`, payload);
-  }
-
-  resetPasswordLastStep(payload: { password: string, confirm_password: string, token: string, id: number }): Observable<ForgotPasswordRes> {
-    return this.http.post(`${this.routeResetLastStep}`, payload);
-  }
-
-  isLoggedIn(): boolean {
-    const token = localStorage.getItem('token');
-    return !!token;
-  }
-
-  private setAutoLogout(expirationTime: number) {
-    setTimeout(() => {
-      this.logout();
-    }, expirationTime);
-  }
-
-  login(credentials: any) {
-    return this.http.post<any, AuthenticateLogin>(`${this.routeLogin}`, credentials).pipe(
-      tap(response => {
-        localStorage.setItem('token', response.data.token);
-        localStorage.setItem('currentUser', JSON.stringify(response.data.user));
-        
-        // Configura o auto logout para 2 horas
-        this.setAutoLogout(2 * 60 * 60 * 1000); // 2 horas em milissegundos
+  authenticate(credentials: { document: string; password: string }): Observable<AuthenticateLogin> {
+    return this.http.post<{ document: string; password: string }, AuthenticateLogin>(this.routes.login, credentials).pipe(
+      tap(({ data: { user } }) => {
+        this.authStateSubject.next(true);
+        this.store.dispatch(login({ user }));
       })
     );
   }
 
+  resetPasswordStep1(document: string): Observable<ForgotPasswordRes> {
+    return this.http.post<{ document: string }, ForgotPasswordRes>(this.routes.resetPasswordStep1, { document });
+  }
+
+  resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
+    return this.http.post<{ document: string; telephone: number }, ForgotPasswordRes>(this.routes.resetPasswordStep2, payload);
+  }
+
+  resetPasswordLastStep(payload: {
+    password: string;
+    confirm_password: string;
+    token: string;
+    id: number;
+  }): Observable<ForgotPasswordRes> {
+    return this.http.post<{ password: string; confirm_password: string; token: string; id: number }, ForgotPasswordRes>(this.routes.resetLastStep, payload);
+  }
+
+  isLoggedIn(): boolean {
+    return !!localStorage.getItem('token');
+  }
+
   logout(): Observable<void> {
-    this.authStateSubject.next(false);
-    return this.http.post(`${this.routeLogout}`, {});
+    return this.http.post<unknown, void>(this.routes.logout, {}).pipe(
+      tap(() => {
+        localStorage.removeItem('token');
+        this.authStateSubject.next(false);
+        this.store.dispatch(logout());
+      })
+    );
   }
 }

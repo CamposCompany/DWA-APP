@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { map, Observable, take } from 'rxjs';
 import { UsersStore } from '../../shared/stores/users.store';
@@ -13,6 +13,9 @@ import { CostumersPanelComponent } from './components/costumers-panel/costumers-
 import { TrainingsPanelComponent } from './components/trainings-panel/trainings-panel.component';
 import { LoadingService } from '../../shared/services/loading.service';
 import { RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../reducers';
+import { selectUser } from '../../auth/login/store/auth.selectors';
 
 @Component({
   selector: 'app-dashboard',
@@ -30,9 +33,11 @@ import { RouterModule } from '@angular/router';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
+  private readonly store = inject(Store<AppState>);
+
   users$: Observable<User[]> = this.usersStore.getUsers();
   costumers$: Observable<User[]> = this.usersStore.getCostumers();
-  currentUser$: Observable<User> = this.usersStore.getCurrentUser();
+  currentUser$: Observable<User> = this.store.select(selectUser);
   userCount$: Observable<number> = this.users$.pipe(
     map((users: User[]) => users.length)
   );

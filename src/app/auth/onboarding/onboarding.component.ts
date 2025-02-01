@@ -5,8 +5,8 @@ import { TrainingStore } from '../../shared/stores/trainings.store';
 import { ExercisesStore } from '../../shared/stores/exercises.store';
 import { AppState } from '../../reducers';
 import { select, Store } from '@ngrx/store';
-import { isAdminSelector } from '../login/login.selectors';
-import { Observable } from 'rxjs';
+import { isAdminSelector } from '../login/store/auth.selectors';
+
 
 @Component({
   selector: 'app-onboarding',
@@ -16,31 +16,32 @@ import { Observable } from 'rxjs';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  private isUserAdmin$: Observable<any>;
-  private store = inject(Store)
+  private readonly store = inject(Store<AppState>);
+  private readonly router = inject(Router);
+  private readonly usersStore = inject(UsersStore);
+  private readonly traningsStore = inject(TrainingStore);
+  private readonly exerciseStore = inject(ExercisesStore);
 
-  constructor(private router: Router, private usersStore: UsersStore, private traningsStore: TrainingStore, private exerciseStore: ExercisesStore) {
-    this.isUserAdmin$ = this.store.pipe(select(isAdminSelector));
-    let isUserAdmin: boolean;
+  constructor() { }
 
-    this.isUserAdmin$.subscribe(isAdminValue => {
-      isUserAdmin = isAdminValue;
+  ngOnInit() {
+    this.store.pipe(select(isAdminSelector))
+      .subscribe(isAdminValue => {
+        const targetRoute = isAdminValue
+          ? '/personal/home'
+          : '/members/home';
 
-      const targetRoute = isUserAdmin
-        ? '/personal/home'
-        : '/members/home';
+        if (isAdminValue) {
+          this.usersStore.loadAllUsers();
+          this.traningsStore.loadAllTrainings();
+          this.exerciseStore.loadAllExercises();
+        } else {
+          this.traningsStore.loadUserTrainings();
+        }
 
-      if (isUserAdmin) {
-        this.usersStore.loadAllUsers();
-        this.traningsStore.loadAllTrainings();
-        this.exerciseStore.loadAllExercises();
-      } else {
-        this.traningsStore.loadUserTrainings();
-      }
-
-      setTimeout(() => {
-        this.router.navigateByUrl(targetRoute);
-      }, 2500);
-    });
+        setTimeout(() => {
+          this.router.navigateByUrl(targetRoute);
+        }, 2500);
+      });
   }
 }

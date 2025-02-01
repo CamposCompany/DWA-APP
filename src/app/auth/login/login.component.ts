@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -9,10 +9,9 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { UsersStore } from '../../shared/stores/users.store';
 import { AppState } from '../../reducers';
 import { Store } from '@ngrx/store';
-import { login } from './login.action';
+
 
 @Component({
   selector: 'app-login',
@@ -22,15 +21,17 @@ import { login } from './login.action';
   styleUrl: './login.component.scss',
   providers: [AuthService, LoadingService],
 })
-export class LoginComponent {
-  loginForm: FormGroup = new FormGroup({});
-  errorMessageSubject = new BehaviorSubject<string | null>(null);
+export class LoginComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly loadingService = inject(LoadingService);
 
+  private readonly errorMessageSubject = new BehaviorSubject<string | null>(null);
   errorMessage$ = this.errorMessageSubject.asObservable();
+  loginForm: FormGroup = new FormGroup({});
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private usersStore: UsersStore, private store: Store<AppState>) { }
-
-  private loadingService = inject(LoadingService);
+  constructor() { }
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
@@ -43,21 +44,17 @@ export class LoginComponent {
     if (this.loginForm.valid) {
       const formValues = { ...this.loginForm.getRawValue() };
 
-      const encodedPassword = btoa(formValues.password);
-      formValues.password = encodedPassword;
+      formValues.password = btoa(formValues.password);
 
       const auth$ = this.authService.authenticate(formValues);
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: (res) => {
-          const user = res.data.user
+        next: ({ data: { user, token } }) => {
+          localStorage.setItem('token', token);
 
-          localStorage.setItem('token', res.data.token);
-          
           if (!user.last_login) {
             this.router.navigateByUrl(`/first-access/${user.id}`);
           } else {
-            this.store.dispatch(login({user}));
             this.router.navigateByUrl('/on-boarding');
           }
         },
@@ -65,9 +62,6 @@ export class LoginComponent {
           this.errorMessageSubject.next(err.error.message || "Erro inesperado");
         },
       });
-
-      this.authService.login(formValues);
     }
   }
-
 }

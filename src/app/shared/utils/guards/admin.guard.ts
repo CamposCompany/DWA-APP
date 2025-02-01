@@ -1,21 +1,16 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { UsersStore } from '../../stores/users.store';
+import { isAdminSelector } from '../../../auth/login/store/auth.selectors';
 
-const ALLOWED_ROLES = ['admin', 'owner', 'personal'];
-
-export const adminGuard: CanActivateFn = async (route, state) => {
+export const adminGuard: CanActivateFn = async () => {
   const router = inject(Router);
-  const usersStore = inject(UsersStore);
-  const currentUser = await firstValueFrom(usersStore.currentUser$);
+  const store = inject(Store);
   
-  if (!currentUser) {
-    router.navigate(['/login']);
-    return false;
-  }
+  const isUserAdmin = await firstValueFrom(store.select(isAdminSelector));
   
-  if (!currentUser.roles || !currentUser.roles.some((role: any) => ALLOWED_ROLES.includes(role.name))) {
+  if (!isUserAdmin) {
     router.navigate(['/members/home']);
     return false;
   }

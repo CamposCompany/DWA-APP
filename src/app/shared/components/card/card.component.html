@@ -10,8 +10,8 @@
         <p *ngIf="validity" class="text-center">Validade: {{ validity }}</p>
       </div>
     </div>
-    <div class="d-flex align-items-end">
-      <app-button label="Ver treino" buttonClass="btn-secondary"></app-button>
+    <div class="d-flex align-items-end" *ngIf="showButton">
+      <app-button [label]="buttonLabel" buttonClass="btn-secondary"></app-button>
     </div>
   </div>
 </div>

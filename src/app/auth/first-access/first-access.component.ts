@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -10,8 +10,10 @@ import { UserService } from '../../shared/services/user.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { BehaviorSubject } from 'rxjs';
 import { AuthService } from '../../shared/services/auth.service';
-import { UsersStore } from '../../shared/stores/users.store';
+import { Store } from '@ngrx/store';
 
+import { updateUser } from '../login/store/auth.action';
+import { AppState } from '../../reducers';
 @Component({
   selector: 'app-first-login',
   standalone: true,
@@ -21,44 +23,32 @@ import { UsersStore } from '../../shared/stores/users.store';
   providers: [LoadingService, AuthService]
 })
 export class FirstLoginComponent {
-  firstAccessForm: FormGroup = new FormGroup({});
-  passwordFieldType: string = 'password';
+  private readonly fb = inject(FormBuilder);
+  private readonly userService = inject(UserService);
+  private readonly activatedRoute = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly loadingService = inject(LoadingService);
+  private readonly store = inject(Store<AppState>);
 
-  errorMessage = new BehaviorSubject<string | null>(null);
-  successMessage = new BehaviorSubject<string | null>(null);
+  readonly passwordFieldType = 'password';
 
-  errorMessage$ = this.errorMessage.asObservable();
-  successMessage$ = this.successMessage.asObservable();
+  private readonly errorMessageSubject = new BehaviorSubject<string | null>(null);
+  private readonly successMessageSubject = new BehaviorSubject<string | null>(null);
 
-  private token: string | null = '';
-  private userId: string | null = '';
+  readonly errorMessage$ = this.errorMessageSubject.asObservable();
+  readonly successMessage$ = this.successMessageSubject.asObservable();
 
-  constructor(
-    private fb: FormBuilder,
-    private userService: UserService,
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private usersStore: UsersStore
-  ) { }
+  private token = localStorage.getItem('token');
+  private userId = this.activatedRoute.snapshot.paramMap.get('id');
 
-  private loadingService = inject(LoadingService);
 
-  ngOnInit(): void {
-    this.token = localStorage.getItem('token');
-    this.userId = this.activatedRoute.snapshot.paramMap.get('id');
-
-    this.initForm();
-  }
-
-  public initForm() {
-    this.firstAccessForm = this.fb.group({
-      username: ['', [Validators.required]],
-      telephone: ['', [Validators.required]],
-      email: ['', [Validators.email]],
-      password: ['', [Validators.required]],
-      password_confirmation: ['', [Validators.required]]
-    }, { validators: passwordMatchValidator() });
-  }
+  firstAccessForm: FormGroup = this.fb.group({
+    username: ['', [Validators.required]],
+    telephone: ['', [Validators.required]],
+    email: ['', [Validators.email]],
+    password: ['', [Validators.required]],
+    password_confirmation: ['', [Validators.required]]
+  }, { validators: passwordMatchValidator() });
 
   onSubmit(): void {
     if (this.firstAccessForm.valid && this.token && this.userId) {
@@ -67,27 +57,19 @@ export class FirstLoginComponent {
         'password_confirmation',
       ]);
 
-      const payload = {
-        ...formValues
-      }
+      const auth$ = this.userService.updateUser(formValues, Number(this.userId));
 
-      const auth$ = this.userService.updateUser(
-        payload,
-        this.userId
-      )
-
-      this.loadingService.showLoaderUntilCompleted(auth$)
-        .subscribe({
-          next: (res: any) => {
-            this.usersStore.loadCurrentUser(res.data);
-            this.errorMessage.next(null);
-            this.router.navigateByUrl('on-boarding');
-            this.successMessage.next(res.message)
-          },
-          error: (err: any) => {
-            this.errorMessage.next(err.error?.message || 'Erro inesperado.')
-          }
-        });
+      this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
+        next: ({ data, message }) => {
+          this.store.dispatch(updateUser({ user: data }));
+          this.errorMessageSubject.next(null);
+          this.successMessageSubject.next(message);
+          this.router.navigateByUrl('on-boarding');
+        },
+        error: (err) => {
+          this.errorMessageSubject.next(err.error?.message || 'Erro inesperado.');
+        }
+      });
     }
   }
 }
