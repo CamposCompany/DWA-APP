@@ -1,0 +1,11 @@
+<div class="dashboard-actions w-100 d-flex justify-content-center gap-4">
+    <div
+      class="action-card justify-content-center d-flex flex-column"
+      *ngFor="let action of dashboardActions"
+      (click)="onActionClick(action.route)"
+    >
+      <img [src]="action.icon" alt="Icone de tênis" />
+      <span class="card-action-title">{{ action.title }}</span>
+    </div>
+  </div>
+  

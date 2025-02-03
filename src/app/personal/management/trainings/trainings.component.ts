@@ -1,0 +1,39 @@
+import { Component, inject } from '@angular/core';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { map, Observable } from 'rxjs';
+import { Training } from '../../../shared/models/training';
+import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
+import { FilterComponent } from '../../../shared/components/filter/filter.component';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store';
+import { selectAllTrainings } from '../../../store/training/training.selectors';
+
+@Component({
+  selector: 'app-trainings',
+  standalone: true,
+  imports: [HeaderComponent, CommonModule, RouterModule, FilterComponent],
+  templateUrl: './trainings.component.html',
+  styleUrl: './trainings.component.scss'
+})
+export class TrainingsComponent {
+  private readonly store = inject(Store<AppState>);
+  trainings$: Observable<Training[]> = this.store.select(selectAllTrainings);
+  filteredTrainings$: Observable<Training[]> = new Observable<Training[]>;
+
+
+  constructor() {
+    this.filteredTrainings$ = this.trainings$;
+  }
+
+  onFilterChanged(filterText: string): void {
+    this.filteredTrainings$ = this.trainings$.pipe(
+      map((trainings: Training[]) =>
+        trainings.filter((training: Training) =>
+          training.name.toLowerCase().includes(filterText.toLowerCase())
+        )
+      )
+    );
+  }
+
+}

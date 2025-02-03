@@ -1,0 +1,21 @@
+.container-login {
+  gap: 90px;
+
+  h1,
+  p {
+    font-family: "League Spartan", sans-serif;
+  }
+
+  h1,
+  .forgot-password {
+    color: white;
+  }
+
+  .forgot-password {
+    text-decoration: underline;
+  }
+
+  img {
+    width: 190px;
+  }
+}

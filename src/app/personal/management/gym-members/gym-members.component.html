@@ -1,0 +1,30 @@
+<app-header title="Alunos"></app-header>
+
+<div class="members-container">
+  <div class="members-list">
+    <div class="member-card" *ngFor="let member of members$ | async">
+      <div class="member-info">
+        <img
+          [src]="
+            member.profile_image || 'assets/images/default-user-profile.png'
+          "
+          alt="Foto do perfil"
+          class="profile-pic"
+        />
+        <div class="member-details">
+          <h2 class="mb-3">{{ member.first_name }} {{ member.last_name }}</h2>
+          <div class="contact-info">
+            <span>
+              <img src="assets/icons/telephone.png" alt="Telefone" />
+              {{ member.telephone || 'Não informado' }}
+            </span>
+            <span>
+              <img src="assets/icons/email.png" alt="Email" />
+              {{ member.email || 'Não informado' }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

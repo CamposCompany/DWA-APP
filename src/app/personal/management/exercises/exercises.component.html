@@ -1,0 +1,11 @@
+<app-header title="Exercícios" routeNameBack="/personal/home"></app-header>
+<div class="exercise-container w-100">
+  <app-filter (filterChanged)="onFilterChanged($event)"></app-filter>
+  <p class="mt-4">Exercícios cadastrados</p>
+  <div class="mt-3">
+    <app-card-exercise
+      [exercises]="(filteredExercises$ | async)!"
+      (exerciseClicked)="viewExercise($event)"
+    ></app-card-exercise>
+  </div>
+</div>

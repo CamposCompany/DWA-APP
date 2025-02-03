@@ -1,0 +1,67 @@
+<div
+  class="container-first-login h-100 d-flex flex-column justify-content-center align-items-center"
+>
+  <div class="d-flex">
+    <a routerLink="/login">
+      <img class="backButton" src="../../../assets/backButton.png" />
+    </a>
+    <h1 class="text-center">Primeiro acesso</h1>
+  </div>
+
+  <span class="text-left">Preencha seus dados para finalizar seu cadastro</span>
+
+  <div class="d-flex flex-column justify-content-between w-100 h-100">
+    <form [formGroup]="firstAccessForm" class="d-flex flex-column gap-3">
+      <app-input
+        label="Como quer ser chamado?"
+        [required]="true"
+        placeholder="exemplo: Paulo"
+        [control]="$any(firstAccessForm).controls['username']"
+      ></app-input>
+
+      <app-input
+        label="Seu telefone para contato"
+        [required]="true"
+        placeholder="(12) 98765-4321"
+        mask="(00) 00000-0000"
+        [control]="$any(firstAccessForm).controls['telephone']"
+      ></app-input>
+
+      <app-input
+        label="Seu melhor e-mail (opcional)"
+        [required]="false"
+        placeholder="paulo@email.com.br"
+        [control]="$any(firstAccessForm).controls['email']"
+      ></app-input>
+
+      <app-input
+        label="Senha"
+        [required]="true"
+        placeholder="********"
+        [control]="$any(firstAccessForm).controls['password']"
+        type="password"
+      ></app-input>
+
+      <app-input
+        label="Confirme sua senha"
+        [required]="true"
+        placeholder="********"
+        [control]="$any(firstAccessForm).controls['password_confirmation']"
+        type="password"
+      ></app-input>
+
+      <p class="error-message" *ngIf="errorMessage$ | async as error">
+        {{ error }}
+      </p>
+      <span class="text-left" id="policy-link"
+        >Ao continuar você aceita nosso <a>Termos de Uso</a> e
+        <a>Política de Privacidade.</a></span
+      >
+    </form>
+    <div class="mt-3">
+      <app-button (clicked)="onSubmit()"></app-button>
+    </div>
+  </div>
+</div>
+
+<app-loading></app-loading>

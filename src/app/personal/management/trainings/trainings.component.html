@@ -1,0 +1,19 @@
+<app-header title="Meus treinos"> </app-header>
+<div class="d-flex flex-column w-100">
+  <app-filter (filterChanged)="onFilterChanged($event)"></app-filter>
+
+  <p class="mt-4">Treinos cadastrados</p>
+
+  <ng-container *ngFor="let training of filteredTrainings$ | async">
+    <div
+      class="card-training d-flex justify-content-between align-items-center mb-3"
+      [routerLink]="['/trainings', training.id]"
+    >
+      <img src="assets/images/default-training-card.png" />
+      <h3>
+        {{ training.name.toLocaleUpperCase() }}
+      </h3>
+      <img src="assets/icons/arrow-forward.svg" />
+    </div>
+  </ng-container>
+</div>

@@ -1,0 +1,25 @@
+<section class="costumers-panel">
+  <header class="costumers-panel__header">
+    <div class="brand">
+      <img src="assets/icons/lit.svg" alt="Ícone de fogo" />
+      <h1>ALUNOS CADASTRADOS</h1>
+    </div>
+  </header>
+
+  <swiper-container
+    class="costumers-panel__grid"
+    [config]="swiperConfig"
+    [slidesPerView]="3"
+  >
+    <swiper-slide *ngFor="let costumer of filteredCostumers$ | async">
+      <app-card
+        [title]="costumer.username"
+        [subtitle]="costumer.telephone || 'Não informado'"
+        validity="12/06/2024"
+        imageSrc="assets/images/default-user-profile.png"
+        iconSrc="assets/icons/lit.svg"
+        size="small"
+      ></app-card>
+    </swiper-slide>
+  </swiper-container>
+</section>

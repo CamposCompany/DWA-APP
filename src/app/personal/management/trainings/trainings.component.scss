@@ -1,0 +1,25 @@
+p {
+  font-family: "League Spartan", sans-serif;
+  color: white;
+}
+
+.card-training {
+  background-color: white;
+  border-radius: 20px;
+  padding: 8px 16px;
+
+  h3 {
+    font-size: 14px;
+    color: #262525;
+    font-family: "Poppins", sans-serif;
+    font-weight: bold;
+  }
+}
+
+::ng-deep {
+
+  app-filter,
+  app-input .form-group {
+    height: 60px !important;
+  }
+}

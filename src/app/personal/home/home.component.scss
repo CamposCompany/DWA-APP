@@ -1,0 +1,38 @@
+h1,
+i {
+  color: white;
+  font-family: "Poppins", sans-serif;
+}
+
+h1 {
+  font-size: 22px;
+}
+
+i {
+  font-size: 9px;
+}
+
+.header {
+  padding: 10px;
+}
+
+.content {
+  margin-top: 20px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.5rem;
+  
+    .icon {
+      width: 14px;
+      height: 18px;
+    }
+  
+    &:hover {
+      opacity: 0.8;
+    }
+  }
+  

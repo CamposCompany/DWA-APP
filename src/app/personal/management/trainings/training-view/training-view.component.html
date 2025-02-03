@@ -1,0 +1,13 @@
+<div *ngIf="training$ | async as training">
+  <app-header title="Treino"></app-header>
+  <div class="d-flex w-100 justify-content-center">
+    <div
+      class="d-flex flex-column justify-content-between view-container w-100"
+    >
+      <h3>{{ training.name.toLocaleUpperCase() }}</h3>
+      <p class="mt-3">{{ training.description }}</p>
+    </div>
+  </div>
+  <h3 class="mt-5 mb-3">Exercícios</h3>
+  <app-card-exercise [exercises]="training.exercises" [showReps]="true"></app-card-exercise>
+</div>

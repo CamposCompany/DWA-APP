@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">DWApp</string>
+    <string name="title_activity_main">DWApp</string>
+    <string name="package_name">com.camposcompany.dwapp</string>
+    <string name="custom_url_scheme">com.camposcompany.dwapp</string>
+</resources>

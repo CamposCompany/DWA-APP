@@ -1,0 +1,25 @@
+<ng-container *ngIf="exercises && exercises.length > 0">
+  <div
+    class="card-training d-flex justify-content-between align-items-center mb-3 gap-3"
+    *ngFor="let exercise of exercises"
+    (click)="onExerciseClick(exercise.id)"
+    [routerLink]="['/personal/exercises', exercise.id]"
+  >
+    <img src="assets/icons/arm-exercise.svg" />
+    <div class="w-100">
+      <p>{{ exercise.category }}</p>
+      <h3>{{ exercise.name.toLocaleUpperCase() }}</h3>
+    </div>
+    <img
+      *ngIf="isInteractive"
+      [src]="
+        isExerciseAdded(exercise.id)
+          ? 'assets/icons/check-mark.png'
+          : 'assets/icons/plus-circle.svg'
+      "
+    />
+  </div>
+</ng-container>
+<p *ngIf="exercises?.length === 0" class="no-exercises">
+  Sem exercícios disponíveis.
+</p>

@@ -1,0 +1,17 @@
+<div
+  class="card-container"
+  [ngClass]="{ 'card-large': size === 'large', 'card-small': size === 'small' }"
+>
+  <img [src]="imageSrc" alt="Imagem de perfil" class="card-image w-100" />
+  <div class="information d-flex justify-content-between">
+    <div>
+      <h2 class="title">{{ title }}</h2>
+      <div class="d-flex justify-content-between mt-3">
+        <p *ngIf="validity" class="text-center">Validade: {{ validity }}</p>
+      </div>
+    </div>
+    <div class="d-flex align-items-end" *ngIf="showButton">
+      <app-button [label]="buttonLabel" buttonClass="btn-secondary"></app-button>
+    </div>
+  </div>
+</div>

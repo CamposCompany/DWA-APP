@@ -1,0 +1,26 @@
+<ng-container *ngIf="currentUser$ | async as currentUser">
+    <div class="d-flex justify-content-between header">
+      <div>
+        <h1>Oi, {{ currentUser.username }}!</h1>
+        <i>{{ currentUser.roles[0].name }}</i>
+      </div>
+      <button class="icon-button" routerLink="/menu">
+        <img src="assets/icons/user.svg" alt="ícone do usuário" />
+      </button>
+    </div>
+  
+    <div class="content d-flex flex-column gap-4">
+      <app-keymetric-panel
+        [userCount$]="userCount$"
+        [trainingCount$]="trainingCount$"
+        [exerciseCount$]="exerciseCount$"
+      ></app-keymetric-panel>
+  
+      <app-actions-panel></app-actions-panel>
+  
+      <app-costumers-panel [costumers$]="costumers$"></app-costumers-panel>
+  
+      <app-trainings-panel [trainings$]="trainingLimited$"></app-trainings-panel>
+    </div>
+  </ng-container>
+  
