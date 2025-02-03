@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
-import { User, UserData } from '../models/users';
-import { Http } from '../services/http.service';
-import { LoadingService } from '../services/loading.service';
+import { User, UserData } from '../shared/models/users';
+import { Http } from '../shared/services/http.service';
+import { LoadingService } from '../shared/services/loading.service';
 
 @Injectable({
   providedIn: 'root'

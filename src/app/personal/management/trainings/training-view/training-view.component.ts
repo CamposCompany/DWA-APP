@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { Observable } from 'rxjs';
-import { map } from 'rxjs/operators';
 import { Training } from '../../../../shared/models/training';
-import { TrainingStore } from '../../../../shared/stores/trainings.store';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../../store';
+import { selectTrainingById } from '../../../../store/training/training.selectors';
 
 import { CardExerciseComponent } from "../../exercises/shared/components/card-exercise/card-exercise.component";
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
@@ -17,17 +18,13 @@ import { HeaderComponent } from '../../../../shared/components/header/header.com
   styleUrls: ['./training-view.component.scss'],
 })
 export class TrainingViewComponent implements OnInit {
-  training$: Observable<Training | undefined> = new Observable<Training>;
+  private readonly route = inject(ActivatedRoute);
+  private readonly store = inject(Store<AppState>);
 
-  constructor(
-    private route: ActivatedRoute,
-    private trainingStore: TrainingStore
-  ) { }
+  training$: Observable<Training | undefined> = new Observable<Training>;
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
-    this.training$ = this.trainingStore.getTrainings().pipe(
-      map((trainings: Training[]) => trainings.find((training: Training) => training.id === trainingId))
-    );
+    this.training$ = this.store.select(selectTrainingById(trainingId));
   }
 }

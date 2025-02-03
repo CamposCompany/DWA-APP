@@ -8,7 +8,8 @@ import { Observable } from 'rxjs';
 import { User } from '../shared/models/users';
 import { selectUser } from '../auth/login/store/auth.selectors';
 import { Store } from '@ngrx/store';
-import { AppState } from '../reducers';
+import { AppState } from '../store';
+
 
 @Component({
   selector: 'app-menu',

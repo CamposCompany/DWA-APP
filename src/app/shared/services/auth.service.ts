@@ -4,6 +4,7 @@ import { BehaviorSubject, Observable, tap } from 'rxjs';
 import { AuthenticateLogin, ForgotPasswordRes } from '../models/authenticate';
 import { Store } from '@ngrx/store';
 import { login, logout } from '../../auth/login/store/auth.action';
+import { tokenSelector } from '../../auth/login/store/auth.selectors';
 
 
 @Injectable({
@@ -12,6 +13,13 @@ import { login, logout } from '../../auth/login/store/auth.action';
 export class AuthService {
   private readonly http = inject(Http);
   private readonly store = inject(Store);
+  private token: string = '';
+
+  constructor() {
+    this.store.select(tokenSelector).subscribe((token) => {
+      this.token = token;
+    });
+  }
 
   private readonly routes = {
     login: 'auth/login',
@@ -26,9 +34,9 @@ export class AuthService {
 
   authenticate(credentials: { document: string; password: string }): Observable<AuthenticateLogin> {
     return this.http.post<{ document: string; password: string }, AuthenticateLogin>(this.routes.login, credentials).pipe(
-      tap(({ data: { user } }) => {
+      tap(({ data: { user, token } }) => {
         this.authStateSubject.next(true);
-        this.store.dispatch(login({ user }));
+        this.store.dispatch(login({ user, token }));
       })
     );
   }
@@ -51,7 +59,11 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return !!localStorage.getItem('token');
+    return !!this.token;
+  }
+
+  getToken(): string {
+    return this.token;
   }
 
   logout(): Observable<void> {

@@ -7,10 +7,10 @@ import { HeaderComponent } from '../../shared/components/header/header.component
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Observable } from 'rxjs';
 import { selectUser } from '../../auth/login/store/auth.selectors';
-import { AppState } from '../../reducers';
+
 import { Store } from '@ngrx/store';
-import { updateUser } from '../../auth/login/store/auth.action';
 import { UserService } from '../../shared/services/user.service';
+import { AppState } from '../../store';
 
 @Component({
   selector: 'app-user-data',

@@ -1,8 +1,14 @@
 import { createFeatureSelector, createSelector } from "@ngrx/store";
-import { AuthState } from "./reducers";
+import { AuthState } from ".";
+
 
 
 export const selectAuthState = createFeatureSelector<AuthState>("login")
+
+export const tokenSelector = createSelector(
+    selectAuthState,
+    (state) => state.token
+);
 
 export const selectUser = createSelector(
     selectAuthState,
@@ -11,5 +17,5 @@ export const selectUser = createSelector(
 
 export const isAdminSelector = createSelector(
     selectUser,
-    (user) => { console.log(user?.roles.some((role) => role.name === 'admin')); return user?.roles.some((role) => role.name === 'admin'); }
+    (user) => user?.roles.some((role) => role.name === 'admin')
 );

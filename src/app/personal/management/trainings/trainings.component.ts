@@ -1,26 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
-import { TrainingStore } from '../../../shared/stores/trainings.store';
 import { map, Observable } from 'rxjs';
 import { Training } from '../../../shared/models/training';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store';
+import { selectAllTrainings } from '../../../store/training/training.selectors';
 
 @Component({
   selector: 'app-trainings',
   standalone: true,
-  imports: [HeaderComponent, ButtonComponent, CommonModule, RouterModule, FilterComponent],
+  imports: [HeaderComponent, CommonModule, RouterModule, FilterComponent],
   templateUrl: './trainings.component.html',
   styleUrl: './trainings.component.scss'
 })
 export class TrainingsComponent {
-  trainings$: Observable<Training[]> = this.trainingsStore.getTrainings();
+  private readonly store = inject(Store<AppState>);
+  trainings$: Observable<Training[]> = this.store.select(selectAllTrainings);
   filteredTrainings$: Observable<Training[]> = new Observable<Training[]>;
 
 
-  constructor(private trainingsStore: TrainingStore) {
+  constructor() {
     this.filteredTrainings$ = this.trainings$;
   }
 

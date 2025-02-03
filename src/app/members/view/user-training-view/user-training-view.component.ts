@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Training } from '../../../shared/models/training';
-import { TrainingStore } from '../../../shared/stores/trainings.store';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store';
+import { selectTrainingById } from '../../../store/training/training.selectors';
 import { map } from 'rxjs/operators';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -10,6 +12,7 @@ import { UserCardExerciseComponent } from '../../shared/user-card-exercise/user-
 import { Exercise } from '../../../shared/models/exercise';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import Swal from 'sweetalert2';
+import { TrainingService } from '../../../shared/services/training.service';
 
 @Component({
   selector: 'app-user-training-view',
@@ -19,21 +22,17 @@ import Swal from 'sweetalert2';
   styleUrl: './user-training-view.component.scss'
 })
 export class UserTrainingViewComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly trainingService = inject(TrainingService);
+  private readonly store = inject(Store<AppState>);
+  private readonly router = inject(Router);
+
   training$: Observable<Training | undefined> = new Observable<Training>;
 
   completedExercises: Set<number> = new Set();
-
-  constructor(
-    private route: ActivatedRoute,
-    private trainingStore: TrainingStore,
-    private router: Router
-  ) { }
-
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
-    this.training$ = this.trainingStore.getTrainings().pipe(
-      map((trainings: Training[]) => trainings.find((training: Training) => training.id === trainingId))
-    );
+    this.training$ = this.store.select(selectTrainingById(trainingId));
   }
 
   isAllExercisesCompleted(exercises: Exercise[]): boolean {
@@ -52,7 +51,7 @@ export class UserTrainingViewComponent {
   onTrainingComplete() {
     this.training$.subscribe(training => {
       if (training) {
-        this.trainingStore.completeTraining(training.id).subscribe(() => {
+        this.trainingService.completeTraining(training.id).subscribe(() => {
           Swal.fire({
             title: 'Parabéns!',
             text: 'Você concluiu seu treino com sucesso!',

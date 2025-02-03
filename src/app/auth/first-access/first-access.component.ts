@@ -13,7 +13,7 @@ import { AuthService } from '../../shared/services/auth.service';
 import { Store } from '@ngrx/store';
 
 import { updateUser } from '../login/store/auth.action';
-import { AppState } from '../../reducers';
+import { AppState } from '../../store';
 @Component({
   selector: 'app-first-login',
   standalone: true,

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { map, Observable, switchMap } from 'rxjs';
 import { Exercise } from '../../../../shared/models/exercise';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { ExercisesStore } from '../../../../shared/stores/exercises.store';
+import { ExercisesStore } from '../../../../store/exercises.store';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../../shared/components/header/header.component';
 import { ButtonComponent } from '../../../../shared/components/button/button.component';

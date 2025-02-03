@@ -3,7 +3,7 @@ import { User } from "../../../shared/models/users";
 
 export const login = createAction(
     "[Login Page] User Login",
-    props<{ user: User }>()
+    props<{ user: User, token: string }>()
 )
 
 export const logout = createAction(

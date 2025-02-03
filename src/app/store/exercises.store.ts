@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
-import { Http } from '../services/http.service';
+import { Http } from '../shared/services/http.service';
 import { HttpHeaders } from '@angular/common/http';
-import { LoadingService } from '../services/loading.service';
-import { Exercise, ExerciseData } from '../models/exercise';
+import { LoadingService } from '../shared/services/loading.service';
+import { Exercise, ExerciseData } from '../shared/models/exercise';
 import { Router } from '@angular/router';
 
 @Injectable({

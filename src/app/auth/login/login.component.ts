@@ -9,8 +9,6 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-import { AppState } from '../../reducers';
-import { Store } from '@ngrx/store';
 
 
 @Component({
@@ -49,9 +47,7 @@ export class LoginComponent implements OnInit {
       const auth$ = this.authService.authenticate(formValues);
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: ({ data: { user, token } }) => {
-          localStorage.setItem('token', token);
-
+        next: ({ data: { user } }) => {
           if (!user.last_login) {
             this.router.navigateByUrl(`/first-access/${user.id}`);
           } else {

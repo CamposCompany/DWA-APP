@@ -3,7 +3,7 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
 import { map, Observable } from 'rxjs';
 import { Exercise } from '../../../shared/models/exercise';
-import { ExercisesStore } from '../../../shared/stores/exercises.store';
+import { ExercisesStore } from '../../../store/exercises.store';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule } from '@angular/router';

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsersStore } from '../../../shared/stores/users.store';
+import { UsersStore } from '../../../store/users.store';
 import { User } from '../../../shared/models/users';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
