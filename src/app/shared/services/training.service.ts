@@ -27,9 +27,9 @@ export class TrainingService {
     );
   }
 
-  getUserTrainings(): Observable<Training[]> {
+getUserTrainings(): Observable<Training[]> {
     return this.http.get<UserTrainingData>(`${this.routes.userTraining}/${this.userId}`).pipe(
-      map(res => { console.log('res', res.data); return res.data }),
+      map(res => res.data),
       catchError((err) => {
         const message = 'Could not load user trainings';
         alert(message);
