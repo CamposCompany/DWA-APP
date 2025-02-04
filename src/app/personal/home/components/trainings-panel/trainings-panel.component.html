@@ -12,9 +12,8 @@
           [title]="training.name.toLocaleUpperCase()"
           [duration]="getDuration(training.duration)"
           imageSrc="assets/images/default-training-profile.png"
-          iconSrc="assets/icons/clock.svg"
           size="large"
-          [routerLink]="['/personal/trainings', training.id]"
+          [routerLink]="['/general/training', training.id]"
           [showButton]="true"
         ></app-card>
       </ng-container>

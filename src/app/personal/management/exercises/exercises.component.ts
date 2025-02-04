@@ -6,7 +6,7 @@ import { Exercise } from '../../../shared/models/exercise';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule } from '@angular/router';
-import { CardExerciseComponent } from './shared/components/card-exercise/card-exercise.component';
+import { CardExerciseComponent } from '../../../shared/components/card-exercise/card-exercise.component';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../store';
 import { selectAllExercises } from '../../../store/exercise/exercise.selectors';

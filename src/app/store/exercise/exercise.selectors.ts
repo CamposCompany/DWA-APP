@@ -18,4 +18,14 @@ export const selectExerciseById = (id: number) => createSelector(
 export const allExercisesLoaded = createSelector(
     selectExerciseState,
     (state: ExerciseState) => state.allExercisesLoaded
+);
+
+export const selectUserExercises = createSelector(
+    selectAllExercises,
+    (exercises: Exercise[]) => exercises.filter(exercise => exercise.user_trainingID !== null)
+);
+
+export const selectTrainingExercises = (trainingId: number) => createSelector(
+    selectAllExercises,
+    (exercises: Exercise[]) => exercises.filter(exercise => exercise.pivot?.training_id === trainingId)
 ); 

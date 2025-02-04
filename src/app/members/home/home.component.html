@@ -46,7 +46,7 @@
           [title]="training.name.toLocaleUpperCase()"
           imageSrc="assets/images/default-training-profile.png"
           size="large"
-          [routerLink]="['/members/trainings', training.id]"
+          [routerLink]="['/general/training', training.id]"
           [validity]="formatDate(training.expire_date)"
         ></app-card>
       </ng-container>
@@ -63,7 +63,7 @@
           [title]="training.name.toLocaleUpperCase()"
           imageSrc="assets/images/default-training-profile.png"
           size="large"
-          [routerLink]="['/members/trainings', training.id]"
+          [routerLink]="['/general/training', training.id]"
           [validity]="formatDate(training.expire_date)"
         ></app-card>
       </ng-container>

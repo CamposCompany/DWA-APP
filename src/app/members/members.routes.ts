@@ -19,10 +19,5 @@ export const MEMBERS_ROUTES: Routes = [
     providers: [
       provideEffects(TrainingEffects)
     ]
-  },
-  {
-    path: 'trainings/:id',
-    loadComponent: () => 
-      import('./view/user-training-view/user-training-view.component').then((m) => m.UserTrainingViewComponent)
-  },
+  }
 ];

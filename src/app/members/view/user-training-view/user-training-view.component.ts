@@ -8,7 +8,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { CommonModule } from '@angular/common';
-import { UserCardExerciseComponent } from '../../shared/user-card-exercise/user-card-exercise.component';
+import { UserCardExerciseComponent } from '../../../shared/components/user-card-exercise/user-card-exercise.component';
 import { Exercise } from '../../../shared/models/exercise';
 import { ButtonComponent } from '../../../shared/components/button/button.component';
 import Swal from 'sweetalert2';

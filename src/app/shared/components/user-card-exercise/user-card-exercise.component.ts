@@ -1,14 +1,13 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Exercise } from '../../../shared/models/exercise';
+import { Exercise } from '../../models/exercise';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { Repetition } from '../../../shared/models/exercise';
-import { ButtonComponent } from '../../../shared/components/button/button.component';
+import { Repetition } from '../../models/exercise';
 
 @Component({
   selector: 'app-user-card-exercise',
   standalone: true,
-  imports: [CommonModule, RouterModule, ButtonComponent],
+  imports: [CommonModule, RouterModule],
   templateUrl: './user-card-exercise.component.html',
   styleUrl: './user-card-exercise.component.scss'
 })

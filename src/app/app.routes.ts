@@ -61,6 +61,12 @@ export const routes: Routes = [
     canActivate: [authGuard, adminGuard]
   },
   {
+    path: 'general',
+    loadChildren: () =>
+      import('./general.routes').then((m) => m.GENERAL_ROUTES),
+    canActivate: [authGuard]
+  },
+  {
     path: 'menu',
     loadChildren: () =>
       import('./menu/menu.routes').then((m) => m.MENU_ROUTES),
