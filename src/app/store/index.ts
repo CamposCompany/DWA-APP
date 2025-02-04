@@ -1,13 +1,19 @@
 import { ActionReducerMap } from '@ngrx/store';
-import { authReducer } from '../auth/login/store';
-import { trainingReducer } from './training/training.reducer';
-
+import { authReducer, AuthState } from '../auth/login/store';
+import { trainingReducer, TrainingState } from './training/training.reducer';
+import { exerciseReducer, ExerciseState } from './exercise/exercise.reducer';
+import { userReducer, UserState } from './user/user.reducer';
 
 export interface AppState {
-
+  login: AuthState;
+  training: TrainingState;
+  exercise: ExerciseState;
+  user: UserState;
 }
 
 export const reducers: ActionReducerMap<AppState> = {
   login: authReducer,
-  training: trainingReducer
+  training: trainingReducer,
+  exercise: exerciseReducer,
+  user: userReducer
 };

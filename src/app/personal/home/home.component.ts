@@ -1,14 +1,12 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { map, Observable, take } from 'rxjs';
-import { UsersStore } from '../../store/users.store';
-import { ExercisesStore } from '../../store/exercises.store';
+import { map, Observable } from 'rxjs';
 import { User } from '../../shared/models/users';
 import { Training } from '../../shared/models/training';
 import { Exercise } from '../../shared/models/exercise';
 import { KeymetricPanelComponent } from './components/keymetric-panel/keymetric-panel.component';
 import { ActionsPanelComponent } from './components/actions-panel/actions-panel.component';
-import { CostumersPanelComponent } from './components/costumers-panel/costumers-panel.component';
+import { GymMembersPanelComponent } from './components/gym-members-panel/gym-members-panel.component';
 import { TrainingsPanelComponent } from './components/trainings-panel/trainings-panel.component';
 import { LoadingService } from '../../shared/services/loading.service';
 import { RouterModule } from '@angular/router';
@@ -16,6 +14,8 @@ import { Store } from '@ngrx/store';
 import { selectUser } from '../../auth/login/store/auth.selectors';
 import { AppState } from '../../store';
 import { selectAllTrainings, selectTrainingCount } from '../../store/training/training.selectors';
+import { selectAllExercises } from '../../store/exercise/exercise.selectors';
+import { selectAllUsers, selectGymMembers } from '../../store/user/user.selectors';
 
 @Component({
   selector: 'app-dashboard',
@@ -25,7 +25,7 @@ import { selectAllTrainings, selectTrainingCount } from '../../store/training/tr
     KeymetricPanelComponent,
     ActionsPanelComponent,
     TrainingsPanelComponent,
-    CostumersPanelComponent,
+    GymMembersPanelComponent,
     RouterModule
   ],
   providers: [LoadingService],
@@ -41,37 +41,16 @@ export class HomeComponent {
     map((trainings: Training[]) => trainings.length)
   );
 
-  users$: Observable<User[]> = this.usersStore.getUsers();
-  costumers$: Observable<User[]> = this.usersStore.getCostumers();
+  exercises$: Observable<Exercise[]> = this.store.select(selectAllExercises);
+  exerciseCount$: Observable<number> = this.exercises$.pipe(
+    map((exercises: Exercise[]) => exercises.length)
+  );
+
+  users$: Observable<User[]> = this.store.select(selectAllUsers);
+  gymMembers$: Observable<User[]> = this.store.select(selectGymMembers);
   currentUser$: Observable<User> = this.store.select(selectUser);
   userCount$: Observable<number> = this.users$.pipe(
     map((users: User[]) => users.length)
   );
 
-  exercises$: Observable<Exercise[]> = this.exercisesStore.getExercises();
-  exerciseCount$: Observable<number> = this.exercises$.pipe(
-    map((exercises: Exercise[]) => exercises.length)
-  );
-
-  constructor(
-    private usersStore: UsersStore,
-    private exercisesStore: ExercisesStore
-  ) {
-    this.initializeData();
-  }
-
-  private initializeData(): void {
-    this.checkAndLoadAllUsers();
-  }
-
-
-  private checkAndLoadAllUsers(): void {
-    this.users$
-      .pipe(take(1))
-      .subscribe((users: User[]) => {
-        if (!users || users.length === 0) {
-          this.usersStore.loadAllUsers();
-        }
-      });
-  }
 }

@@ -1,8 +1,5 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsersStore } from '../../store/users.store';
-import { ExercisesStore } from '../../store/exercises.store';
-
 import { select, Store } from '@ngrx/store';
 import { isAdminSelector } from '../login/store/auth.selectors';
 import { AppState } from '../../store';
@@ -18,8 +15,6 @@ import { AppState } from '../../store';
 export class OnboardingComponent {
   private readonly store = inject(Store<AppState>);
   private readonly router = inject(Router);
-  private readonly usersStore = inject(UsersStore);
-  private readonly exerciseStore = inject(ExercisesStore);
 
   constructor() { }
 
@@ -29,11 +24,6 @@ export class OnboardingComponent {
         const targetRoute = isAdminValue
           ? '/personal/home'
           : '/members/home';
-
-        if (isAdminValue) {
-          this.usersStore.loadAllUsers();
-          this.exerciseStore.loadAllExercises();
-        }
 
         setTimeout(() => {
           this.router.navigateByUrl(targetRoute);

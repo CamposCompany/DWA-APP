@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CostumersPanelComponent } from './costumers-panel.component';
+import { GymMembersPanelComponent } from './gym-members-panel.component';
 
 describe('CostumersPanelComponent', () => {
-  let component: CostumersPanelComponent;
-  let fixture: ComponentFixture<CostumersPanelComponent>;
+  let component: GymMembersPanelComponent;
+  let fixture: ComponentFixture<GymMembersPanelComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [CostumersPanelComponent]
+      imports: [GymMembersPanelComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(CostumersPanelComponent);
+    fixture = TestBed.createComponent(GymMembersPanelComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

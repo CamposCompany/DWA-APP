@@ -9,17 +9,16 @@ import { map, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operato
 import { Swiper, SwiperEvents, SwiperOptions } from 'swiper/types';
 
 @Component({
-  selector: 'app-costumers-panel',
+  selector: 'app-gym-members-panel',
   standalone: true,
-  imports: [CommonModule, CardComponent, InputComponent, ReactiveFormsModule],
-  templateUrl: './costumers-panel.component.html',
-  styleUrl: './costumers-panel.component.scss',
+  imports: [CommonModule, CardComponent, ReactiveFormsModule],
+  templateUrl: './gym-members-panel.component.html',
+  styleUrl: './gym-members-panel.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-
-export class CostumersPanelComponent implements OnInit {
-  @Input() costumers$: Observable<User[]> = new Observable<User[]>();
-  filteredCostumers$!: Observable<User[]>;
+export class GymMembersPanelComponent implements OnInit {
+  @Input() gymMembers$: Observable<User[]> = new Observable<User[]>();
+  filteredGymMembers$: Observable<User[]> = this.gymMembers$;
   searchForm: FormGroup = this.fb.group({
     searchTerm: ['']
   });
@@ -41,12 +40,12 @@ export class CostumersPanelComponent implements OnInit {
   constructor(private readonly fb: FormBuilder) {}
 
   ngOnInit(): void {
-    this.initializeFilteredCustomers();
+    this.initializeFilteredGymMembers();
     this.setupSearchSubscription();
   }
 
-  private initializeFilteredCustomers(): void {
-    this.filteredCostumers$ = this.costumers$;
+  private initializeFilteredGymMembers(): void {
+    this.filteredGymMembers$ = this.gymMembers$;
   }
 
   private setupSearchSubscription(): void {
@@ -62,23 +61,23 @@ export class CostumersPanelComponent implements OnInit {
   public onSearch(): void {
     const searchTerm = this.searchForm.get('searchTerm')?.value?.toLowerCase() || '';
 
-    this.filteredCostumers$ = this.costumers$.pipe(
-      map(customers => this.filterCustomers(customers, searchTerm))
+    this.filteredGymMembers$ = this.gymMembers$.pipe(
+      map(gymMembers => this.filterGymMembers(gymMembers, searchTerm))
     );
   }
 
-  private filterCustomers(customers: User[], searchTerm: string): User[] {
-    if (!searchTerm) return customers;
+  private filterGymMembers(gymMembers: User[], searchTerm: string): User[] {
+    if (!searchTerm) return gymMembers;
 
-    return customers.filter(customer =>
-      this.matchesSearchCriteria(customer, searchTerm)
+    return gymMembers.filter(gymMember =>
+      this.matchesSearchCriteria(gymMember, searchTerm)
     );
   }
 
-  private matchesSearchCriteria(customer: User, searchTerm: string): boolean {
+  private matchesSearchCriteria(gymMember: User, searchTerm: string): boolean {
     return (
-      customer.username?.toLowerCase().includes(searchTerm) ||
-      customer.document?.includes(searchTerm)
+      gymMember.username?.toLowerCase().includes(searchTerm) ||
+      gymMember.document?.includes(searchTerm)
     ) ?? false;
   }
 }

@@ -2,6 +2,10 @@ import { Routes } from '@angular/router';
 import { trainingResolver } from '../store/training/training.resolver';
 import { provideEffects } from '@ngrx/effects';
 import { TrainingEffects } from '../store/training/training.effects';
+import { exerciseResolver } from '../store/exercise/exercise.resolver';
+import { ExerciseEffects } from '../store/exercise/exercise.effects';
+import { userResolver } from '../store/user/user.resolver';
+import { UserEffects } from '../store/user/user.effects';
 
 export const PERSONAL_ROUTES: Routes = [
   {
@@ -14,10 +18,12 @@ export const PERSONAL_ROUTES: Routes = [
     loadComponent: () =>
       import('./home/home.component').then((m) => m.HomeComponent),
     resolve: {
-      trainings: trainingResolver
+      trainings: trainingResolver,
+      exercises: exerciseResolver,
+      users: userResolver
     },
     providers: [
-      provideEffects(TrainingEffects)
+      provideEffects(TrainingEffects, ExerciseEffects, UserEffects)
     ]
   },
   {

@@ -12,14 +12,12 @@ export class TrainingEffects {
   private readonly actions$ = inject(Actions);
 
   loadTrainings$ = createEffect(() => this.actions$.pipe(
-    ofType(TrainingActions.loadAllTrainings),
-    concatMap(() => this.trainingService.getAllTrainings()),
+    ofType(TrainingActions.loadTrainings),
+    concatMap(action => 
+      action.isAdmin 
+        ? this.trainingService.getAllTrainings()
+        : this.trainingService.getUserTrainings()
+    ),
     map(trainings => TrainingActions.allTrainingsLoaded({ trainings }))
-  ));
-
-  loadUserTrainings$ = createEffect(() => this.actions$.pipe(
-    ofType(TrainingActions.loadUserTrainings),
-    concatMap(() => this.trainingService.getUserTrainings()),
-    map(trainings => TrainingActions.userTrainingsLoaded({ trainings }))
   ));
 }

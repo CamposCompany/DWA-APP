@@ -1,9 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { UsersStore } from '../../../store/users.store';
+import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { Store } from '@ngrx/store';
+import { AppState } from '../../../store';
 import { User } from '../../../shared/models/users';
 import { Observable } from 'rxjs';
-import { HeaderComponent } from '../../../shared/components/header/header.component';
+import { selectAllUsers } from '../../../store/user/user.selectors';
 
 @Component({
   selector: 'app-gym-members',
@@ -12,16 +14,10 @@ import { HeaderComponent } from '../../../shared/components/header/header.compon
   templateUrl: './gym-members.component.html',
   styleUrl: './gym-members.component.scss'
 })
-export class GymMembersComponent implements OnInit {
-  members$: Observable<User[]>;
+export class GymMembersComponent {
+  readonly store = inject(Store<AppState>);
 
-  constructor(private usersStore: UsersStore) {
-    this.members$ = this.usersStore.getCostumers();
-  }
-
-  ngOnInit(): void {
-    this.usersStore.loadAllUsers();
-  }
+  members$: Observable<User[]> = this.store.select(selectAllUsers);
 
   onViewTraining(memberId: number): void {
     console.log('Ver treino do membro:', memberId);

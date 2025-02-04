@@ -2,8 +2,9 @@ import { Component, inject, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { BodyClassDirective } from './shared/directives/body-class.directive';
-import { AuthAction } from './auth/login/store/action.types';
+
 import { Store } from '@ngrx/store';
+import { AuthActions } from './auth/login/store/action.types';
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,7 @@ export class AppComponent implements OnInit {
   ngOnInit() {
     const token = localStorage.getItem('token');
     if (token) {
-      this.store.dispatch(AuthAction.login({ token, user: JSON.parse(localStorage.getItem('user') || '{}') }));
+      this.store.dispatch(AuthActions.login({ token, user: JSON.parse(localStorage.getItem('user') || '{}') }));
     }
   }
 }
