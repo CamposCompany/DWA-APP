@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
-import { map, Observable } from 'rxjs';
+import { async, map, Observable } from 'rxjs';
 import { Exercise } from '../../../shared/models/exercise';
 import { CommonModule } from '@angular/common';
 
@@ -10,6 +10,7 @@ import { CardExerciseComponent } from '../../../shared/components/card-exercise/
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../store';
 import { selectAllExercises } from '../../../store/exercise/exercise.selectors';
+import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 
 @Component({
   selector: 'app-exercises',
@@ -36,7 +37,14 @@ export class ExercisesComponent {
     );
   }
 
-  viewExercise(event: number) {
-    this.router.navigateByUrl(`personal/exercises/${event}`);
+  viewExercises(exercise: Exercise): void {
+    this.filteredExercises$.subscribe(exercises => {
+      this.store.dispatch(ExerciseViewActions.setExercises({
+        exercises,
+        selectedExerciseId: exercise.id,
+        source: 'all'
+      }));
+      this.router.navigate(['/general/exercise-view']);
+    });
   }
 }

@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard } from './shared/utils/guards/auth.guard';
 
 export const GENERAL_ROUTES: Routes = [
   {
@@ -7,13 +8,9 @@ export const GENERAL_ROUTES: Routes = [
     import('./shared/pages/training-view/training-view.component').then((m) => m.TrainingViewComponent)
   },
   {
-    path: 'exercise/:exerciseId',
+    path: 'exercise-view',
     loadComponent: () => 
-      import('./shared/pages/exercise-view/exercise-view.component').then((m) => m.ExerciseViewComponent)
-  },
-  {
-    path: "training/:trainingId/exercise/:exerciseId",
-    loadComponent: () => 
-      import('./shared/pages/exercise-view/exercise-view.component').then((m) => m.ExerciseViewComponent)
+      import('./shared/pages/exercise-view/exercise-view.component').then((m) => m.ExerciseViewComponent),
+    canActivate: [authGuard]
   }
 ]

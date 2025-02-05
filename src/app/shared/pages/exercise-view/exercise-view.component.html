@@ -1,0 +1,149 @@
+<div class="h-100" *ngIf="exercise$ | async as exercise">
+  <app-header title="Exercício"></app-header>
+  <div class="view-container d-flex w-100 justify-content-center">
+    <div
+      class="d-flex flex-column justify-content-around w-100 align-items-start"
+    >
+      <div class="w-100 text-center">
+        <h3>{{ exercise.exercise_name || exercise.name }}</h3>
+      </div>
+
+      <div
+        class="exercise-image-container border border-warning rounded d-flex flex-column justify-content-center align-items-center p-3 mb-3"
+      >
+        <img
+          [src]="exercise.image || 'assets/images/default-trained-muscles.png'"
+          alt="Exercise Image"
+          class="img-fluid rounded mb-2 w-100"
+        />
+      </div>
+
+      <div class="w-100" *ngIf="exercise.user_trainingID">
+        <div class="training-info p-2 mb-2">
+          <div class="d-flex justify-content-around">
+            <div
+              class="d-flex align-items-center gap-2"
+              *ngIf="
+                !hasMethodology(exercise) && exercise.repetitions.length > 0
+              "
+            >
+              <img
+                src="assets/icons/exercise-view/series.svg"
+                alt="Series"
+                class="img-fluid"
+              />
+              <ul class="list-unstyled mb-0">
+                <li
+                  *ngFor="let rep of getUniqueRepetitions(exercise.repetitions)"
+                >
+                  {{ rep }} rep
+                </li>
+              </ul>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <img
+                src="assets/icons/exercise-view/rep.svg"
+                alt="Series"
+                class="img-fluid"
+              />
+              <span>{{ exercise.series }} séries</span>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+              <img
+                src="assets/icons/exercise-view/clock.svg"
+                alt="Rest"
+                class="img-fluid"
+              />
+              <span>{{ exercise.rest }}s</span>
+            </div>
+
+            <div
+              class="d-flex align-items-center gap-2"
+              *ngIf="exercise.weight"
+            >
+              <img
+                src="assets/icons/exercise-view/weight.svg"
+                alt="Weight"
+                class="img-fluid"
+              />
+              <span>{{ exercise.weight }}kg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="d-flex flex-column gap-2">
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Descrição:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.description || exercise.exercise.description }}
+            </p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Músculos Trabalhados:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.category || exercise.exercise.category }}
+            </p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Equipamento:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.equipment || exercise.exercise.equipment }}
+            </p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section" *ngIf="exercise.comments">
+          <h4 class="mb-1">Observações:</h4>
+          <div class="content-box">
+            <p class="mb-0">{{ exercise.comments }}</p>
+          </div>
+        </div>
+
+        <div
+          class="w-100 info-section"
+          *ngIf="hasMethodology(exercise) && exercise.user_trainingID"
+        >
+          <h4 class="mb-1">Metodologia:</h4>
+          <div class="content-box">
+            <p class="mb-0">{{ exercise.methodology }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100 d-flex flex-column gap-2 mt-4">
+        <div class="d-flex gap-2 w-100 flex-column">
+          <app-button
+            [disabled]="!(hasNextExercise$ | async)"
+            (click)="navigateToExercise('next')"
+            label="PRÓXIMO"
+            class="w-100"
+          ></app-button>
+          <app-button
+            [disabled]="!(hasPreviousExercise$ | async)"
+            (click)="navigateToExercise('previous')"
+            label="ANTERIOR"
+            class="w-100"
+            buttonClass="btn-secondary"
+          ></app-button>
+        </div>
+
+        <app-button
+          *ngIf="
+            (hasNextExercise$ | async) === false && (isTrainingView$ | async)
+          "
+          (click)="onTrainingComplete(exercise)"
+          label="FINALIZAR TREINO"
+          class="w-100"
+        ></app-button>
+      </div>
+    </div>
+  </div>
+</div>

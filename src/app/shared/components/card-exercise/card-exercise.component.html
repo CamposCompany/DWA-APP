@@ -2,7 +2,7 @@
   <div
     class="card-training d-flex justify-content-between align-items-center mb-3 gap-3"
     *ngFor="let exercise of exercises"
-    [routerLink]="['/general/training', exercise.pivot?.training_id, 'exercise', exercise.id]"
+    (click)="viewExercise(exercise)"
   >
     <img src="assets/icons/arm-exercise.svg" />
     <div class="w-100">

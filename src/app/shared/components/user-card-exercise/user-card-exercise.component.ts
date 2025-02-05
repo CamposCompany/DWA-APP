@@ -1,7 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
 import { Exercise } from '../../models/exercise';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { Store } from '@ngrx/store';
+import { Router } from '@angular/router';
+import { AppState } from '../../../store';
+import * as ExerciseViewActions from '../../../store/exercise-view/exercise-view.actions';
 import { Repetition } from '../../models/exercise';
 
 @Component({
@@ -11,7 +15,10 @@ import { Repetition } from '../../models/exercise';
   templateUrl: './user-card-exercise.component.html',
   styleUrl: './user-card-exercise.component.scss'
 })
-export class UserCardExerciseComponent {
+export class UserCardExerciseComponent implements OnInit {
+  private readonly store = inject(Store<AppState>);
+  private readonly router = inject(Router);
+
   @Input() exercises: Exercise[] = [];
   @Input() exerciseAdded: Exercise[] = [];
   @Input() isInteractive: boolean = false;
@@ -51,8 +58,13 @@ export class UserCardExerciseComponent {
     }
   }
 
-  onExerciseClick(exerciseId: number): void {
-    this.exerciseClicked.emit(exerciseId);
+  onExerciseClick(): void {
+    this.store.dispatch(ExerciseViewActions.setExercises({ 
+      exercises: this.exercises,
+      source: 'user-training',
+      selectedExerciseId: this.exercises[0].id
+    }));
+    this.router.navigate(['/general/exercise-view']);
   }
 
   isExerciseAdded(exerciseId: number): boolean {

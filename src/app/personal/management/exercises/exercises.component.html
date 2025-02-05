@@ -5,6 +5,7 @@
   <div class="mt-3">
     <app-card-exercise
       [exercises]="(filteredExercises$ | async)!"
+      (exerciseClick)="viewExercises($event)"
     ></app-card-exercise>
   </div>
 </div>

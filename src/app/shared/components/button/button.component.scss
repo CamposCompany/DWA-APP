@@ -24,10 +24,10 @@
 }
 
 .btn-secondary img {
-  filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%) hue-rotate(9deg) brightness(96%) contrast(97%);
+  filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%)
+    hue-rotate(9deg) brightness(96%) contrast(97%);
 }
 
 button:disabled {
-  background-color: #303437;
-  color: #6C7072;
+  opacity: 0.5;
 }

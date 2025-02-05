@@ -2,6 +2,9 @@ import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Exercise, Repetition } from '../../models/exercise';
 import { Router, RouterModule } from '@angular/router';
+import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
+import { AppState } from '../../../store';
+import { Store } from '@ngrx/store';
 
 
 @Component({
@@ -13,8 +16,21 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class CardExerciseComponent {
   @Input() exercises: Exercise[] = [];
-  
+  @Output() exerciseClick = new EventEmitter<Exercise>();
+
+  private readonly store = inject(Store<AppState>);
+  private readonly router = inject(Router);
+
   getUniqueRepetitions(repetitions: Repetition[]): number[] {
     return [...new Set(repetitions.map(rep => rep.repetitions))];
+  }
+
+  viewExercise(exercise: Exercise): void {
+    this.store.dispatch(ExerciseViewActions.setExercises({
+      exercises: this.exercises,
+      source: 'training',
+      selectedExerciseId: exercise.id
+    }));
+    this.router.navigate(['/general/exercise-view']);
   }
 }
