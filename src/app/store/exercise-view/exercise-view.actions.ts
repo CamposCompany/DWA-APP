@@ -13,3 +13,13 @@ export const setExercises = createAction(
 export const nextExercise = createAction('[Exercise View] Next Exercise');
 export const previousExercise = createAction('[Exercise View] Previous Exercise');
 export const resetExerciseView = createAction('[Exercise View] Reset');
+
+export const completeSeries = createAction(
+  '[Exercise View] Complete Series',
+  props<{ exerciseId: number; seriesIndex: number }>()
+);
+
+export const setCurrentSeries = createAction(
+  '[Exercise View] Set Current Series',
+  props<{ exerciseId: number; seriesIndex: number }>()
+);

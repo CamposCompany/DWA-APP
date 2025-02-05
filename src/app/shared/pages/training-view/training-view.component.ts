@@ -1,7 +1,7 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, OnDestroy } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { map, Observable } from 'rxjs';
+import { first, firstValueFrom, map, Observable } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { CardExerciseComponent } from '../../components/card-exercise/card-exercise.component';
 import { UserCardExerciseComponent } from '../../components/user-card-exercise/user-card-exercise.component';
@@ -10,10 +10,11 @@ import { selectTrainingById } from '../../../store/training/training.selectors';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Training } from '../../models/training';
 import { Exercise } from '../../models/exercise';
-import * as ExerciseViewActions from '../../../store/exercise-view/exercise-view.actions';
 import { ButtonComponent } from '../../components/button/button.component';
 import { TrainingService } from '../../services/training.service';
 import Swal from 'sweetalert2';
+import { TrainingTimerService } from './services/training-timer.service';
+import { TrainingStateService } from './services/training-state.service';
 
 @Component({
   selector: 'app-training-view',
@@ -33,9 +34,15 @@ export class TrainingViewComponent implements OnInit {
   private readonly store = inject(Store<AppState>);
   private readonly router = inject(Router);
   private readonly trainingService = inject(TrainingService);
+  private readonly timerService = inject(TrainingTimerService);
+  private readonly trainingStateService = inject(TrainingStateService);
 
   training$: Observable<Training | undefined> = new Observable<Training | undefined>();
   completedExercises: Set<number> = new Set();
+  
+  isTrainingStarted$ = this.timerService.isTrainingStarted$;
+  isPaused$ = this.timerService.isPaused$;
+  elapsedTime$ = this.timerService.elapsedTime$;
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
@@ -59,23 +66,58 @@ export class TrainingViewComponent implements OnInit {
     }
   }
 
-  onTrainingComplete() {
-    this.training$.subscribe(training => {
-      if (training) {
-        this.trainingService.completeTraining(training.id).subscribe(() => {
-          Swal.fire({
-            title: 'Parabéns!',
-            text: 'Você concluiu seu treino com sucesso!',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#4CAF50'
-          }).then((result) => {
-            if (result.isConfirmed) {
-              this.router.navigate(['/members/home']);
-            }
-          });
-        });
+  onTrainingStart() {
+    this.trainingStateService.startTraining();
+    this.timerService.startTraining();
+  }
+
+  onTrainingPause() {
+    this.trainingStateService.pauseTraining();
+    this.timerService.pauseTraining();
+  }
+
+  onTrainingResume() {
+    this.trainingStateService.resumeTraining();
+    this.timerService.resumeTraining();
+  }
+
+  onTrainingRestart() {
+    Swal.fire({
+      title: 'Reiniciar treino?',
+      text: 'Isso irá zerar o tempo e os exercícios completados',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Sim, reiniciar',
+      cancelButtonText: 'Cancelar',
+      confirmButtonColor: '#f0ad4e',
+      cancelButtonColor: '#6c757d'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.completedExercises.clear();
+        this.timerService.resetTraining();
+        this.trainingStateService.stopTraining();
       }
+    });
+  }
+
+  async onTrainingComplete() {
+    const training = await firstValueFrom(this.training$);
+    if (!training) return;
+
+    const finalTime = await firstValueFrom(this.elapsedTime$);
+    
+    this.timerService.stopTraining();
+    this.trainingStateService.stopTraining();
+    const confirmed = await this.trainingService.completeTrainingWithFeedback(training.id);
+    
+    if (confirmed) {
+      await this.router.navigate(['/members/home']);
+    }
+  }
+
+  onTogglePause() {
+    firstValueFrom(this.isPaused$).then(isPaused => {
+      isPaused ? this.onTrainingResume() : this.onTrainingPause();
     });
   }
 }

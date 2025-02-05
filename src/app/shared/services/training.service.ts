@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { Http } from './http.service';
-import { Observable, catchError, map, throwError } from 'rxjs';
+import { Observable, catchError, map, throwError, firstValueFrom } from 'rxjs';
 import { Training, TrainingData, UserTrainingData } from '../models/training';
+import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
@@ -40,5 +41,29 @@ getUserTrainings(): Observable<Training[]> {
 
   completeTraining(trainingId: number): Observable<any> {
     return this.http.post(`${this.routes.completeTraining}/${trainingId}/complete`, {});
+  }
+
+  async completeTrainingWithFeedback(trainingId: number): Promise<boolean> {
+    try {
+      await firstValueFrom(this.completeTraining(trainingId));
+      
+      const result = await Swal.fire({
+        title: 'Parabéns!',
+        text: 'Você concluiu seu treino com sucesso!',
+        icon: 'success',
+        confirmButtonText: 'OK',
+        confirmButtonColor: '#4CAF50'
+      });
+
+      return result.isConfirmed;
+    } catch (error) {
+      console.error('Error completing training:', error);
+      await Swal.fire({
+        title: 'Erro',
+        text: 'Ocorreu um erro ao concluir o treino',
+        icon: 'error'
+      });
+      return false;
+    }
   }
 }

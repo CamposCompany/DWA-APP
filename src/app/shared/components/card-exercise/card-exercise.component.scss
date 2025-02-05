@@ -23,7 +23,8 @@
 
   img {
     width: 20px;
-    filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%) hue-rotate(9deg) brightness(96%) contrast(97%);
+    filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%)
+      hue-rotate(9deg) brightness(96%) contrast(97%);
   }
 
   .reps {
@@ -33,4 +34,10 @@
       font-weight: 600;
     }
   }
+}
+
+.no-exercises {
+  font-family: "Poppins", sans-serif;
+  font-size: 14px;
+  color: white;
 }

@@ -21,4 +21,16 @@ export const selectHasPreviousExercise = createSelector(
 export const selectIsTrainingView = createSelector(
   selectExerciseViewState,
   (state) => state.source === 'user-training'
+);
+
+export const selectCompletedSeries = createSelector(
+  selectExerciseViewState,
+  selectCurrentExercise,
+  (state, exercise) => exercise ? state.completedSeries[exercise.id] || [] : []
+);
+
+export const selectCurrentSeries = createSelector(
+  selectExerciseViewState,
+  selectCurrentExercise,
+  (state, exercise) => exercise ? state.currentSeries[exercise.id] || 0 : 0
 ); 

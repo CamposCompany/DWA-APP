@@ -3,7 +3,7 @@
     <div
       class="card-training d-flex justify-content-between align-items-center mb-3 gap-3 p-3"
       *ngFor="let exercise of exercises"
-      (click)="onExerciseClick()"
+      (click)="onExerciseClick(exercise)"
     >
       <div class="d-flex align-items-center gap-3 w-100">
         <div class="exercise-info w-100 p-3">
@@ -31,14 +31,19 @@
             </div>
           </div>
         </div>
-
         <div class="exercise-status">
-          <div
-            class="checkbox"
-            [class.checked]="isCompleted(exercise.id)"
-            (click)="toggleExercise(exercise, $event)"
-          >
-            <i class="fas fa-check" *ngIf="isCompleted(exercise.id)"></i>
+          <div class="form-check form-switch">
+            <input 
+              class="form-check-input" 
+              type="checkbox" 
+              role="switch" 
+              [checked]="isCompleted(exercise.id)"
+              (click)="!isInteractive ? null : toggleExercise(exercise, $event)"
+              [ngClass]="{
+                'bg-success border-success': isCompleted(exercise.id),
+                'disabled': !isInteractive
+              }"
+            >
           </div>
         </div>
       </div>

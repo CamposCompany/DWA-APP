@@ -22,7 +22,6 @@ export class UserCardExerciseComponent implements OnInit {
   @Input() exercises: Exercise[] = [];
   @Input() exerciseAdded: Exercise[] = [];
   @Input() isInteractive: boolean = false;
-  @Input() showReps: boolean = false;
   @Output() exerciseClicked = new EventEmitter<number>();
   @Output() exerciseCompleted = new EventEmitter<Exercise>();
   @Output() trainingCompleted = new EventEmitter<void>();
@@ -58,11 +57,11 @@ export class UserCardExerciseComponent implements OnInit {
     }
   }
 
-  onExerciseClick(): void {
+  onExerciseClick(exercise: Exercise): void {
     this.store.dispatch(ExerciseViewActions.setExercises({ 
       exercises: this.exercises,
       source: 'user-training',
-      selectedExerciseId: this.exercises[0].id
+      selectedExerciseId: exercise.id
     }));
     this.router.navigate(['/general/exercise-view']);
   }

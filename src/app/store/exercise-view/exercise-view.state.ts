@@ -5,12 +5,16 @@ export interface ExerciseViewState {
     currentIndex: number;
     selectedExerciseId: number | null;
     source: 'training' | 'user-training' | 'all';
+    completedSeries: { [exerciseId: number]: number[] };
+    currentSeries: { [exerciseId: number]: number };
 }
   
 export const initialState: ExerciseViewState = {
     exercises: [],
     currentIndex: 0,
     selectedExerciseId: null,
-    source: 'all'
+    source: 'all',
+    completedSeries: {},
+    currentSeries: {}
 };
   

@@ -25,5 +25,19 @@ export const exerciseViewReducer = createReducer(
     currentIndex: Math.max(state.currentIndex - 1, 0),
     selectedExerciseId: state.exercises[Math.max(state.currentIndex - 1, 0)]?.id || null
   })),
-  on(ExerciseViewActions.resetExerciseView, () => initialState)
+  on(ExerciseViewActions.resetExerciseView, () => initialState),
+  on(ExerciseViewActions.completeSeries, (state, { exerciseId, seriesIndex }) => ({
+    ...state,
+    completedSeries: {
+      ...state.completedSeries,
+      [exerciseId]: [...(state.completedSeries[exerciseId] || []), seriesIndex]
+    }
+  })),
+  on(ExerciseViewActions.setCurrentSeries, (state, { exerciseId, seriesIndex }) => ({
+    ...state,
+    currentSeries: {
+      ...state.currentSeries,
+      [exerciseId]: seriesIndex
+    }
+  }))
 ); 
