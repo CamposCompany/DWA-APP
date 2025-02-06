@@ -16,42 +16,53 @@ export class TrainingTimerService {
   private timerInterval: any;
   private startTime: number | null = null;
   private totalElapsedTime = 0;
+  private lastUpdateTime: number | null = null;
 
   startTraining() {
     this.isTrainingStartedSubject.next(true);
+    this.isPausedSubject.next(false);
     this.startTime = Date.now();
+    this.lastUpdateTime = this.startTime;
     this.totalElapsedTime = 0;
     this.startTimer();
   }
 
   pauseTraining() {
-    const newPausedState = !this.isPausedSubject.value;
-    this.isPausedSubject.next(newPausedState);
-    
-    if (newPausedState) {
-      if (this.startTime) {
-        this.totalElapsedTime += Date.now() - this.startTime;
-      }
-      clearInterval(this.timerInterval);
-      this.timerInterval = null;
-    } else {
-      this.startTime = Date.now();
-      this.startTimer();
+    this.isPausedSubject.next(true);
+    if (this.startTime && this.lastUpdateTime) {
+      this.totalElapsedTime += this.lastUpdateTime - this.startTime;
     }
+    clearInterval(this.timerInterval);
+    this.timerInterval = null;
+  }
+
+  resumeTraining() {
+    this.isPausedSubject.next(false);
+    this.startTime = Date.now();
+    this.lastUpdateTime = this.startTime;
+    this.startTimer();
   }
 
   private startTimer() {
+    if (this.timerInterval) {
+      clearInterval(this.timerInterval);
+    }
+    
     this.timerInterval = setInterval(() => {
-      const currentElapsed = this.startTime ? (Date.now() - this.startTime) : 0;
-      const totalMs = this.totalElapsedTime + currentElapsed;
-      
-      const hours = Math.floor(totalMs / 3600000);
-      const minutes = Math.floor((totalMs % 3600000) / 60000);
-      const seconds = Math.floor((totalMs % 60000) / 1000);
-      
-      this.elapsedTimeSubject.next(
-        `${this.padNumber(hours)}:${this.padNumber(minutes)}:${this.padNumber(seconds)}`
-      );
+      if (!this.isPausedSubject.value && this.startTime) {
+        const now = Date.now();
+        const currentElapsed = now - this.startTime;
+        this.lastUpdateTime = now;
+        const totalMs = this.totalElapsedTime + currentElapsed;
+        
+        const hours = Math.floor(totalMs / 3600000);
+        const minutes = Math.floor((totalMs % 3600000) / 60000);
+        const seconds = Math.floor((totalMs % 60000) / 1000);
+        
+        this.elapsedTimeSubject.next(
+          `${this.padNumber(hours)}:${this.padNumber(minutes)}:${this.padNumber(seconds)}`
+        );
+      }
     }, 1000);
   }
 
@@ -60,14 +71,24 @@ export class TrainingTimerService {
   }
 
   stopTraining() {
+    this.clearTimer();
+    this.resetState();
+  }
+
+  private clearTimer() {
     if (this.timerInterval) {
       clearInterval(this.timerInterval);
+      this.timerInterval = null;
     }
+  }
+
+  private resetState() {
     this.isTrainingStartedSubject.next(false);
     this.isPausedSubject.next(false);
     this.elapsedTimeSubject.next('00:00:00');
     this.startTime = null;
     this.totalElapsedTime = 0;
+    this.lastUpdateTime = null;
   }
 
   resetTraining() {
@@ -78,11 +99,5 @@ export class TrainingTimerService {
     this.startTime = Date.now();
     this.startTimer();
     this.isPausedSubject.next(false);
-  }
-
-  resumeTraining() {
-    this.isTrainingStartedSubject.next(true);
-    this.isPausedSubject.next(false);
-    this.startTimer();
   }
 } 

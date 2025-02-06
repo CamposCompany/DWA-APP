@@ -1,17 +1,15 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { Router, RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
 import { ButtonComponent } from '../../components/button/button.component';
-import { TrainingService } from '../../services/training.service';
-import Swal from 'sweetalert2';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../store';
 import * as ExerciseViewActions from '../../../store/exercise-view/exercise-view.actions';
-import { 
-  selectCurrentExercise, 
-  selectHasNextExercise, 
-  selectHasPreviousExercise, 
+import {
+  selectCurrentExercise,
+  selectHasNextExercise,
+  selectHasPreviousExercise,
   selectIsTrainingView,
 } from '../../../store/exercise-view/exercise-view.selectors';
 import { Exercise, Repetition } from '../../models/exercise';
@@ -33,12 +31,11 @@ import { TrainingStateService } from '../training-view/services/training-state.s
   styleUrls: ['./exercise-view.component.scss'],
 })
 export class ExerciseViewComponent {
-  private readonly router = inject(Router);
-  private readonly trainingService = inject(TrainingService);
   private readonly store = inject(Store<AppState>);
+  private readonly trainingStateService = inject(TrainingStateService);
+
   public readonly exerciseViewService = inject(ExerciseViewService);
   public readonly restTimer = inject(RestTimerService);
-  private readonly trainingStateService = inject(TrainingStateService);
 
   exercise$ = this.store.select(selectCurrentExercise);
   hasNextExercise$ = this.store.select(selectHasNextExercise);
@@ -57,20 +54,16 @@ export class ExerciseViewComponent {
 
   async onCompleteSeries(seriesIndex: number) {
     const exercise = await firstValueFrom(this.exercise$);
-    const allPreviousCompleted = await firstValueFrom(this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id));
-    
+
     this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
     this.startRestTimer(exercise.rest);
-    
-    console.log('allPreviousCompleted', allPreviousCompleted);
 
     if (seriesIndex === exercise.series - 1) {
-      if (allPreviousCompleted) {
-        const confirmed = await this.trainingService.completeTrainingWithFeedback(exercise.user_trainingID!);
-        if (confirmed) {
-          this.restTimer.stopTimer();
-          await this.router.navigate(['/members/home']);
-        }
+      const isLastExercise = !(await firstValueFrom(this.hasNextExercise$));
+      const allExercisesCompleted = await firstValueFrom(this.exerciseViewService.areAllExercisesCompleted());
+
+      if (isLastExercise && allExercisesCompleted) {
+        this.trainingStateService.completeTraining(exercise.user_trainingID!);
       } else {
         this.navigateToExercise('next');
       }
@@ -97,15 +90,15 @@ export class ExerciseViewComponent {
 
   getRepetitionForSeries(repetitions: Repetition[], seriesIndex: number): number {
     if (!repetitions || repetitions.length === 0) return 0;
-    
+
     if (repetitions.length === 1) {
       return repetitions[0].repetitions;
     }
-    
+
     if (repetitions[seriesIndex]) {
       return repetitions[seriesIndex].repetitions;
     }
-    
+
     return repetitions[repetitions.length - 1].repetitions;
   }
 
@@ -129,12 +122,12 @@ export class ExerciseViewComponent {
       this.exerciseViewService.isSeriesCompleted(seriesIndex),
       this.isSeriesAvailable(seriesIndex),
       this.exercise$.pipe(
-        switchMap(exercise => 
+        switchMap(exercise =>
           exercise ? this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id) : of(false)
         )
       )
     ]).pipe(
-      map(([isStarted, isPaused, isCompleted, isAvailable, allPreviousCompleted]) => 
+      map(([isStarted, isPaused, isCompleted, isAvailable, allPreviousCompleted]) =>
         !isStarted || isPaused || isCompleted || !isAvailable || !allPreviousCompleted
       )
     );

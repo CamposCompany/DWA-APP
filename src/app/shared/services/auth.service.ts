@@ -32,8 +32,8 @@ export class AuthService {
   private readonly authStateSubject = new BehaviorSubject<boolean>(this.isLoggedIn());
   readonly authState$ = this.authStateSubject.asObservable();
 
-  authenticate(credentials: { document: string; password: string }): Observable<AuthenticateLogin> {
-    return this.http.post<{ document: string; password: string }, AuthenticateLogin>(this.routes.login, credentials).pipe(
+  authenticate(credentials: { document: string; password: string, fromApp: boolean }): Observable<AuthenticateLogin> {
+    return this.http.post<{ document: string; password: string, fromApp: boolean }, AuthenticateLogin>(this.routes.login, credentials).pipe(
       tap(({ data: { user, token } }) => {
         this.authStateSubject.next(true);
         this.store.dispatch(login({ user, token }));

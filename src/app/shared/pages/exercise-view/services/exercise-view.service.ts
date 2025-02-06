@@ -4,9 +4,8 @@ import { AppState } from '../../../../store/index';
 import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
 import { map } from 'rxjs/operators';
 import { combineLatest } from 'rxjs';
-import { Exercise } from '../../../models/exercise';
-import { selectAllExercises } from '../../../../store/exercise/exercise.selectors';
-import { selectCompletedSeries, selectCurrentSeries } from '../../../../store/exercise-view/exercise-view.selectors';
+import { selectCompletedSeries, selectCurrentSeries, selectExerciseViewExercises } from '../../../../store/exercise-view/exercise-view.selectors';
+import { selectExerciseViewState } from '../../../../store/exercise-view/exercise-view.selectors';
 
 @Injectable({
     providedIn: 'root'
@@ -16,7 +15,7 @@ export class ExerciseViewService {
 
     completedSeries$ = this.store.select(selectCompletedSeries);
     currentSeries$ = this.store.select(selectCurrentSeries);
-    allExercises$ = this.store.select(selectAllExercises);
+    allExercises$ = this.store.select(selectExerciseViewExercises);
 
     isSeriesCompleted(seriesIndex: number) {
         return this.completedSeries$.pipe(
@@ -26,20 +25,21 @@ export class ExerciseViewService {
 
     areAllPreviousExercisesCompleted(currentExerciseId: number) {
         return combineLatest({
-            exercises: this.allExercises$,
-            completedSeries: this.completedSeries$
+            exercises: this.store.select(selectExerciseViewExercises),
+            completedSeries: this.store.select(selectExerciseViewState)
         }).pipe(
             map(({ exercises, completedSeries }) => {
-                const currentIndex = exercises.findIndex((ex: Exercise) => ex.id === currentExerciseId);
-                
+                const currentIndex = exercises.findIndex(ex => ex.id === currentExerciseId);
+
                 for (let i = 0; i < currentIndex; i++) {
                     const exercise = exercises[i];
-                    for (let s = 0; s < exercise.series; s++) {
-                        if (!completedSeries.includes(s)) {
-                            return false;
-                        }
+                    const exerciseCompletedSeries = completedSeries.completedSeries[exercise.id] || [];
+
+                    if (exerciseCompletedSeries.length !== exercise.series) {
+                        return false;
                     }
                 }
+
                 return true;
             })
         );
@@ -51,5 +51,23 @@ export class ExerciseViewService {
 
     setCurrentSeries(exerciseId: number, seriesIndex: number) {
         this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
+    }
+
+    areAllExercisesCompleted() {
+        return combineLatest({
+            exercises: this.store.select(selectExerciseViewExercises),
+            completedSeries: this.store.select(selectExerciseViewState)
+        }).pipe(
+            map(({ exercises, completedSeries }) => {
+                for (const exercise of exercises) {
+                    const exerciseCompletedSeries = completedSeries.completedSeries[exercise.id] || [];
+
+                    if (exerciseCompletedSeries.length !== exercise.series) {
+                        return false;
+                    }
+                }
+                return true;
+            })
+        );
     }
 } 

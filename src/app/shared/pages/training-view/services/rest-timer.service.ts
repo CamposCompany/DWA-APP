@@ -42,7 +42,7 @@ export class RestTimerService {
     this.timerSubject.next(null);
   }
 
-  getCurrentTime() {
-    return this.timerSubject.value;
+  isTimerActive(): boolean {
+    return this.timerSubject.value !== null;
   }
 } 

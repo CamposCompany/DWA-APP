@@ -1,17 +1,15 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, OnInit } from '@angular/core';
+import { ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { first, firstValueFrom, map, Observable } from 'rxjs';
+import { firstValueFrom, map, of, switchMap, combineLatest } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { CardExerciseComponent } from '../../components/card-exercise/card-exercise.component';
 import { UserCardExerciseComponent } from '../../components/user-card-exercise/user-card-exercise.component';
 import { AppState } from '../../../store';
 import { selectTrainingById } from '../../../store/training/training.selectors';
 import { HeaderComponent } from '../../components/header/header.component';
-import { Training } from '../../models/training';
 import { Exercise } from '../../models/exercise';
 import { ButtonComponent } from '../../components/button/button.component';
-import { TrainingService } from '../../services/training.service';
 import Swal from 'sweetalert2';
 import { TrainingTimerService } from './services/training-timer.service';
 import { TrainingStateService } from './services/training-state.service';
@@ -20,8 +18,8 @@ import { TrainingStateService } from './services/training-state.service';
   selector: 'app-training-view',
   standalone: true,
   imports: [
-    CommonModule, 
-    HeaderComponent, 
+    CommonModule,
+    HeaderComponent,
     CardExerciseComponent,
     UserCardExerciseComponent,
     ButtonComponent
@@ -32,17 +30,28 @@ import { TrainingStateService } from './services/training-state.service';
 export class TrainingViewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly store = inject(Store<AppState>);
-  private readonly router = inject(Router);
-  private readonly trainingService = inject(TrainingService);
   private readonly timerService = inject(TrainingTimerService);
   private readonly trainingStateService = inject(TrainingStateService);
 
-  training$: Observable<Training | undefined> = new Observable<Training | undefined>();
+  training$ = this.store.select(selectTrainingById(Number(this.route.snapshot.paramMap.get('id'))));
   completedExercises: Set<number> = new Set();
-  
+
   isTrainingStarted$ = this.timerService.isTrainingStarted$;
   isPaused$ = this.timerService.isPaused$;
   elapsedTime$ = this.timerService.elapsedTime$;
+
+  isCurrentTrainingActive$ = this.training$.pipe(
+    switchMap(training =>
+      training ? this.trainingStateService.isActiveTraining(training.id) : of(false)
+    )
+  );
+
+  showTimer$ = combineLatest([
+    this.isCurrentTrainingActive$,
+    this.timerService.isTrainingStarted$
+  ]).pipe(
+    map(([isActive, isStarted]) => isActive && isStarted)
+  );
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
@@ -66,8 +75,11 @@ export class TrainingViewComponent implements OnInit {
     }
   }
 
-  onTrainingStart() {
-    this.trainingStateService.startTraining();
+  async onTrainingStart() {
+    const training = await firstValueFrom(this.training$);
+    if (!training) return;
+
+    this.trainingStateService.startTraining(training.id);
     this.timerService.startTraining();
   }
 
@@ -104,15 +116,7 @@ export class TrainingViewComponent implements OnInit {
     const training = await firstValueFrom(this.training$);
     if (!training) return;
 
-    const finalTime = await firstValueFrom(this.elapsedTime$);
-    
-    this.timerService.stopTraining();
-    this.trainingStateService.stopTraining();
-    const confirmed = await this.trainingService.completeTrainingWithFeedback(training.id);
-    
-    if (confirmed) {
-      await this.router.navigate(['/members/home']);
-    }
+    this.trainingStateService.completeTraining(training.id);
   }
 
   onTogglePause() {
