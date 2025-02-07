@@ -13,7 +13,7 @@ import {
   selectIsTrainingView,
 } from '../../../store/exercise-view/exercise-view.selectors';
 import { Exercise, Repetition } from '../../models/exercise';
-import { firstValueFrom, map, Observable, combineLatest, switchMap, of } from 'rxjs';
+import { firstValueFrom, map, Observable, combineLatest, switchMap, of, take } from 'rxjs';
 import { ExerciseViewService } from './services/exercise-view.service';
 import { RestTimerService } from '../training-view/services/rest-timer.service';
 import { TrainingStateService } from '../training-view/services/training-state.service';
@@ -45,6 +45,8 @@ export class ExerciseViewComponent {
   isTrainingView$ = this.store.select(selectIsTrainingView);
   currentSeries$ = this.exerciseViewService.getCurrentSeries();
   isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
+  isTrainingCompleted$ = this.trainingStateService.isTrainingCompleted$;
+  isTrainingPaused$ = this.trainingStateService.isTrainingPaused$;
 
   isEditingWeight = false;
   editWeight: number | null = null;
@@ -64,11 +66,10 @@ export class ExerciseViewComponent {
     this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
 
     if (seriesIndex === exercise.series - 1) {
-      const isLastExercise = !(await firstValueFrom(this.hasNextExercise$));
       const allExercisesCompleted = await firstValueFrom(this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id));
 
-      if (isLastExercise && allExercisesCompleted) {
-        this.trainingStateService.completeTraining(exercise.user_trainingID!);
+      if (allExercisesCompleted) {
+        this.store.dispatch(ExerciseViewActions.completeTraining({ trainingId: exercise.user_trainingID! }));
       } else {
         this.navigateToExercise('next');
       }
@@ -106,42 +107,28 @@ export class ExerciseViewComponent {
 
     return repetitions[repetitions.length - 1].repetitions;
   }
-
-  isSeriesAvailable(currentIndex: number) {
-    return this.exerciseViewService.getCompletedSeries().pipe(
-      map(completedSeries => {
-        for (let i = 0; i < currentIndex; i++) {
-          if (!completedSeries.includes(i)) {
-            return false;
-          }
-        }
-        return true;
-      })
-    );
-  }
-
+  
   isButtonDisabled(seriesIndex: number): Observable<boolean> {
     return combineLatest([
       this.isTrainingStarted$,
-      this.trainingStateService.isTrainingPaused$,
+      this.isTrainingPaused$,
       this.exerciseViewService.isSeriesCompleted(seriesIndex),
-      this.isSeriesAvailable(seriesIndex),
-      this.exercise$.pipe(
-        switchMap(exercise =>
-          exercise ? this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id) : of(false)
-        )
-      )
+      this.isTrainingCompleted$,
     ]).pipe(
-      map(([isStarted, isPaused, isCompleted, isAvailable, allPreviousCompleted]) =>
-        !isStarted || isPaused || isCompleted || !isAvailable || !allPreviousCompleted
-      )
+      map(([isStarted, isPaused, isSeriesCompleted, isTrainingCompleted]) => {
+        if (!isStarted) return true;
+        if (isPaused) return true;
+        if (isTrainingCompleted) return true;
+        if (isSeriesCompleted) return true;
+        return false;
+      })
     );
   }
 
   async startWeightEdit(seriesIndex: number) {
     const exercise = await firstValueFrom(this.exercise$);
     if (!exercise) return;
-    
+
     this.isEditingWeight = true;
     this.currentEditingSeriesIndex = seriesIndex;
     this.editWeight = exercise.repetitions[seriesIndex]?.weight || null;
@@ -154,7 +141,12 @@ export class ExerciseViewComponent {
     const repetition = exercise.repetitions[this.currentEditingSeriesIndex];
     if (!repetition) return;
 
-    this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({ update: { id: repetition.id, changes: { weight: this.editWeight } } }));
+    this.exerciseViewService.updateRepetitionWeight(
+      exercise.id,
+      this.editWeight,
+      repetition.id
+    );
+
     this.isEditingWeight = false;
     this.editWeight = null;
     this.currentEditingSeriesIndex = null;

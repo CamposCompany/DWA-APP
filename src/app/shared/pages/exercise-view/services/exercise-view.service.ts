@@ -4,12 +4,13 @@ import { AppState } from '../../../../store';
 import { 
   selectCompletedSeries, 
   selectCurrentSeries, 
-  selectExerciseViewState 
+  selectExerciseViewState,
+  selectExerciseViewExercises
 } from '../../../../store/exercise-view/exercise-view.selectors';
-import { map } from 'rxjs/operators';
-import { Exercise, Repetition } from '../../../models/exercise';
+
+import { Exercise } from '../../../models/exercise';
 import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
-import { Update } from '@ngrx/entity';
+import { map, combineLatest, take, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,7 @@ export class ExerciseViewService {
 
   isSeriesCompleted(seriesIndex: number) {
     return this.getCompletedSeries().pipe(
+      take(1),
       map(series => series.includes(seriesIndex))
     );
   }
@@ -39,9 +41,12 @@ export class ExerciseViewService {
     return this.exerciseViewState$.pipe(
       map(state => {
         const currentIndex = state.exercises.findIndex((ex: Exercise) => ex.id === currentExerciseId);
+        console.log(currentExerciseId, currentIndex);
+        console.log(state);
         
         for (let i = 0; i < currentIndex; i++) {
           const exercise = state.exercises[i];
+          console.log(exercise);
           const completedSeries = state.completedSeries[exercise.id] || [];
           for (let s = 0; s < exercise.series; s++) {
             if (!completedSeries.includes(s)) {
@@ -62,12 +67,32 @@ export class ExerciseViewService {
     this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
   }
 
-  updateRepetitionWeight(repetitionId: number, weight: number) {
-    const update: Update<Repetition> = {
-      id: repetitionId,
-      changes: { weight }
-    };
-    
-    this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({ update }));
+  updateRepetitionWeight(exerciseId: number, weight: number, repetitionId: number) {
+    this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({ 
+      exerciseId,
+      weight, 
+      repetitionId 
+    }));
+  }
+
+  areAllSeriesCompleted(exerciseId: number): Observable<boolean> {
+    return combineLatest([
+      this.store.select(selectExerciseViewState),
+      this.store.select(selectExerciseViewExercises)
+    ]).pipe(
+      map(([state, exercises]) => {
+        const exercise = exercises.find(ex => ex.id === exerciseId);
+        if (!exercise) {
+          return false;
+        }
+
+        const completedSeries = state.completedSeries[exerciseId] || [];
+        return completedSeries.length === exercise.series;
+      })
+    );
+  }
+
+  uncompleteSeries(exerciseId: number) {
+    this.store.dispatch(ExerciseViewActions.uncompleteSeries({ exerciseId }));
   }
 } 

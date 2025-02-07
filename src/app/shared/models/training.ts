@@ -22,7 +22,8 @@ export interface Training {
   category: string,
   duration: number,
   todayTraining: boolean,
-  exercises: Exercise[]
+  exercises: Exercise[],
+  completed: boolean
 }
 
 export interface CreatedTrainingData extends GenericData {

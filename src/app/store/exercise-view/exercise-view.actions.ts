@@ -1,6 +1,7 @@
 import { createAction, props } from '@ngrx/store';
 import { Exercise, Repetition } from '../../shared/models/exercise';
 import { Update } from '@ngrx/entity';
+import { Training } from '../../shared/models/training';
 
 export const setExercises = createAction(
   '[Exercise View] Set Exercises',
@@ -29,5 +30,37 @@ export const resetExerciseState = createAction('[Exercise View] Reset Exercise S
 
 export const updateRepetitionWeight = createAction(
   '[Exercise View] Update Repetition Weight',
-  props<{ update: Update<Repetition> }>()
+  props<{ 
+    exerciseId: number;
+    weight: number;
+    repetitionId: number;
+  }>()
 );
+
+export const updateRepetitionWeightSuccess = createAction(
+  '[Exercise View] Update Repetition Weight Success',
+  props<{ 
+    exerciseId: number;
+    weight: number;
+    repetitionId: number;
+  }>()
+);
+
+export const uncompleteSeries = createAction(
+  '[Exercise View] Uncomplete Series',
+  props<{ exerciseId: number }>()
+);
+
+export const completeTraining = createAction(
+  '[Exercise View] Complete Training',
+  props<{ trainingId: number }>()
+);
+export const completeTrainingSuccess = createAction(
+  '[Exercise View] Complete Training Success',
+  props<{ training: Training }>()
+);
+
+export const completeTrainingFailure = createAction(
+  '[Exercise View] Complete Training Failure'
+);
+

@@ -9,14 +9,10 @@ import { ExerciseViewActions } from '../../../../store/exercise-view/action.type
 })
 export class TrainingTimerService {
   private readonly store = inject(Store);
-
-  private isTrainingStartedSubject = new BehaviorSubject<boolean>(false);
-  private isPausedSubject = new BehaviorSubject<boolean>(false);
   private elapsedTimeSubject = new BehaviorSubject<string>('00:00:00');
+  private isPausedSubject = new BehaviorSubject<boolean>(false);
 
-  private readonly isTrainingStarted$ = this.isTrainingStartedSubject.asObservable();
-  private readonly isPaused$ = this.isPausedSubject.asObservable();
-  private readonly elapsedTime$ = this.elapsedTimeSubject.asObservable();
+  elapsedTime$ = this.elapsedTimeSubject.asObservable();
 
   private timerInterval: any;
   private startTime: number | null = null;
@@ -24,8 +20,6 @@ export class TrainingTimerService {
   private lastUpdateTime: number | null = null;
 
   startTraining() {
-    this.isTrainingStartedSubject.next(true);
-    this.isPausedSubject.next(false);
     this.startTime = Date.now();
     this.lastUpdateTime = this.startTime;
     this.totalElapsedTime = 0;
@@ -33,7 +27,6 @@ export class TrainingTimerService {
   }
 
   pauseTraining() {
-    this.isPausedSubject.next(true);
     if (this.startTime && this.lastUpdateTime) {
       this.totalElapsedTime += this.lastUpdateTime - this.startTime;
     }
@@ -42,7 +35,6 @@ export class TrainingTimerService {
   }
 
   resumeTraining() {
-    this.isPausedSubject.next(false);
     this.startTime = Date.now();
     this.lastUpdateTime = this.startTime;
     this.startTimer();
@@ -88,7 +80,6 @@ export class TrainingTimerService {
   }
 
   private resetState() {
-    this.isTrainingStartedSubject.next(false);
     this.isPausedSubject.next(false);
     this.elapsedTimeSubject.next('00:00:00');
     this.startTime = null;
@@ -98,15 +89,11 @@ export class TrainingTimerService {
     this.store.dispatch(ExerciseViewActions.resetExerciseState());
   }
 
-  getIsTrainingStarted() {
-    return this.isTrainingStarted$;
-  }
-
   getIsPaused() {
-    return this.isPaused$;
+    return this.isPausedSubject.value;
   }
 
   getElapsedTime() {
-    return this.elapsedTime$;
+    return this.elapsedTimeSubject.value;
   }
 } 

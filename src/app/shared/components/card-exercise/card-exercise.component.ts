@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter, inject } from '@angular/core';
+import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Exercise, Repetition } from '../../models/exercise';
 import { Router, RouterModule } from '@angular/router';
@@ -14,15 +14,15 @@ import { Store } from '@ngrx/store';
   templateUrl: './card-exercise.component.html',
   styleUrls: ['./card-exercise.component.scss'],
 })
-export class CardExerciseComponent {
+export class CardExerciseComponent implements OnInit {
   @Input() exercises: Exercise[] = [];
   @Output() exerciseClick = new EventEmitter<Exercise>();
 
   private readonly store = inject(Store<AppState>);
   private readonly router = inject(Router);
 
-  getUniqueRepetitions(repetitions: Repetition[]): number[] {
-    return [...new Set(repetitions.map(rep => rep.repetitions))];
+  ngOnInit(): void {
+    console.log(this.exercises);
   }
 
   viewExercise(exercise: Exercise): void {

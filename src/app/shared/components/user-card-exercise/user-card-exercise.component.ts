@@ -1,80 +1,32 @@
-import { Component, EventEmitter, Input, OnInit, Output, inject } from '@angular/core';
-import { Exercise } from '../../models/exercise';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Exercise, Repetition } from '../../models/exercise';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { Store } from '@ngrx/store';
-import { Router } from '@angular/router';
-import { AppState } from '../../../store';
-import * as ExerciseViewActions from '../../../store/exercise-view/exercise-view.actions';
-import { Repetition } from '../../models/exercise';
 
-import { selectExerciseViewState } from '../../../store/exercise-view/exercise-view.selectors';
-import { map } from 'rxjs/operators';
-
-import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-user-card-exercise',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './user-card-exercise.component.html',
   styleUrl: './user-card-exercise.component.scss'
 })
-export class UserCardExerciseComponent implements OnInit {
-  private readonly store = inject(Store<AppState>);
-  private readonly router = inject(Router);
+export class UserCardExerciseComponent {
+  @Input() exercise!: Exercise;
+  @Input() isTrainingStarted: boolean = false;
+  @Input() isTrainingPaused: boolean = false;
+  @Input() isTrainingCompleted: boolean = false;
+  @Input() isCompleted: boolean = false;
 
-  @Input() exercises: Exercise[] = [];
-  @Input() exerciseAdded: Exercise[] = [];
-  @Input() isInteractive: boolean = false;
   @Output() exerciseClicked = new EventEmitter<Exercise>();
-  @Output() exerciseCompleted = new EventEmitter<Exercise>();
-  @Output() trainingCompleted = new EventEmitter<void>();
-  
-  completedExercises: Set<number> = new Set();
+  @Output() exerciseToggled = new EventEmitter<Exercise>();
 
-  async toggleExercise(exercise: Exercise, event: Event) {
+  onExerciseClick(): void {
+    this.exerciseClicked.emit(this.exercise);
+  }
+
+  onToggleExercise(event: Event): void {
     event.stopPropagation();
-    const isCompleted = await firstValueFrom(this.isCompleted(exercise.id));
-    if (!isCompleted) {
-      this.exerciseClicked.emit(exercise);
-    }
-  }
-
-  isCompleted(exerciseId: number) {
-    return this.store.select(selectExerciseViewState).pipe(
-      map(state => {
-        const completedSeries = state.completedSeries[exerciseId] || [];
-        const exercise = this.exercises.find(ex => ex.id === exerciseId);
-        return exercise ? completedSeries.length === exercise.series : false;
-      })
-    );
-  }
-
-  ngOnInit() {
-    const savedExercises = localStorage.getItem('completedExercises');
-    if (savedExercises) {
-      this.completedExercises = new Set(JSON.parse(savedExercises));
-      
-      this.exercises.forEach(exercise => {
-        if (this.completedExercises.has(exercise.id)) {
-          exercise.active = 1;
-        }
-      });
-    }
-  }
-
-  onExerciseClick(exercise: Exercise): void {
-    this.store.dispatch(ExerciseViewActions.setExercises({ 
-      exercises: this.exercises,
-      source: 'user-training',
-      selectedExerciseId: exercise.id
-    }));
-    this.router.navigate(['/general/exercise-view']);
-  }
-
-  isExerciseAdded(exerciseId: number): boolean {
-    return this.exerciseAdded.some((exercise) => exercise.id === exerciseId);
+    this.exerciseToggled.emit(this.exercise);
   }
 
   formatRepetitions(repetitions: Repetition[]): string {
@@ -89,10 +41,6 @@ export class UserCardExerciseComponent implements OnInit {
     return repetitions.map(rep => rep.repetitions).join('/');
   }
 
-  onExerciseCompleted(exercise: Exercise) {
-    console.log('Exercício alterado:', exercise);
-  }
-
   formatMethodology(methodology: string | null): string {
     if (!methodology) return '';
     
@@ -100,14 +48,5 @@ export class UserCardExerciseComponent implements OnInit {
     if (methodology.length <= maxLength) return methodology;
     
     return methodology.substring(0, maxLength) + '...';
-  }
-
-  isAllExercisesCompleted(): boolean {
-    if (!this.exercises?.length) return false;
-    return this.exercises.every(exercise => this.completedExercises.has(exercise.id));
-  }
-
-  onTrainingComplete() {
-    this.trainingCompleted.emit();
   }
 }

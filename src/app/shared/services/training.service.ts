@@ -30,7 +30,7 @@ export class TrainingService {
     );
   }
 
-getUserTrainings(): Observable<Training[]> {
+  getUserTrainings(): Observable<Training[]> {
     return this.http.get<UserTrainingData>(`${this.routes.userTraining}/${this.userId}`).pipe(
       map(res => res.data),
       catchError((err) => {
@@ -41,10 +41,15 @@ getUserTrainings(): Observable<Training[]> {
     );
   }
 
-  async completeTrainingWithFeedback(trainingId: number): Promise<boolean> {
+  completeTraining(trainingId: number): Observable<TrainingData> {
+    const duration = this.trainingTimerService.getElapsedTime();
+
+    return this.http.post(`${this.routes.completeTraining}/${trainingId}/complete`, { duration });
+  }
+
+  async completeTrainingWithFeedback(trainingId: number): Promise<{ success: boolean, training?: Training }> {
     try {
-      await firstValueFrom(await this.completeTraining(trainingId));
-      
+      const response = await firstValueFrom(this.completeTraining(trainingId));
       const result = await Swal.fire({
         title: 'Parabéns!',
         text: 'Você concluiu seu treino com sucesso!',
@@ -53,7 +58,10 @@ getUserTrainings(): Observable<Training[]> {
         confirmButtonColor: '#4CAF50'
       });
 
-      return result.isConfirmed;
+      return { 
+        success: result.isConfirmed, 
+        training: undefined
+      };
     } catch (error) {
       console.error('Error completing training:', error);
       await Swal.fire({
@@ -61,13 +69,7 @@ getUserTrainings(): Observable<Training[]> {
         text: 'Ocorreu um erro ao concluir o treino',
         icon: 'error'
       });
-      return false;
+      return { success: false, training: undefined };
     }
-  }
-
-  async completeTraining(trainingId: number): Promise<Observable<any>> {
-    const duration = await firstValueFrom(this.trainingTimerService.getElapsedTime());
-
-    return this.http.post(`${this.routes.completeTraining}/${trainingId}/complete`, { duration });
   }
 }

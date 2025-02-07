@@ -47,7 +47,7 @@
               >
                 Série {{ i + 1 }}
                 <img
-                  *ngIf="exerciseViewService.isSeriesCompleted(i) | async"
+                  *ngIf="(exerciseViewService.isSeriesCompleted(i) | async) || (isTrainingCompleted$ | async)"
                   src="assets/icons/done.svg"
                   alt="Concluído"
                   class="series-done-icon"
@@ -136,7 +136,7 @@
 
                 <app-button
                   [label]="
-                    (exerciseViewService.isSeriesCompleted(i) | async)
+                    (exerciseViewService.isSeriesCompleted(i) | async) || (isTrainingCompleted$ | async)
                       ? 'Concluído'
                       : isLastSeries(exercise, i)
                       ? 'Concluir Exercício'

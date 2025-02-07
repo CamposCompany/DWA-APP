@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom, map, of, switchMap, combineLatest } from 'rxjs';
+import { firstValueFrom, map, of, switchMap, combineLatest, Observable, BehaviorSubject } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { CardExerciseComponent } from '../../components/card-exercise/card-exercise.component';
 import { UserCardExerciseComponent } from '../../components/user-card-exercise/user-card-exercise.component';
@@ -14,6 +14,9 @@ import Swal from 'sweetalert2';
 import { TrainingTimerService } from './services/training-timer.service';
 import { TrainingStateService } from './services/training-state.service';
 import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
+import { ExerciseViewService } from '../exercise-view/services/exercise-view.service';
+import { Training } from '../../models/training';
+import { selectExerciseViewState } from '../../../store/exercise-view/exercise-view.selectors';
 
 
 @Component({
@@ -31,37 +34,39 @@ import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 })
 export class TrainingViewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
   private readonly timerService = inject(TrainingTimerService);
   private readonly trainingStateService = inject(TrainingStateService);
+  private readonly exerciseViewService = inject(ExerciseViewService);
 
-  training$ = this.store.select(selectTrainingById(Number(this.route.snapshot.paramMap.get('id'))));
+  private readonly trainingBehaviorSubject = new BehaviorSubject<Training | null>(null);
+
+  training$ = this.trainingBehaviorSubject.asObservable();
   completedExercises: Set<number> = new Set();
 
-  isTrainingStarted$ = this.timerService.getIsTrainingStarted();
-  isPaused$ = this.timerService.getIsPaused();
-  elapsedTime$ = this.timerService.getElapsedTime();
+  isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
+  isPaused$ = this.trainingStateService.isTrainingPaused$;
+  elapsedTime$ = this.timerService.elapsedTime$;
 
-  isCurrentTrainingActive$ = this.training$.pipe(
-    switchMap(training =>
-      training ? this.trainingStateService.isActiveTraining(training.id) : of(false)
-    )
+  isTrainingCompleted$ = this.training$.pipe(
+    map(training => training?.completed ?? false)
   );
 
   showTimer$ = combineLatest([
-    this.isCurrentTrainingActive$,
-    this.timerService.getIsTrainingStarted()
+    this.isTrainingCompleted$,
+    this.trainingStateService.isTrainingStarted$
   ]).pipe(
-    map(([isActive, isStarted]) => isActive && isStarted)
+    map(([isCompleted, isStarted]) => !isCompleted && isStarted)
   );
 
   isOtherTrainingActive$ = this.training$.pipe(
-    switchMap(training => 
+    switchMap(training =>
       training ? combineLatest([
         this.trainingStateService.isTrainingStarted$,
         this.trainingStateService.activeTrainingId$
       ]).pipe(
-        map(([isStarted, activeId]) => 
+        map(([isStarted, activeId]) =>
           isStarted && activeId !== null && activeId !== training.id
         )
       ) : of(false)
@@ -70,16 +75,32 @@ export class TrainingViewComponent implements OnInit {
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
-    this.training$ = this.store.select(selectTrainingById(trainingId));
+    this.store.select(selectTrainingById(trainingId)).subscribe(training => {
+      if (training) {
+        this.trainingBehaviorSubject.next(training);
+      }
+    });
+
+    const savedExercises = localStorage.getItem('completedExercises');
+    if (savedExercises) {
+      this.completedExercises = new Set(JSON.parse(savedExercises));
+
+      this.getTraining().exercises.forEach(exercise => {
+        if (this.completedExercises.has(exercise.id)) {
+          exercise.active = 1;
+        }
+      });
+    }
   }
 
   hasUserTraining(exercises: Exercise[]): boolean {
+    if (!exercises?.length) return false;
     return exercises.some(exercise => exercise.user_trainingID !== null && exercise.user_trainingID !== undefined);
   }
 
-  isAllExercisesCompleted(exercises: Exercise[]): boolean {
-    if (!exercises?.length) return false;
-    return exercises.every(exercise => this.completedExercises.has(exercise.id));
+  isAllExercisesCompleted(): boolean {
+    if (!this.getTraining().exercises?.length) return false;
+    return this.getTraining().exercises.every(exercise => this.completedExercises.has(exercise.id));
   }
 
   onExerciseCompleted(exercise: Exercise) {
@@ -88,6 +109,30 @@ export class TrainingViewComponent implements OnInit {
     } else {
       this.completedExercises.add(exercise.id);
     }
+  }
+
+  async onExerciseToggled(exercise: Exercise) {
+    if (!this.isTrainingStarted$ || this.isTrainingCompleted$) return;
+
+    const isCompleted = await firstValueFrom(this.isCompleted(exercise.id));
+
+    if (isCompleted) {
+      this.exerciseViewService.uncompleteSeries(exercise.id);
+    } else {
+      for (let seriesIndex = 0; seriesIndex < exercise.series; seriesIndex++) {
+        this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
+      }
+    }
+  }
+
+  isCompleted(exerciseId: number) {
+    return this.store.select(selectExerciseViewState).pipe(
+      map(state => {
+        const completedSeries = state.completedSeries[exerciseId] || [];
+        const exercise = this.getTraining().exercises.find(ex => ex.id === exerciseId);
+        return exercise ? completedSeries.length === exercise.series : false;
+      })
+    );
   }
 
   async onTrainingStart() {
@@ -124,8 +169,11 @@ export class TrainingViewComponent implements OnInit {
         if (!training) return;
 
         this.completedExercises.clear();
+        training.exercises.forEach(exercise => {
+          this.exerciseViewService.uncompleteSeries(exercise.id);
+        });
+        this.trainingStateService.resetTraining();
         this.timerService.stopTraining();
-        this.trainingStateService.stopTraining();
       }
     });
   }
@@ -134,12 +182,25 @@ export class TrainingViewComponent implements OnInit {
     const training = await firstValueFrom(this.training$);
     if (!training) return;
 
-    this.trainingStateService.completeTraining(training.id);
+    this.store.dispatch(ExerciseViewActions.completeTraining({ trainingId: training.id }));
+  }
+
+  onExerciseClick(exercise: Exercise): void {
+    this.store.dispatch(ExerciseViewActions.setExercises({
+      exercises: this.trainingBehaviorSubject.value?.exercises ?? [],
+      source: 'user-training',
+      selectedExerciseId: exercise.id
+    }));
+    this.router.navigate(['/general/exercise-view']);
   }
 
   onTogglePause() {
     firstValueFrom(this.isPaused$).then(isPaused => {
       isPaused ? this.onTrainingResume() : this.onTrainingPause();
     });
+  }
+  
+  getTraining(): Training {
+    return this.trainingBehaviorSubject.value!;
   }
 }
