@@ -1,8 +1,9 @@
 import { inject, Injectable } from '@angular/core';
 import { Http } from './http.service';
-import { Observable, catchError, map, throwError, firstValueFrom } from 'rxjs';
+import { Observable, catchError, map, throwError, firstValueFrom, async } from 'rxjs';
 import { Training, TrainingData, UserTrainingData } from '../models/training';
 import Swal from 'sweetalert2';
+import { TrainingTimerService } from '../pages/training-view/services/training-timer.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,7 @@ import Swal from 'sweetalert2';
 export class TrainingService {
   private readonly http = inject(Http);
   private readonly userId: number = JSON.parse(localStorage.getItem('user') || '{}').id;
+  private readonly trainingTimerService = inject(TrainingTimerService);
 
   private readonly routes = {
     trainings: 'trainings',
@@ -39,13 +41,9 @@ getUserTrainings(): Observable<Training[]> {
     );
   }
 
-  completeTraining(trainingId: number): Observable<any> {
-    return this.http.post(`${this.routes.completeTraining}/${trainingId}/complete`, {});
-  }
-
   async completeTrainingWithFeedback(trainingId: number): Promise<boolean> {
     try {
-      await firstValueFrom(this.completeTraining(trainingId));
+      await firstValueFrom(await this.completeTraining(trainingId));
       
       const result = await Swal.fire({
         title: 'Parabéns!',
@@ -65,5 +63,11 @@ getUserTrainings(): Observable<Training[]> {
       });
       return false;
     }
+  }
+
+  async completeTraining(trainingId: number): Promise<Observable<any>> {
+    const duration = await firstValueFrom(this.trainingTimerService.getElapsedTime());
+
+    return this.http.post(`${this.routes.completeTraining}/${trainingId}/complete`, { duration });
   }
 }

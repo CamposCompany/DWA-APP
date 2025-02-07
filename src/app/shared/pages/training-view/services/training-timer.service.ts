@@ -1,17 +1,22 @@
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+
+import { Store } from '@ngrx/store';
+import { ExerciseViewActions } from '../../../../store/exercise-view/action.types';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TrainingTimerService {
+  private readonly store = inject(Store);
+
   private isTrainingStartedSubject = new BehaviorSubject<boolean>(false);
   private isPausedSubject = new BehaviorSubject<boolean>(false);
   private elapsedTimeSubject = new BehaviorSubject<string>('00:00:00');
 
-  isTrainingStarted$ = this.isTrainingStartedSubject.asObservable();
-  isPaused$ = this.isPausedSubject.asObservable();
-  elapsedTime$ = this.elapsedTimeSubject.asObservable();
+  private readonly isTrainingStarted$ = this.isTrainingStartedSubject.asObservable();
+  private readonly isPaused$ = this.isPausedSubject.asObservable();
+  private readonly elapsedTime$ = this.elapsedTimeSubject.asObservable();
 
   private timerInterval: any;
   private startTime: number | null = null;
@@ -89,15 +94,19 @@ export class TrainingTimerService {
     this.startTime = null;
     this.totalElapsedTime = 0;
     this.lastUpdateTime = null;
+    
+    this.store.dispatch(ExerciseViewActions.resetExerciseState());
   }
 
-  resetTraining() {
-    this.totalElapsedTime = 0;
-    if (this.timerInterval) {
-      clearInterval(this.timerInterval);
-    }
-    this.startTime = Date.now();
-    this.startTimer();
-    this.isPausedSubject.next(false);
+  getIsTrainingStarted() {
+    return this.isTrainingStarted$;
+  }
+
+  getIsPaused() {
+    return this.isPaused$;
+  }
+
+  getElapsedTime() {
+    return this.elapsedTime$;
   }
 } 

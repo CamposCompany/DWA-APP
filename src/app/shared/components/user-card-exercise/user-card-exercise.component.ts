@@ -8,6 +8,11 @@ import { AppState } from '../../../store';
 import * as ExerciseViewActions from '../../../store/exercise-view/exercise-view.actions';
 import { Repetition } from '../../models/exercise';
 
+import { selectExerciseViewState } from '../../../store/exercise-view/exercise-view.selectors';
+import { map } from 'rxjs/operators';
+
+import { firstValueFrom } from 'rxjs';
+
 @Component({
   selector: 'app-user-card-exercise',
   standalone: true,
@@ -22,26 +27,28 @@ export class UserCardExerciseComponent implements OnInit {
   @Input() exercises: Exercise[] = [];
   @Input() exerciseAdded: Exercise[] = [];
   @Input() isInteractive: boolean = false;
-  @Output() exerciseClicked = new EventEmitter<number>();
+  @Output() exerciseClicked = new EventEmitter<Exercise>();
   @Output() exerciseCompleted = new EventEmitter<Exercise>();
   @Output() trainingCompleted = new EventEmitter<void>();
   
   completedExercises: Set<number> = new Set();
 
-  toggleExercise(exercise: Exercise, event: Event) {
+  async toggleExercise(exercise: Exercise, event: Event) {
     event.stopPropagation();
-    
-    if (this.completedExercises.has(exercise.id)) {
-      this.completedExercises.delete(exercise.id);
-    } else {
-      this.completedExercises.add(exercise.id);
+    const isCompleted = await firstValueFrom(this.isCompleted(exercise.id));
+    if (!isCompleted) {
+      this.exerciseClicked.emit(exercise);
     }
-    
-    this.exerciseCompleted.emit(exercise);
   }
 
-  isCompleted(exerciseId: number): boolean {
-    return this.completedExercises.has(exerciseId);
+  isCompleted(exerciseId: number) {
+    return this.store.select(selectExerciseViewState).pipe(
+      map(state => {
+        const completedSeries = state.completedSeries[exerciseId] || [];
+        const exercise = this.exercises.find(ex => ex.id === exerciseId);
+        return exercise ? completedSeries.length === exercise.series : false;
+      })
+    );
   }
 
   ngOnInit() {

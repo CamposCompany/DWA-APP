@@ -34,3 +34,8 @@ export const selectCurrentSeries = createSelector(
   selectCurrentExercise,
   (state, exercise) => exercise ? state.currentSeries[exercise.id] || 0 : 0
 ); 
+
+export const selectExerciseViewExercises = createSelector(
+  selectExerciseViewState,
+  (state) => state.exercises
+);

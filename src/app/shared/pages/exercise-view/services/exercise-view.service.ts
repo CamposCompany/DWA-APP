@@ -1,73 +1,63 @@
-import { inject, Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { Store } from '@ngrx/store';
-import { AppState } from '../../../../store/index';
-import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
+import { AppState } from '../../../../store';
+import { 
+  selectCompletedSeries, 
+  selectCurrentSeries, 
+  selectExerciseViewState 
+} from '../../../../store/exercise-view/exercise-view.selectors';
 import { map } from 'rxjs/operators';
-import { combineLatest } from 'rxjs';
-import { selectCompletedSeries, selectCurrentSeries, selectExerciseViewExercises } from '../../../../store/exercise-view/exercise-view.selectors';
-import { selectExerciseViewState } from '../../../../store/exercise-view/exercise-view.selectors';
+import { Exercise } from '../../../models/exercise';
+import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class ExerciseViewService {
-    private store = inject(Store<AppState>);
+  private store = inject(Store<AppState>);
 
-    completedSeries$ = this.store.select(selectCompletedSeries);
-    currentSeries$ = this.store.select(selectCurrentSeries);
-    allExercises$ = this.store.select(selectExerciseViewExercises);
+  private readonly completedSeries$ = this.store.select(selectCompletedSeries);
+  private readonly currentSeries$ = this.store.select(selectCurrentSeries);
+  private readonly exerciseViewState$ = this.store.select(selectExerciseViewState);
 
-    isSeriesCompleted(seriesIndex: number) {
-        return this.completedSeries$.pipe(
-            map(series => series.includes(seriesIndex))
-        );
-    }
+  getCompletedSeries() {
+    return this.completedSeries$;
+  }
 
-    areAllPreviousExercisesCompleted(currentExerciseId: number) {
-        return combineLatest({
-            exercises: this.store.select(selectExerciseViewExercises),
-            completedSeries: this.store.select(selectExerciseViewState)
-        }).pipe(
-            map(({ exercises, completedSeries }) => {
-                const currentIndex = exercises.findIndex(ex => ex.id === currentExerciseId);
+  getCurrentSeries() {
+    return this.currentSeries$;
+  }
 
-                for (let i = 0; i < currentIndex; i++) {
-                    const exercise = exercises[i];
-                    const exerciseCompletedSeries = completedSeries.completedSeries[exercise.id] || [];
+  isSeriesCompleted(seriesIndex: number) {
+    return this.getCompletedSeries().pipe(
+      map(series => series.includes(seriesIndex))
+    );
+  }
 
-                    if (exerciseCompletedSeries.length !== exercise.series) {
-                        return false;
-                    }
-                }
+  areAllPreviousExercisesCompleted(currentExerciseId: number) {
+    return this.exerciseViewState$.pipe(
+      map(state => {
+        const currentIndex = state.exercises.findIndex((ex: Exercise) => ex.id === currentExerciseId);
+        
+        for (let i = 0; i < currentIndex; i++) {
+          const exercise = state.exercises[i];
+          const completedSeries = state.completedSeries[exercise.id] || [];
+          for (let s = 0; s < exercise.series; s++) {
+            if (!completedSeries.includes(s)) {
+              return false;
+            }
+          }
+        }
+        return true;
+      })
+    );
+  }
 
-                return true;
-            })
-        );
-    }
+  completeSeries(exerciseId: number, seriesIndex: number) {
+    this.store.dispatch(ExerciseViewActions.completeSeries({ exerciseId, seriesIndex }));
+  }
 
-    completeSeries(exerciseId: number, seriesIndex: number) {
-        this.store.dispatch(ExerciseViewActions.completeSeries({ exerciseId, seriesIndex }));
-    }
-
-    setCurrentSeries(exerciseId: number, seriesIndex: number) {
-        this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
-    }
-
-    areAllExercisesCompleted() {
-        return combineLatest({
-            exercises: this.store.select(selectExerciseViewExercises),
-            completedSeries: this.store.select(selectExerciseViewState)
-        }).pipe(
-            map(({ exercises, completedSeries }) => {
-                for (const exercise of exercises) {
-                    const exerciseCompletedSeries = completedSeries.completedSeries[exercise.id] || [];
-
-                    if (exerciseCompletedSeries.length !== exercise.series) {
-                        return false;
-                    }
-                }
-                return true;
-            })
-        );
-    }
+  setCurrentSeries(exerciseId: number, seriesIndex: number) {
+    this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
+  }
 } 

@@ -34,9 +34,9 @@ export class AuthService {
 
   authenticate(credentials: { document: string; password: string, fromApp: boolean }): Observable<AuthenticateLogin> {
     return this.http.post<{ document: string; password: string, fromApp: boolean }, AuthenticateLogin>(this.routes.login, credentials).pipe(
-      tap(({ data: { user, token } }) => {
+      tap(({ data: { user, token, fromApp } }) => {
         this.authStateSubject.next(true);
-        this.store.dispatch(login({ user, token }));
+        this.store.dispatch(login({ user, token, fromApp }));
       })
     );
   }

@@ -39,5 +39,10 @@ export const exerciseViewReducer = createReducer(
       ...state.currentSeries,
       [exerciseId]: seriesIndex
     }
+  })),
+  on(ExerciseViewActions.resetExerciseState, (state) => ({
+    ...state,
+    completedSeries: {},
+    currentSeries: {}
   }))
 ); 

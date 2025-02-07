@@ -23,3 +23,5 @@ export const setCurrentSeries = createAction(
   '[Exercise View] Set Current Series',
   props<{ exerciseId: number; seriesIndex: number }>()
 );
+
+export const resetExerciseState = createAction('[Exercise View] Reset Exercise State');

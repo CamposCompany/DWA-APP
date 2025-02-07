@@ -13,6 +13,8 @@ import { ButtonComponent } from '../../components/button/button.component';
 import Swal from 'sweetalert2';
 import { TrainingTimerService } from './services/training-timer.service';
 import { TrainingStateService } from './services/training-state.service';
+import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
+
 
 @Component({
   selector: 'app-training-view',
@@ -36,9 +38,9 @@ export class TrainingViewComponent implements OnInit {
   training$ = this.store.select(selectTrainingById(Number(this.route.snapshot.paramMap.get('id'))));
   completedExercises: Set<number> = new Set();
 
-  isTrainingStarted$ = this.timerService.isTrainingStarted$;
-  isPaused$ = this.timerService.isPaused$;
-  elapsedTime$ = this.timerService.elapsedTime$;
+  isTrainingStarted$ = this.timerService.getIsTrainingStarted();
+  isPaused$ = this.timerService.getIsPaused();
+  elapsedTime$ = this.timerService.getElapsedTime();
 
   isCurrentTrainingActive$ = this.training$.pipe(
     switchMap(training =>
@@ -48,9 +50,22 @@ export class TrainingViewComponent implements OnInit {
 
   showTimer$ = combineLatest([
     this.isCurrentTrainingActive$,
-    this.timerService.isTrainingStarted$
+    this.timerService.getIsTrainingStarted()
   ]).pipe(
     map(([isActive, isStarted]) => isActive && isStarted)
+  );
+
+  isOtherTrainingActive$ = this.training$.pipe(
+    switchMap(training => 
+      training ? combineLatest([
+        this.trainingStateService.isTrainingStarted$,
+        this.trainingStateService.activeTrainingId$
+      ]).pipe(
+        map(([isStarted, activeId]) => 
+          isStarted && activeId !== null && activeId !== training.id
+        )
+      ) : of(false)
+    )
   );
 
   ngOnInit(): void {
@@ -103,10 +118,13 @@ export class TrainingViewComponent implements OnInit {
       cancelButtonText: 'Cancelar',
       confirmButtonColor: '#f0ad4e',
       cancelButtonColor: '#6c757d'
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
+        const training = await firstValueFrom(this.training$);
+        if (!training) return;
+
         this.completedExercises.clear();
-        this.timerService.resetTraining();
+        this.timerService.stopTraining();
         this.trainingStateService.stopTraining();
       }
     });

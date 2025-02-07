@@ -37,10 +37,10 @@
               class="form-check-input" 
               type="checkbox" 
               role="switch" 
-              [checked]="isCompleted(exercise.id)"
+              [checked]="isCompleted(exercise.id) | async"
               (click)="!isInteractive ? null : toggleExercise(exercise, $event)"
               [ngClass]="{
-                'bg-success border-success': isCompleted(exercise.id),
+                'bg-success border-success': (isCompleted(exercise.id) | async),
                 'disabled': !isInteractive
               }"
             >

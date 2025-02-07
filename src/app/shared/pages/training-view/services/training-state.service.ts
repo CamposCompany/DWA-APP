@@ -62,4 +62,8 @@ export class TrainingStateService {
     
     return confirmed;
   }
+
+  getIsTrainingStarted() {
+    return this.isTrainingStartedSubject.value;
+  }
 } 

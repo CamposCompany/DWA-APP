@@ -14,41 +14,47 @@
       </div>
 
       <div class="mt-3" *ngIf="hasUserTraining(training.exercises)">
-        <app-button
-          *ngIf="!(isTrainingStarted$ | async)"
-          label="Começar"
-          [icon]="'assets/icons/training-view/start.svg'"
-          buttonClass="btn-primary w-100"
-          (clicked)="onTrainingStart()"
-        ></app-button>
+        <div *ngIf="(isOtherTrainingActive$ | async)" class="alert alert-warning text-center">
+          Outro treino em andamento
+        </div>
 
-        <div *ngIf="(isTrainingStarted$ | async)" class="d-flex flex-column gap-2">
-          <div class="d-flex gap-2 align-items-center">
-            <app-button
-              [label]="(isPaused$ | async) ? 'Voltar' : 'Pausar'"
-              [icon]="(isPaused$ | async) ? 'assets/icons/training-view/start.svg' : 'assets/icons/training-view/pause.svg'"
-              buttonClass="btn-secondary"
-              class="w-50"
-              (clicked)="onTogglePause()"
-            ></app-button>
-            <app-button
-              label="Reiniciar"
-              [icon]="'assets/icons/training-view/restart.svg'"
-              class="w-50"
-              (clicked)="onTrainingRestart()"
-            ></app-button>
-          </div>
-          
+        <ng-container *ngIf="!(isOtherTrainingActive$ | async)">
           <app-button
-            label="Concluído"
-            [icon]="'assets/icons/training-view/done.svg'"
-            buttonClass="btn-success"
-            class="w-100"
-            [disabled]="!isAllExercisesCompleted(training.exercises)"
-            (clicked)="onTrainingComplete()"
+            *ngIf="!(isTrainingStarted$ | async)"
+            label="Começar"
+            [icon]="'assets/icons/training-view/start.svg'"
+            buttonClass="btn-primary w-100"
+            (clicked)="onTrainingStart()"
           ></app-button>
 
-        </div>
+          <div *ngIf="(isTrainingStarted$ | async)" class="d-flex flex-column gap-2">
+            <div class="d-flex gap-2 align-items-center">
+              <app-button
+                [label]="(isPaused$ | async) ? 'Voltar' : 'Pausar'"
+                [icon]="(isPaused$ | async) ? 'assets/icons/training-view/start.svg' : 'assets/icons/training-view/pause.svg'"
+                buttonClass="btn-secondary"
+                class="w-50"
+                (clicked)="onTogglePause()"
+              ></app-button>
+              <app-button
+                label="Reiniciar"
+                [icon]="'assets/icons/training-view/restart.svg'"
+                class="w-50"
+                (clicked)="onTrainingRestart()"
+              ></app-button>
+            </div>
+            
+            <app-button
+              label="Concluído"
+              [icon]="'assets/icons/training-view/done.svg'"
+              buttonClass="btn-success"
+              class="w-100"
+              [disabled]="!isAllExercisesCompleted(training.exercises)"
+              (clicked)="onTrainingComplete()"
+            ></app-button>
+
+          </div>
+        </ng-container>
       </div>
     </div>
   </div>

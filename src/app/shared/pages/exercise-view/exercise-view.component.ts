@@ -41,7 +41,7 @@ export class ExerciseViewComponent {
   hasNextExercise$ = this.store.select(selectHasNextExercise);
   hasPreviousExercise$ = this.store.select(selectHasPreviousExercise);
   isTrainingView$ = this.store.select(selectIsTrainingView);
-  currentSeries$ = this.exerciseViewService.currentSeries$;
+  currentSeries$ = this.exerciseViewService.getCurrentSeries();
   isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
 
   hasMethodology(exercise: Exercise | null): boolean {
@@ -56,11 +56,10 @@ export class ExerciseViewComponent {
     const exercise = await firstValueFrom(this.exercise$);
 
     this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
-    this.startRestTimer(exercise.rest);
 
     if (seriesIndex === exercise.series - 1) {
       const isLastExercise = !(await firstValueFrom(this.hasNextExercise$));
-      const allExercisesCompleted = await firstValueFrom(this.exerciseViewService.areAllExercisesCompleted());
+      const allExercisesCompleted = await firstValueFrom(this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id));
 
       if (isLastExercise && allExercisesCompleted) {
         this.trainingStateService.completeTraining(exercise.user_trainingID!);
@@ -103,7 +102,7 @@ export class ExerciseViewComponent {
   }
 
   isSeriesAvailable(currentIndex: number) {
-    return this.exerciseViewService.completedSeries$.pipe(
+    return this.exerciseViewService.getCompletedSeries().pipe(
       map(completedSeries => {
         for (let i = 0; i < currentIndex; i++) {
           if (!completedSeries.includes(i)) {

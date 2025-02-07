@@ -44,7 +44,7 @@ export class LoginComponent implements OnInit {
 
       formValues.password = btoa(formValues.password);
 
-      const auth$ = this.authService.authenticate(formValues);
+      const auth$ = this.authService.authenticate({ ...formValues, fromApp: true });
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: ({ data: { user } }) => {
