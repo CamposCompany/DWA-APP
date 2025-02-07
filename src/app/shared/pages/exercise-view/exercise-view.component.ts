@@ -17,6 +17,7 @@ import { firstValueFrom, map, Observable, combineLatest, switchMap, of } from 'r
 import { ExerciseViewService } from './services/exercise-view.service';
 import { RestTimerService } from '../training-view/services/rest-timer.service';
 import { TrainingStateService } from '../training-view/services/training-state.service';
+import { FormsModule } from '@angular/forms';
 
 @Component({
   selector: 'app-exercise-view',
@@ -25,7 +26,8 @@ import { TrainingStateService } from '../training-view/services/training-state.s
     HeaderComponent,
     ButtonComponent,
     RouterModule,
-    CommonModule
+    CommonModule,
+    FormsModule
   ],
   templateUrl: './exercise-view.component.html',
   styleUrls: ['./exercise-view.component.scss'],
@@ -43,6 +45,10 @@ export class ExerciseViewComponent {
   isTrainingView$ = this.store.select(selectIsTrainingView);
   currentSeries$ = this.exerciseViewService.getCurrentSeries();
   isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
+
+  isEditingWeight = false;
+  editWeight: number | null = null;
+  currentEditingSeriesIndex: number | null = null;
 
   hasMethodology(exercise: Exercise | null): boolean {
     return !!exercise?.methodology;
@@ -130,5 +136,31 @@ export class ExerciseViewComponent {
         !isStarted || isPaused || isCompleted || !isAvailable || !allPreviousCompleted
       )
     );
+  }
+
+  async startWeightEdit(seriesIndex: number) {
+    const exercise = await firstValueFrom(this.exercise$);
+    if (!exercise) return;
+    
+    this.isEditingWeight = true;
+    this.currentEditingSeriesIndex = seriesIndex;
+    this.editWeight = exercise.repetitions[seriesIndex]?.weight || null;
+  }
+
+  async confirmWeightEdit() {
+    const exercise = await firstValueFrom(this.exercise$);
+    if (!exercise || this.editWeight === null || this.currentEditingSeriesIndex === null) return;
+
+    const repetition = exercise.repetitions[this.currentEditingSeriesIndex];
+    if (!repetition) return;
+
+    this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({ update: { id: repetition.id, changes: { weight: this.editWeight } } }));
+    this.isEditingWeight = false;
+    this.editWeight = null;
+    this.currentEditingSeriesIndex = null;
+  }
+
+  getWeightForSeries(repetitions: Repetition[], seriesIndex: number): number | null {
+    return repetitions[seriesIndex]?.weight || null;
   }
 }

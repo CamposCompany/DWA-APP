@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Observable, catchError, map, throwError } from 'rxjs';
 import { Http } from './http.service';
-import { Exercise, ExerciseData } from '../models/exercise';
+import { Exercise, ExerciseData, Repetition } from '../models/exercise';
 import { LoadingService } from './loading.service';
+import { Update } from '@ngrx/entity';
 
 @Injectable({
   providedIn: 'root'
@@ -23,5 +24,9 @@ export class ExerciseService {
         return throwError(() => err);
       })
     );
+  }
+
+  updateRepetitionWeight(update: Update<Repetition>) {
+    return this.http.put<Update<Repetition>, Exercise>(`${this.route}/repetitions`, update);
   }
 }

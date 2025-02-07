@@ -40,6 +40,7 @@ export interface Repetition {
   id: number;
   training_exerciseID: number;
   repetitions: number;
+  weight: number | null;
   created_at: string;
   updated_at: string;
 }

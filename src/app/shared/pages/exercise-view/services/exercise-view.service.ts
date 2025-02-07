@@ -7,8 +7,9 @@ import {
   selectExerciseViewState 
 } from '../../../../store/exercise-view/exercise-view.selectors';
 import { map } from 'rxjs/operators';
-import { Exercise } from '../../../models/exercise';
+import { Exercise, Repetition } from '../../../models/exercise';
 import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
+import { Update } from '@ngrx/entity';
 
 @Injectable({
   providedIn: 'root'
@@ -59,5 +60,14 @@ export class ExerciseViewService {
 
   setCurrentSeries(exerciseId: number, seriesIndex: number) {
     this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
+  }
+
+  updateRepetitionWeight(repetitionId: number, weight: number) {
+    const update: Update<Repetition> = {
+      id: repetitionId,
+      changes: { weight }
+    };
+    
+    this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({ update }));
   }
 } 

@@ -1,7 +1,22 @@
 import { createReducer, on } from '@ngrx/store';
 import * as ExerciseViewActions from './exercise-view.actions';
-import { initialState } from './exercise-view.state';
+import { ExerciseViewState, initialState } from './exercise-view.state';
+import { Exercise, Repetition } from '../../shared/models/exercise';
+import { EntityAdapter, createEntityAdapter, Update } from '@ngrx/entity';
 
+export const adapter: EntityAdapter<Exercise> = createEntityAdapter<Exercise>();
+export const repetitionsAdapter: EntityAdapter<Repetition> = createEntityAdapter<Repetition>();
+
+export const initialExerciseViewState: ExerciseViewState = adapter.getInitialState({
+  exercises: [],
+  currentIndex: 0,
+  selectedExerciseId: null,
+  source: 'all',
+  completedSeries: {},
+  currentSeries: {}
+});
+
+export const { selectAll } = adapter.getSelectors();
 
 export const exerciseViewReducer = createReducer(
   initialState,
@@ -33,6 +48,7 @@ export const exerciseViewReducer = createReducer(
       [exerciseId]: [...(state.completedSeries[exerciseId] || []), seriesIndex]
     }
   })),
+
   on(ExerciseViewActions.setCurrentSeries, (state, { exerciseId, seriesIndex }) => ({
     ...state,
     currentSeries: {
@@ -40,9 +56,27 @@ export const exerciseViewReducer = createReducer(
       [exerciseId]: seriesIndex
     }
   })),
+
   on(ExerciseViewActions.resetExerciseState, (state) => ({
     ...state,
     completedSeries: {},
     currentSeries: {}
+  })),
+
+  on(ExerciseViewActions.updateRepetitionWeight, (state, { update }) => ({
+    ...state,
+    exercises: state.exercises.map(exercise => {
+      const repetition = exercise.repetitions.find(rep => rep.id === update.id);
+      if (!repetition) return exercise;
+
+      return {
+        ...exercise,
+        repetitions: exercise.repetitions.map(rep => 
+          rep.id === update.id
+            ? { ...rep, ...update.changes }
+            : rep
+        )
+      };
+    })
   }))
 ); 

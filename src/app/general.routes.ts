@@ -1,5 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './shared/utils/guards/auth.guard';
+import { provideEffects } from '@ngrx/effects';
+import { ExerciseViewEffects } from './store/exercise-view/exercise-view.effect';
 
 export const GENERAL_ROUTES: Routes = [
   {
@@ -11,6 +13,7 @@ export const GENERAL_ROUTES: Routes = [
     path: 'exercise-view',
     loadComponent: () => 
       import('./shared/pages/exercise-view/exercise-view.component').then((m) => m.ExerciseViewComponent),
-    canActivate: [authGuard]
+    canActivate: [authGuard],
+    providers: [provideEffects(ExerciseViewEffects)]
   }
 ]

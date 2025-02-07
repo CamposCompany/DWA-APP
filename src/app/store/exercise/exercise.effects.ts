@@ -3,6 +3,7 @@ import { Actions, createEffect, ofType } from '@ngrx/effects';
 import { ExerciseService } from '../../shared/services/exercise.service';
 import { concatMap, map } from 'rxjs';
 import { ExerciseActions } from './action-types';
+import { ExerciseViewActions } from '../exercise-view/action.types';
 
 @Injectable()
 export class ExerciseEffects {

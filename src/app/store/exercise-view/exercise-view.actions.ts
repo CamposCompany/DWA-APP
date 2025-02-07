@@ -1,5 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { Exercise } from '../../shared/models/exercise';
+import { Exercise, Repetition } from '../../shared/models/exercise';
+import { Update } from '@ngrx/entity';
 
 export const setExercises = createAction(
   '[Exercise View] Set Exercises',
@@ -25,3 +26,8 @@ export const setCurrentSeries = createAction(
 );
 
 export const resetExerciseState = createAction('[Exercise View] Reset Exercise State');
+
+export const updateRepetitionWeight = createAction(
+  '[Exercise View] Update Repetition Weight',
+  props<{ update: Update<Repetition> }>()
+);
