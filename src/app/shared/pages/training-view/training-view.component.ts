@@ -43,7 +43,6 @@ export class TrainingViewComponent implements OnInit {
   private readonly trainingBehaviorSubject = new BehaviorSubject<Training | null>(null);
 
   training$ = this.trainingBehaviorSubject.asObservable();
-  completedExercises: Set<number> = new Set();
 
   isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
   isPaused$ = this.trainingStateService.isTrainingPaused$;
@@ -80,17 +79,6 @@ export class TrainingViewComponent implements OnInit {
         this.trainingBehaviorSubject.next(training);
       }
     });
-
-    const savedExercises = localStorage.getItem('completedExercises');
-    if (savedExercises) {
-      this.completedExercises = new Set(JSON.parse(savedExercises));
-
-      this.getTraining().exercises.forEach(exercise => {
-        if (this.completedExercises.has(exercise.id)) {
-          exercise.active = 1;
-        }
-      });
-    }
   }
 
   hasUserTraining(exercises: Exercise[]): boolean {
@@ -98,41 +86,33 @@ export class TrainingViewComponent implements OnInit {
     return exercises.some(exercise => exercise.user_trainingID !== null && exercise.user_trainingID !== undefined);
   }
 
-  isAllExercisesCompleted(): boolean {
-    if (!this.getTraining().exercises?.length) return false;
-    return this.getTraining().exercises.every(exercise => this.completedExercises.has(exercise.id));
+  isAllExercisesCompleted(): Observable<boolean> {
+    const training = this.getTraining();
+    if (!training?.exercises?.length) return of(false);
+    
+    return combineLatest(
+      training.exercises.map(exercise => 
+        this.exerciseViewService.areAllSeriesCompleted(exercise.id)
+      )
+    ).pipe(
+      map(completedStates => completedStates.every(state => state))
+    );
   }
 
   onExerciseCompleted(exercise: Exercise) {
-    if (this.completedExercises.has(exercise.id)) {
-      this.completedExercises.delete(exercise.id);
-    } else {
-      this.completedExercises.add(exercise.id);
-    }
-  }
-
-  async onExerciseToggled(exercise: Exercise) {
-    if (!this.isTrainingStarted$ || this.isTrainingCompleted$) return;
-
-    const isCompleted = await firstValueFrom(this.isCompleted(exercise.id));
-
-    if (isCompleted) {
-      this.exerciseViewService.uncompleteSeries(exercise.id);
-    } else {
-      for (let seriesIndex = 0; seriesIndex < exercise.series; seriesIndex++) {
-        this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
+    firstValueFrom(this.exerciseViewService.areAllSeriesCompleted(exercise.id)).then(isCompleted => {
+      if (isCompleted) {
+        this.exerciseViewService.uncompleteSeries(exercise.id);
+      } else {
+        for (let seriesIndex = 0; seriesIndex < exercise.series; seriesIndex++) {
+          this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
+        }
       }
-    }
+    });
   }
 
   isCompleted(exerciseId: number) {
-    return this.store.select(selectExerciseViewState).pipe(
-      map(state => {
-        const completedSeries = state.completedSeries[exerciseId] || [];
-        const exercise = this.getTraining().exercises.find(ex => ex.id === exerciseId);
-        return exercise ? completedSeries.length === exercise.series : false;
-      })
-    );
+    return this.exerciseViewService.areAllSeriesCompleted(exerciseId);
   }
 
   async onTrainingStart() {
@@ -168,10 +148,10 @@ export class TrainingViewComponent implements OnInit {
         const training = await firstValueFrom(this.training$);
         if (!training) return;
 
-        this.completedExercises.clear();
         training.exercises.forEach(exercise => {
           this.exerciseViewService.uncompleteSeries(exercise.id);
         });
+        
         this.trainingStateService.resetTraining();
         this.timerService.stopTraining();
       }
@@ -199,7 +179,7 @@ export class TrainingViewComponent implements OnInit {
       isPaused ? this.onTrainingResume() : this.onTrainingPause();
     });
   }
-  
+
   getTraining(): Training {
     return this.trainingBehaviorSubject.value!;
   }

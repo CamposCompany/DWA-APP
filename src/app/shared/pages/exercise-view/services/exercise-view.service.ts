@@ -40,13 +40,14 @@ export class ExerciseViewService {
   areAllPreviousExercisesCompleted(currentExerciseId: number) {
     return this.exerciseViewState$.pipe(
       map(state => {
-        const currentIndex = state.exercises.findIndex((ex: Exercise) => ex.id === currentExerciseId);
-        console.log(currentExerciseId, currentIndex);
-        console.log(state);
+        let currentIndex = state.exercises.findIndex((ex: Exercise) => ex.id === currentExerciseId);
+        
+        if (currentExerciseId === -1) {
+          currentIndex = state.exercises.length;
+        }
         
         for (let i = 0; i < currentIndex; i++) {
           const exercise = state.exercises[i];
-          console.log(exercise);
           const completedSeries = state.completedSeries[exercise.id] || [];
           for (let s = 0; s < exercise.series; s++) {
             if (!completedSeries.includes(s)) {
@@ -94,5 +95,24 @@ export class ExerciseViewService {
 
   uncompleteSeries(exerciseId: number) {
     this.store.dispatch(ExerciseViewActions.uncompleteSeries({ exerciseId }));
+  }
+
+  areAllExercisesInTrainingCompleted(): Observable<boolean> {
+    return this.exerciseViewState$.pipe(
+      map(state => {
+        if (!state.exercises || state.exercises.length === 0) {
+          return false;
+        }
+        
+        for (let i = 0; i < state.exercises.length; i++) {
+          const exercise = state.exercises[i];
+          const completedSeries = state.completedSeries[exercise.id] || [];
+          if (completedSeries.length !== exercise.series) {
+            return false;
+          }
+        }
+        return true;
+      })
+    );
   }
 } 

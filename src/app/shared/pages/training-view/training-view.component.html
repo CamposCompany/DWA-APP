@@ -50,7 +50,7 @@
                 [icon]="'assets/icons/done.svg'"
                 buttonClass="btn-success"
                 class="w-100"
-                [disabled]="!isAllExercisesCompleted()"
+                [disabled]="!(isAllExercisesCompleted() | async)"
                 (clicked)="onTrainingComplete()"
               ></app-button>
 
@@ -80,7 +80,7 @@
           [isTrainingPaused]="(isPaused$ | async) === true"
           [isTrainingCompleted]="training.completed"
           [isCompleted]="(isCompleted(exercise.id) | async) === true"
-          (exerciseToggled)="onExerciseToggled($event)"
+          (exerciseToggled)="onExerciseCompleted($event)"
           (exerciseClicked)="onExerciseClick($event)"
         ></app-user-card-exercise>
       </div>

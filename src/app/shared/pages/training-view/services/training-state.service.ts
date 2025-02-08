@@ -2,11 +2,8 @@ import { Injectable, inject } from '@angular/core';
 import { BehaviorSubject, firstValueFrom, of, from } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { TrainingService } from '../../../services/training.service';
 import { TrainingTimerService } from './training-timer.service';
 import { RestTimerService } from './rest-timer.service';
-import { TrainingData } from '../../../models/training';
-import Swal from 'sweetalert2';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store';
 import { selectCurrentExercise } from '../../../../store/exercise-view/exercise-view.selectors';
@@ -41,7 +38,6 @@ export class TrainingStateService {
   startTraining(trainingId: number) {
     this.activeTrainingIdSubject.next(trainingId);
     this.isTrainingStartedSubject.next(true);
-    this.isTrainingPausedSubject.next(false);
   }
 
   isActiveTraining(trainingId: number) {

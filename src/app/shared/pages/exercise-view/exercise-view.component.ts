@@ -66,12 +66,24 @@ export class ExerciseViewComponent {
     this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
 
     if (seriesIndex === exercise.series - 1) {
-      const allExercisesCompleted = await firstValueFrom(this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id));
+      const allPreviousCompleted = await firstValueFrom(
+        this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id)
+      );
+      
+      if (allPreviousCompleted) {
+        const isCurrentExerciseCompleted = await firstValueFrom(
+          this.exerciseViewService.areAllSeriesCompleted(exercise.id)
+        );
 
-      if (allExercisesCompleted) {
-        this.store.dispatch(ExerciseViewActions.completeTraining({ trainingId: exercise.user_trainingID! }));
-      } else {
-        this.navigateToExercise('next');
+        if (isCurrentExerciseCompleted) {
+          this.store.dispatch(
+            ExerciseViewActions.completeTraining({ 
+              trainingId: exercise.user_trainingID! 
+            })
+          );
+        } else {
+          this.navigateToExercise('next');
+        }
       }
     } else {
       this.exerciseViewService.setCurrentSeries(exercise.id, seriesIndex + 1);
