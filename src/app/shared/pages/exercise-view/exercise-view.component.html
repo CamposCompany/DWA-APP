@@ -47,7 +47,10 @@
               >
                 Série {{ i + 1 }}
                 <img
-                  *ngIf="(exerciseViewService.isSeriesCompleted(i) | async) || (isTrainingCompleted$ | async)"
+                  *ngIf="
+                    (exerciseViewService.isSeriesCompleted(i) | async) ||
+                    (isTrainingCompleted$ | async)
+                  "
                   src="assets/icons/done.svg"
                   alt="Concluído"
                   class="series-done-icon"
@@ -97,13 +100,22 @@
                       alt="Weight"
                       class="img-fluid"
                     />
-                    <ng-container *ngIf="!isEditingWeight || currentEditingSeriesIndex !== i; else weightEdit">
-                      <span>{{ getWeightForSeries(exercise.repetitions, i) || 0 }}kg</span>
+                    <ng-container
+                      *ngIf="
+                        !isEditingWeight || currentEditingSeriesIndex !== i;
+                        else weightEdit
+                      "
+                    >
+                      <span
+                        >{{
+                          getWeightForSeries(exercise.repetitions, i) || 0
+                        }}kg</span
+                      >
                       <img
                         src="assets/icons/exercise-view/pencil.svg"
                         alt="Edit"
                         class="img-fluid cursor-pointer"
-                        style="width: 19px; height: 13px;"
+                        style="width: 19px; height: 13px"
                         (click)="startWeightEdit(i)"
                       />
                     </ng-container>
@@ -136,16 +148,20 @@
 
                 <app-button
                   [label]="
-                    (exerciseViewService.isSeriesCompleted(i) | async) || (isTrainingCompleted$ | async)
-                      ? 'Concluído'
+                    (isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)
+                      ? 'Exercício Concluído'
                       : isLastSeries(exercise, i)
                       ? 'Concluir Exercício'
                       : 'Próxima Série'
                   "
-                  icon="assets/icons/done.svg"
+                  [icon]="((isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)) ? 'assets/icons/done.svg' : ''"
                   buttonClass="btn-success"
                   class="w-100"
-                  [disabled]="(isButtonDisabled(i) | async) ?? false"
+                  [disabled]="
+                    (isButtonDisabled(i) | async) || 
+                    (isExerciseCompleted$ | async) || 
+                    (isTrainingCompleted$ | async) ?? false
+                  "
                   (clicked)="onCompleteSeries(i)"
                 ></app-button>
               </div>

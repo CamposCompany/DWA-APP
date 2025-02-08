@@ -10,24 +10,24 @@ import { Store } from '@ngrx/store';
 @Component({
   selector: 'app-card-exercise',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule],
   templateUrl: './card-exercise.component.html',
-  styleUrls: ['./card-exercise.component.scss'],
+  styleUrls: ['./card-exercise.component.scss']
 })
-export class CardExerciseComponent implements OnInit {
-  @Input() exercises: Exercise[] = [];
-  @Output() exerciseClick = new EventEmitter<Exercise>();
+export class CardExerciseComponent {
+  @Input() exercise!: Exercise;
+  @Output() exerciseClicked = new EventEmitter<Exercise>();
 
   private readonly store = inject(Store<AppState>);
   private readonly router = inject(Router);
 
-  ngOnInit(): void {
-    console.log(this.exercises);
+  onExerciseClick(): void {
+    this.exerciseClicked.emit(this.exercise);
   }
 
   viewExercise(exercise: Exercise): void {
     this.store.dispatch(ExerciseViewActions.setExercises({
-      exercises: this.exercises,
+      exercises: [exercise],
       source: 'training',
       selectedExerciseId: exercise.id
     }));

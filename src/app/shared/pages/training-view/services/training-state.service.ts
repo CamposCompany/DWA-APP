@@ -8,6 +8,8 @@ import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store';
 import { selectCurrentExercise } from '../../../../store/exercise-view/exercise-view.selectors';
 import { selectTrainingById } from '../../../../store/training/training.selectors';
+import { ExerciseViewActions } from '../../../../store/exercise-view/action.types';
+
 
 @Injectable({
   providedIn: 'root'
@@ -65,6 +67,7 @@ export class TrainingStateService {
     this.isTrainingStartedSubject.next(false);
     this.isTrainingPausedSubject.next(false);
     this.activeTrainingIdSubject.next(null);
+    this.store.dispatch(ExerciseViewActions.resetExerciseState());
   }
 
   getIsTrainingStarted() {

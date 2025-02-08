@@ -2,13 +2,12 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Exercise, Repetition } from '../../models/exercise';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-user-card-exercise',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './user-card-exercise.component.html',
-  styleUrl: './user-card-exercise.component.scss'
+  styleUrls: ['./user-card-exercise.component.scss']
 })
 export class UserCardExerciseComponent {
   @Input() exercise!: Exercise;
@@ -16,7 +15,7 @@ export class UserCardExerciseComponent {
   @Input() isTrainingPaused: boolean = false;
   @Input() isTrainingCompleted: boolean = false;
   @Input() isCompleted: boolean = false;
-
+  @Input() isOtherTrainingActive: boolean = false;
   @Output() exerciseClicked = new EventEmitter<Exercise>();
   @Output() exerciseToggled = new EventEmitter<Exercise>();
 
@@ -24,8 +23,10 @@ export class UserCardExerciseComponent {
     this.exerciseClicked.emit(this.exercise);
   }
 
-  onToggleExercise(event: Event): void {
+  onToggleExercise(event: Event) {
     event.stopPropagation();
+    if (this.isTrainingCompleted || !this.isTrainingStarted || this.isTrainingPaused) return;
+    
     this.exerciseToggled.emit(this.exercise);
   }
 

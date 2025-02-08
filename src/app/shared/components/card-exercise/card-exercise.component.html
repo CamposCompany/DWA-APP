@@ -1,8 +1,7 @@
-<ng-container *ngIf="exercises && exercises.length > 0">
+<ng-container>
   <div
     class="card-training d-flex justify-content-between align-items-center mb-3 gap-3"
-    *ngFor="let exercise of exercises"
-    (click)="viewExercise(exercise)"
+    (click)="onExerciseClick()"
   >
     <img src="assets/icons/arm-exercise.svg" />
     <div class="w-100">
@@ -11,6 +10,3 @@
     </div>
   </div>
 </ng-container>
-<p *ngIf="exercises?.length === 0" class="no-exercises">
-  Sem exercícios disponíveis.
-</p>

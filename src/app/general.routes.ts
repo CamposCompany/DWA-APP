@@ -7,7 +7,8 @@ export const GENERAL_ROUTES: Routes = [
   {
     path: 'training/:id',
     loadComponent: () => 
-    import('./shared/pages/training-view/training-view.component').then((m) => m.TrainingViewComponent)
+    import('./shared/pages/training-view/training-view.component').then((m) => m.TrainingViewComponent),
+    providers: [provideEffects(ExerciseViewEffects)]
   },
   {
     path: 'exercise-view',

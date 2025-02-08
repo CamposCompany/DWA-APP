@@ -1,8 +1,8 @@
 import { createAction, props } from '@ngrx/store';
 import { Exercise, Repetition } from '../../shared/models/exercise';
-import { Update } from '@ngrx/entity';
 import { Training } from '../../shared/models/training';
 
+// Exercise Navigation Actions
 export const setExercises = createAction(
   '[Exercise View] Set Exercises',
   props<{ 
@@ -11,22 +11,21 @@ export const setExercises = createAction(
     source: 'training' | 'user-training' | 'all' 
   }>()
 );
-
 export const nextExercise = createAction('[Exercise View] Next Exercise');
 export const previousExercise = createAction('[Exercise View] Previous Exercise');
-export const resetExerciseView = createAction('[Exercise View] Reset');
 
 export const completeSeries = createAction(
   '[Exercise View] Complete Series',
   props<{ exerciseId: number; seriesIndex: number }>()
 );
-
+export const uncompleteSeries = createAction(
+  '[Exercise View] Uncomplete Series',
+  props<{ exerciseId: number }>()
+);
 export const setCurrentSeries = createAction(
   '[Exercise View] Set Current Series',
   props<{ exerciseId: number; seriesIndex: number }>()
 );
-
-export const resetExerciseState = createAction('[Exercise View] Reset Exercise State');
 
 export const updateRepetitionWeight = createAction(
   '[Exercise View] Update Repetition Weight',
@@ -36,7 +35,6 @@ export const updateRepetitionWeight = createAction(
     repetitionId: number;
   }>()
 );
-
 export const updateRepetitionWeightSuccess = createAction(
   '[Exercise View] Update Repetition Weight Success',
   props<{ 
@@ -46,8 +44,8 @@ export const updateRepetitionWeightSuccess = createAction(
   }>()
 );
 
-export const uncompleteSeries = createAction(
-  '[Exercise View] Uncomplete Series',
+export const completeExercise = createAction(
+  '[Exercise View] Complete Exercise',
   props<{ exerciseId: number }>()
 );
 
@@ -59,8 +57,9 @@ export const completeTrainingSuccess = createAction(
   '[Exercise View] Complete Training Success',
   props<{ training: Training }>()
 );
-
 export const completeTrainingFailure = createAction(
   '[Exercise View] Complete Training Failure'
 );
 
+export const resetExerciseView = createAction('[Exercise View] Reset');
+export const resetExerciseState = createAction('[Exercise View] Reset Exercise State');

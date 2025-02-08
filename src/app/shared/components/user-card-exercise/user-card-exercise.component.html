@@ -36,10 +36,10 @@
           role="switch"
           [checked]="isCompleted || isTrainingCompleted" 
           (click)="onToggleExercise($event)"
-          [disabled]="isTrainingCompleted || !isTrainingStarted || isTrainingPaused"
+          [disabled]="isTrainingCompleted || !isTrainingStarted || isTrainingPaused || isOtherTrainingActive"
           [ngClass]="{
-            'bg-success border-success': isCompleted,
-            disabled: !isTrainingStarted || isTrainingPaused
+            'bg-success border-success': isCompleted || isTrainingCompleted,
+            disabled: !isTrainingStarted || isTrainingPaused || isOtherTrainingActive
           }"
         />
       </div>

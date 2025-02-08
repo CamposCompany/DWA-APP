@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -11,6 +11,7 @@ import {
   selectHasNextExercise,
   selectHasPreviousExercise,
   selectIsTrainingView,
+  selectCompletedSeries,
 } from '../../../store/exercise-view/exercise-view.selectors';
 import { Exercise, Repetition } from '../../models/exercise';
 import { firstValueFrom, map, Observable, combineLatest, switchMap, of, take } from 'rxjs';
@@ -32,7 +33,7 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './exercise-view.component.html',
   styleUrls: ['./exercise-view.component.scss'],
 })
-export class ExerciseViewComponent {
+export class ExerciseViewComponent implements OnInit {
   private readonly store = inject(Store<AppState>);
   private readonly trainingStateService = inject(TrainingStateService);
 
@@ -52,6 +53,22 @@ export class ExerciseViewComponent {
   editWeight: number | null = null;
   currentEditingSeriesIndex: number | null = null;
 
+  isExerciseCompleted$ = combineLatest([
+    this.store.select(selectCompletedSeries),
+    this.exercise$
+  ]).pipe(
+    map(([completedSeries, exercise]) => {
+      if (!exercise || !completedSeries) return false;
+      
+      const exerciseCompletedSeries = completedSeries[exercise.id] ?? [];
+      
+      if (!Array.isArray(exerciseCompletedSeries)) return false;
+      
+      return Array.from({ length: exercise.series }, (_, i) => i)
+        .every(seriesIndex => exerciseCompletedSeries.includes(seriesIndex));
+    })
+  );
+
   hasMethodology(exercise: Exercise | null): boolean {
     return !!exercise?.methodology;
   }
@@ -62,31 +79,30 @@ export class ExerciseViewComponent {
 
   async onCompleteSeries(seriesIndex: number) {
     const exercise = await firstValueFrom(this.exercise$);
+    const isCompleted = await firstValueFrom(this.isExerciseCompleted$);
 
-    this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
+    if (!isCompleted) {
+      this.exerciseViewService.completeSeries(exercise.id, seriesIndex);
 
-    if (seriesIndex === exercise.series - 1) {
-      const allPreviousCompleted = await firstValueFrom(
-        this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id)
-      );
-      
-      if (allPreviousCompleted) {
-        const isCurrentExerciseCompleted = await firstValueFrom(
-          this.exerciseViewService.areAllSeriesCompleted(exercise.id)
+      if (seriesIndex === exercise.series - 1) {
+        const allPreviousCompleted = await firstValueFrom(
+          this.exerciseViewService.areAllPreviousExercisesCompleted(exercise.id)
         );
-
-        if (isCurrentExerciseCompleted) {
-          this.store.dispatch(
-            ExerciseViewActions.completeTraining({ 
-              trainingId: exercise.user_trainingID! 
-            })
+        
+        if (allPreviousCompleted) {
+          const allExercisesCompleted = await firstValueFrom(
+            this.exerciseViewService.areAllExercisesInTrainingCompleted()
           );
-        } else {
-          this.navigateToExercise('next');
+
+          if (allExercisesCompleted) {
+            this.store.dispatch(ExerciseViewActions.completeTraining({ trainingId: exercise.user_trainingID! }));
+          } else {
+            this.navigateToExercise('next');
+          }
         }
+      } else {
+        this.exerciseViewService.setCurrentSeries(exercise.id, seriesIndex + 1);
       }
-    } else {
-      this.exerciseViewService.setCurrentSeries(exercise.id, seriesIndex + 1);
     }
   }
 
@@ -95,11 +111,11 @@ export class ExerciseViewComponent {
   }
 
   navigateToExercise(direction: 'next' | 'previous'): void {
-    if (direction === 'next') {
-      this.store.dispatch(ExerciseViewActions.nextExercise());
-    } else {
-      this.store.dispatch(ExerciseViewActions.previousExercise());
-    }
+    this.store.dispatch(
+      direction === 'next' 
+        ? ExerciseViewActions.nextExercise()
+        : ExerciseViewActions.previousExercise()
+    );
   }
 
   createSeriesArray(series: number): number[] {
@@ -108,16 +124,8 @@ export class ExerciseViewComponent {
 
   getRepetitionForSeries(repetitions: Repetition[], seriesIndex: number): number {
     if (!repetitions || repetitions.length === 0) return 0;
-
-    if (repetitions.length === 1) {
-      return repetitions[0].repetitions;
-    }
-
-    if (repetitions[seriesIndex]) {
-      return repetitions[seriesIndex].repetitions;
-    }
-
-    return repetitions[repetitions.length - 1].repetitions;
+    if (repetitions.length === 1) return repetitions[0].repetitions;
+    return repetitions[seriesIndex]?.repetitions || repetitions[repetitions.length - 1].repetitions;
   }
   
   isButtonDisabled(seriesIndex: number): Observable<boolean> {
@@ -127,13 +135,9 @@ export class ExerciseViewComponent {
       this.exerciseViewService.isSeriesCompleted(seriesIndex),
       this.isTrainingCompleted$,
     ]).pipe(
-      map(([isStarted, isPaused, isSeriesCompleted, isTrainingCompleted]) => {
-        if (!isStarted) return true;
-        if (isPaused) return true;
-        if (isTrainingCompleted) return true;
-        if (isSeriesCompleted) return true;
-        return false;
-      })
+      map(([isStarted, isPaused, isSeriesCompleted, isTrainingCompleted]) => 
+        !isStarted || isPaused || isTrainingCompleted || isSeriesCompleted
+      )
     );
   }
 
@@ -166,5 +170,9 @@ export class ExerciseViewComponent {
 
   getWeightForSeries(repetitions: Repetition[], seriesIndex: number): number | null {
     return repetitions[seriesIndex]?.weight || null;
+  }
+
+  ngOnInit() {
+    // Additional initialization logic if needed
   }
 }
