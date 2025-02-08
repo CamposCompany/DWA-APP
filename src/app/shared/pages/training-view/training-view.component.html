@@ -4,22 +4,33 @@
     <div
       class="d-flex flex-column justify-content-between view-container w-100"
     >
-      <div>
-        <h3>{{ training.name.toLocaleUpperCase() }}</h3>
-        <p class="mt-3">{{ training.description }}</p>
-        
-        <div *ngIf="(showTrainingTime$ | async)" class="mt-3">
-          <h4>Tempo de treino: {{ elapsedTime$ | async }}</h4>
+      <div class="d-flex justify-content-between">
+        <div class="d-flex flex-column">
+          <h3>{{ training.name.toLocaleUpperCase() }}</h3>
+          <p class="mt-3">{{ training.description }}</p>
+          <div *ngIf="showTrainingTime$ | async" class="mt-3">
+            <h4>Tempo de treino: {{ elapsedTime$ | async }}</h4>
+          </div>
+        </div>
+
+        <div class="d-flex align-items-end gap-1" *ngIf="training.last_duration">
+          <img src="assets/icons/clock.svg" alt="clock icon" />
+          <p>{{ formatDuration(training.last_duration) }}</p>
         </div>
       </div>
 
       <div class="mt-3" *ngIf="hasUserTraining(training.exercises)">
-        <div *ngIf="(isOtherTrainingActive$ | async)" class="alert alert-warning text-center">
+        <div
+          *ngIf="isOtherTrainingActive$ | async"
+          class="alert alert-warning text-center"
+        >
           Outro treino em andamento
         </div>
 
         <ng-container *ngIf="!(isOtherTrainingActive$ | async)">
-          <ng-container *ngIf="!(isTrainingCompleted$ | async); else completedButton">
+          <ng-container
+            *ngIf="!(isTrainingCompleted$ | async); else completedButton"
+          >
             <app-button
               *ngIf="!(isTrainingStarted$ | async)"
               label="Começar"
@@ -28,11 +39,18 @@
               (clicked)="onTrainingStart()"
             ></app-button>
 
-            <div *ngIf="(isTrainingStarted$ | async)" class="d-flex flex-column gap-2">
+            <div
+              *ngIf="isTrainingStarted$ | async"
+              class="d-flex flex-column gap-2"
+            >
               <div class="d-flex gap-2 align-items-center">
                 <app-button
                   [label]="(isPaused$ | async) ? 'Voltar' : 'Pausar'"
-                  [icon]="(isPaused$ | async) ? 'assets/icons/training-view/start.svg' : 'assets/icons/training-view/pause.svg'"
+                  [icon]="
+                    (isPaused$ | async)
+                      ? 'assets/icons/training-view/start.svg'
+                      : 'assets/icons/training-view/pause.svg'
+                  "
                   buttonClass="btn-secondary"
                   class="w-50"
                   (clicked)="onTogglePause()"
@@ -44,7 +62,7 @@
                   (clicked)="onTrainingRestart()"
                 ></app-button>
               </div>
-              
+
               <app-button
                 label="Concluído"
                 [icon]="'assets/icons/done.svg'"
@@ -53,7 +71,6 @@
                 [disabled]="!(isAllExercisesCompleted() | async)"
                 (clicked)="onTrainingComplete()"
               ></app-button>
-
             </div>
           </ng-container>
 
@@ -71,7 +88,9 @@
   </div>
   <h3 class="mt-5 mb-3">Exercícios</h3>
   <ng-container *ngIf="training.exercises; else noExercises">
-    <ng-container *ngIf="hasUserTraining(training.exercises); else regularExercises">
+    <ng-container
+      *ngIf="hasUserTraining(training.exercises); else regularExercises"
+    >
       <div class="exercises-container">
         <app-user-card-exercise
           *ngFor="let exercise of training.exercises"

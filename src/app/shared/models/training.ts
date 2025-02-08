@@ -23,7 +23,8 @@ export interface Training {
   duration: number,
   todayTraining: boolean,
   exercises: Exercise[],
-  completed: boolean
+  completed: boolean,
+  last_duration: string
 }
 
 export interface CreatedTrainingData extends GenericData {

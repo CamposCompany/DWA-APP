@@ -10,6 +10,8 @@ import { selectUser } from '../../auth/login/store/auth.selectors';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../store';
 import { selectAllTrainings } from '../../store/training/training.selectors';
+import { formatDuration } from '../../shared/utils/helpers/duration.helper';
+
 
 @Component({
   selector: 'app-home',
@@ -27,4 +29,6 @@ export class HomeComponent {
   formatDate(date: string) {
     return new Date(date).toLocaleDateString('pt-BR');
   }
+
+  formatDuration = formatDuration;
 }

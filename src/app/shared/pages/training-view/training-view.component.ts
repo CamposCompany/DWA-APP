@@ -16,6 +16,9 @@ import { TrainingStateService } from './services/training-state.service';
 import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 import { ExerciseViewService } from '../exercise-view/services/exercise-view.service';
 import { Training } from '../../models/training';
+import { formatDuration } from '../../utils/helpers/duration.helper';
+
+
 
 
 @Component({
@@ -77,6 +80,8 @@ export class TrainingViewComponent implements OnInit {
       isStarted && training && training.id === activeId
     )
   );
+
+  formatDuration = formatDuration;
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
