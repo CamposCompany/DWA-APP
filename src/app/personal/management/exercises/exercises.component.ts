@@ -1,16 +1,16 @@
 import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
-import { async, map, Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { Exercise } from '../../../shared/models/exercise';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule } from '@angular/router';
 import { CardExerciseComponent } from '../../../shared/components/card-exercise/card-exercise.component';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../store';
-import { selectAllExercises } from '../../../store/exercise/exercise.selectors';
 import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
+import { ExerciseEntityService } from '../../../store/exercise/exercise-entity.service';
+import { AppState } from '../../../store';
+import { Store } from '@ngrx/store';
 
 @Component({
   selector: 'app-exercises',
@@ -22,10 +22,11 @@ import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 
 export class ExercisesComponent {
   private readonly store = inject(Store<AppState>);
+  private readonly exerciseService = inject(ExerciseEntityService);
   private readonly router = inject(Router);
 
-  exercises$: Observable<Exercise[]> = this.store.select(selectAllExercises);
-  filteredExercises$: Observable<Exercise[]> = this.exercises$;
+  exercises$ = this.exerciseService.entities$;
+  filteredExercises$ = this.exercises$;
 
   onFilterChanged(filterText: string): void {
     this.filteredExercises$ = this.exercises$.pipe(

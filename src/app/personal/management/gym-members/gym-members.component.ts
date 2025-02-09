@@ -1,11 +1,9 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../store';
 import { User } from '../../../shared/models/users';
 import { Observable } from 'rxjs';
-import { selectAllUsers } from '../../../store/user/user.selectors';
+import { UserEntityService } from '../../../store/user/user-entity.service';
 
 @Component({
   selector: 'app-gym-members',
@@ -15,9 +13,9 @@ import { selectAllUsers } from '../../../store/user/user.selectors';
   styleUrl: './gym-members.component.scss'
 })
 export class GymMembersComponent {
-  readonly store = inject(Store<AppState>);
+  readonly userEntityService = inject(UserEntityService);
 
-  members$: Observable<User[]> = this.store.select(selectAllUsers);
+  members$: Observable<User[]> = this.userEntityService.entities$;
 
   onViewTraining(memberId: number): void {
     console.log('Ver treino do membro:', memberId);

@@ -7,8 +7,8 @@ import { RestTimerService } from './rest-timer.service';
 import { Store } from '@ngrx/store';
 import { AppState } from '../../../../store';
 import { selectCurrentExercise } from '../../../../store/exercise-view/exercise-view.selectors';
-import { selectTrainingById } from '../../../../store/training/training.selectors';
 import { ExerciseViewActions } from '../../../../store/exercise-view/action.types';
+import { TrainingEntityService } from '../../../../store/training/training-entity.service';
 
 
 @Injectable({
@@ -17,6 +17,7 @@ import { ExerciseViewActions } from '../../../../store/exercise-view/action.type
 export class TrainingStateService {
   private readonly router = inject(Router);
   private readonly timerService = inject(TrainingTimerService);
+  private readonly trainingEntityService = inject(TrainingEntityService);
   private readonly restTimer = inject(RestTimerService);
   private readonly store = inject(Store<AppState>);
 
@@ -31,7 +32,7 @@ export class TrainingStateService {
   isTrainingCompleted$ = this.store.select(selectCurrentExercise).pipe(
     switchMap(exercise =>
       exercise?.user_trainingID
-        ? this.store.select(selectTrainingById(exercise.user_trainingID))
+        ? this.trainingEntityService.getTrainingById(exercise.user_trainingID)
         : of(null)
     ),
     map(training => training?.completed ?? false)

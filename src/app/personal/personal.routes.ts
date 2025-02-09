@@ -1,11 +1,9 @@
 import { Routes } from '@angular/router';
 import { trainingResolver } from '../store/training/training.resolver';
-import { provideEffects } from '@ngrx/effects';
-import { TrainingEffects } from '../store/training/training.effects';
 import { exerciseResolver } from '../store/exercise/exercise.resolver';
-import { ExerciseEffects } from '../store/exercise/exercise.effects';
 import { userResolver } from '../store/user/user.resolver';
-import { UserEffects } from '../store/user/user.effects';
+import { adminGuard } from '../shared/utils/guards/admin.guard';
+import { authGuard } from '../shared/utils/guards/auth.guard';
 
 export const PERSONAL_ROUTES: Routes = [
   {
@@ -22,23 +20,23 @@ export const PERSONAL_ROUTES: Routes = [
       exercises: exerciseResolver,
       users: userResolver
     },
-    providers: [
-      provideEffects(TrainingEffects, ExerciseEffects, UserEffects)
-    ]
   },
   {
     path: 'trainings',
     loadComponent: () =>
-      import('./management/trainings/trainings.component').then((m) => m.TrainingsComponent)
+      import('./management/trainings/trainings.component').then((m) => m.TrainingsComponent),
+    canActivate: [authGuard, adminGuard]
   },
   {
     path: 'exercises',
     loadComponent: () =>
-      import('./management/exercises/exercises.component').then((m) => m.ExercisesComponent)
+      import('./management/exercises/exercises.component').then((m) => m.ExercisesComponent),
+    canActivate: [authGuard, adminGuard]
   },
   {
     path: 'gym-members',
     loadComponent: () =>
-      import('./management/gym-members/gym-members.component').then((m) => m.GymMembersComponent)
+      import('./management/gym-members/gym-members.component').then((m) => m.GymMembersComponent),
+    canActivate: [authGuard, adminGuard]
   }
 ];

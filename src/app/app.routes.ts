@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './shared/utils/guards/auth.guard';
 import { memberGuard } from './shared/utils/guards/member.guard';
 import { adminGuard } from './shared/utils/guards/admin.guard';
-import { AuthEffects } from './auth/login/store/auth.effects';
-import { provideEffects } from '@ngrx/effects';
 
 export const routes: Routes = [
   {
@@ -15,10 +13,7 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./auth/login/login.component').then((m) => m.LoginComponent),
-    providers: [
-      provideEffects(AuthEffects)
-    ]
+      import('./auth/login/login.component').then((m) => m.LoginComponent)
   },
   {
     path: 'on-boarding',

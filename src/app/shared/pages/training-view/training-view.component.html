@@ -118,10 +118,6 @@
   </ng-container>
 
   <ng-template #noExercises>
-    <p class="text-center">Não há exercícios disponíveis</p>
+    <p class="text-center no-exercises">Não há exercícios disponíveis</p>
   </ng-template>
-</div>
-
-<div class="timer-container" *ngIf="showTimer$ | async">
-  <span class="timer">{{ elapsedTime$ | async }}</span>
 </div>

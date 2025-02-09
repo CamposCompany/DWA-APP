@@ -15,7 +15,7 @@ import { CardComponent } from '../../../../shared/components/card/card.component
   styleUrl: './trainings-panel.component.scss'
 })
 export class TrainingsPanelComponent {
-  @Input() trainings$: Observable<Training[]> = new Observable<Training[]>
+  @Input() trainings: Training[] = []
 
   getDuration(duration: number): string {
     const hours = Math.floor(duration / 60);

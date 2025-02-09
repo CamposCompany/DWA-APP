@@ -1,11 +1,9 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { LoadingComponent } from './shared/components/loading/loading.component';
 import { BodyClassDirective } from './shared/directives/body-class.directive';
 
-import { Store } from '@ngrx/store';
-import { AuthActions } from './auth/login/store/action.types';
-
+import { AuthEntityService } from './auth/store/auth-entity.service';
 @Component({
   selector: 'app-root',
   standalone: true,
@@ -15,12 +13,8 @@ import { AuthActions } from './auth/login/store/action.types';
 })
 export class AppComponent implements OnInit {
   title = 'DWAPP';
-  private readonly store = inject(Store);
+  constructor() {}
 
   ngOnInit() {
-    const token = localStorage.getItem('token');
-    if (token) {
-      this.store.dispatch(AuthActions.login({ token, user: JSON.parse(localStorage.getItem('user') || '{}'), fromApp: true }));
-    }
   }
 }

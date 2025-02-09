@@ -1,6 +1,6 @@
 export const environment = {
   production: false,
-  api: 'http://localhost:8000/api/'
+  api: 'https://campos-portfolio.net/api/'
 };
 
 export const TokenName = 'DWA_authorizationData';

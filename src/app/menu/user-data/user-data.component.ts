@@ -6,11 +6,7 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Observable } from 'rxjs';
-import { selectUser } from '../../auth/login/store/auth.selectors';
-
-import { Store } from '@ngrx/store';
-import { UserService } from '../../shared/services/user.service';
-import { AppState } from '../../store';
+import { AuthEntityService } from '../../auth/store/auth-entity.service';
 
 @Component({
   selector: 'app-user-data',
@@ -26,15 +22,14 @@ import { AppState } from '../../store';
   ]
 })
 export class UserDataComponent implements OnInit {
-  private readonly store = inject(Store<AppState>);
-  private readonly userService = inject(UserService);
+  private readonly authEntityService = inject(AuthEntityService);
   private readonly fb = inject(FormBuilder);
   private userId: number = 0;
 
   userForm: FormGroup;
   genderOptions = ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'];
   
-  currentUser$: Observable<User> = this.store.select(selectUser);
+  currentUser$: Observable<User> = this.authEntityService.currentUser$;
 
   constructor() {
     
@@ -66,8 +61,10 @@ export class UserDataComponent implements OnInit {
   onSubmit(): void {
     if (this.userForm.valid) {
       const formValues = this.userForm.getRawValue();
-      // this.userService.updateUser(formValues, this.userId);
-      // this.store.dispatch(updateUser({ user: formValues }));
+      this.authEntityService.update({
+        id: this.userId,
+        ...formValues
+      }).subscribe();
     }
   }
 }

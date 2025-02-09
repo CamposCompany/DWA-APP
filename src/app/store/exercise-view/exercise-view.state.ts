@@ -1,6 +1,7 @@
 import { Exercise } from "../../shared/models/exercise";
 
 export interface ExerciseViewState {
+    id?: string;
     exercises: Exercise[];
     currentIndex: number;
     selectedExerciseId: number | null;

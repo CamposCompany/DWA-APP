@@ -1,12 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom, map, of, switchMap, combineLatest, Observable, BehaviorSubject, take } from 'rxjs';
+import { firstValueFrom, map, of, switchMap, combineLatest, Observable, BehaviorSubject, take, tap, filter } from 'rxjs';
 import { Store } from '@ngrx/store';
 import { CardExerciseComponent } from '../../components/card-exercise/card-exercise.component';
 import { UserCardExerciseComponent } from '../../components/user-card-exercise/user-card-exercise.component';
-import { AppState } from '../../../store';
-import { selectTrainingById } from '../../../store/training/training.selectors';
 import { HeaderComponent } from '../../components/header/header.component';
 import { Exercise } from '../../models/exercise';
 import { ButtonComponent } from '../../components/button/button.component';
@@ -17,6 +15,8 @@ import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 import { ExerciseViewService } from '../exercise-view/services/exercise-view.service';
 import { Training } from '../../models/training';
 import { formatDuration } from '../../utils/helpers/duration.helper';
+import { TrainingEntityService } from '../../../store/training/training-entity.service';
+import { AppState } from '../../../store';
 
 
 
@@ -38,6 +38,7 @@ export class TrainingViewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
+  private readonly trainingEntityService = inject(TrainingEntityService);
   private readonly timerService = inject(TrainingTimerService);
   private readonly trainingStateService = inject(TrainingStateService);
   private readonly exerciseViewService = inject(ExerciseViewService);
@@ -76,7 +77,7 @@ export class TrainingViewComponent implements OnInit {
     this.training$,
     this.trainingStateService.activeTrainingId$
   ]).pipe(
-    map(([isStarted, training, activeId]) => 
+    map(([isStarted, training, activeId]) =>
       isStarted && training && training.id === activeId
     )
   );
@@ -85,11 +86,12 @@ export class TrainingViewComponent implements OnInit {
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
-    this.store.select(selectTrainingById(trainingId)).subscribe(training => {
-      if (training) {
+    this.trainingEntityService.getTrainingById(trainingId).pipe(
+      filter((training): training is Training => !!training),
+      tap((training: Training) => {
         this.trainingBehaviorSubject.next(training);
-      }
-    });
+      })
+    ).subscribe();
   }
 
   getTraining(): Training {
@@ -104,9 +106,9 @@ export class TrainingViewComponent implements OnInit {
   isAllExercisesCompleted(): Observable<boolean> {
     const training = this.getTraining();
     if (!training?.exercises?.length) return of(false);
-    
+
     return combineLatest(
-      training.exercises.map(exercise => 
+      training.exercises.map(exercise =>
         this.exerciseViewService.areAllSeriesCompleted(exercise.id)
       )
     ).pipe(
@@ -131,13 +133,13 @@ export class TrainingViewComponent implements OnInit {
   }
 
   async onExerciseClick(exercise: Exercise): Promise<void> {
-    if((await firstValueFrom(this.isOtherTrainingActive$)) === true) return;
+    if ((await firstValueFrom(this.isOtherTrainingActive$)) === true) return;
     this.store.dispatch(ExerciseViewActions.setExercises({
       exercises: this.getTraining().exercises,
       selectedExerciseId: exercise.id,
       source: 'user-training'
     }));
-    
+
     this.router.navigate(['/general/exercise-view']);
   }
 
@@ -150,7 +152,7 @@ export class TrainingViewComponent implements OnInit {
       selectedExerciseId: training.exercises[0]?.id || 0,
       source: 'user-training'
     }));
-    
+
     this.trainingStateService.startTraining(training.id);
     this.timerService.startTraining();
   }
@@ -183,7 +185,7 @@ export class TrainingViewComponent implements OnInit {
         training.exercises.forEach(exercise => {
           this.exerciseViewService.uncompleteSeries(exercise.id);
         });
-        
+
         this.trainingStateService.resetTraining();
         this.timerService.stopTraining();
       }

@@ -20,7 +20,7 @@
   
       <app-gym-members-panel [gymMembers$]="gymMembers$"></app-gym-members-panel>
   
-      <app-trainings-panel [trainings$]="trainingLimited$"></app-trainings-panel>
+      <app-trainings-panel [trainings]="(trainings$ | async)!.slice(0, 3)"></app-trainings-panel>
     </div>
   </ng-container>
   

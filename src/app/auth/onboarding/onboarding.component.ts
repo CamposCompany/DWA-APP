@@ -1,9 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { select, Store } from '@ngrx/store';
-import { isAdminSelector } from '../login/store/auth.selectors';
-import { AppState } from '../../store';
-
+import { AuthEntityService } from '../store/auth-entity.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -13,21 +10,21 @@ import { AppState } from '../../store';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  private readonly store = inject(Store<AppState>);
+  private readonly authEntityService = inject(AuthEntityService);
   private readonly router = inject(Router);
+  isAdmin: boolean = this.authEntityService.getIsAdmin();
+
 
   constructor() { }
 
   ngOnInit() {
-    this.store.pipe(select(isAdminSelector))
-      .subscribe(isAdminValue => {
-        const targetRoute = isAdminValue
-          ? '/personal/home'
-          : '/members/home';
-
-        setTimeout(() => {
-          this.router.navigateByUrl(targetRoute);
-        }, 2500);
-      });
+    setTimeout(() => {
+      if(this.isAdmin) {
+        this.router.navigateByUrl('/personal/home');
+      } else {
+        this.router.navigateByUrl('/members/home');
+      }
+    }, 2000);
   }
 }
+

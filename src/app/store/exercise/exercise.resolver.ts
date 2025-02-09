@@ -1,28 +1,18 @@
 import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { select, Store } from '@ngrx/store';
-import { filter, first, tap } from 'rxjs/operators';
-import { ExerciseActions } from './action-types';
-import { allExercisesLoaded } from './exercise.selectors';
-import { AppState } from '..';
+import { tap, filter, first } from 'rxjs/operators';
+import { ExerciseEntityService } from './exercise-entity.service';
 
-let isLoading = false;
-
-export const exerciseResolver: ResolveFn<boolean> = (route, state) => {
-  const store = inject(Store<AppState>);
-
-  return store.pipe(
-    select(allExercisesLoaded),
+export const exerciseResolver: ResolveFn<boolean> = (route) => {
+  const exerciseEntityService = inject(ExerciseEntityService);
+  
+  return exerciseEntityService.loaded$.pipe(
     tap(loaded => {
-      if (!loaded && !isLoading) {
-        isLoading = true;
-        store.dispatch(ExerciseActions.loadExercises({ paginate: false }));
+      if (!loaded) {
+        exerciseEntityService.getAll();
       }
     }),
-    filter(loaded => loaded),
-    first(),
-    tap(() => {
-      isLoading = false;
-    })
+    filter(loaded => !!loaded),
+    first()
   );
 }; 
