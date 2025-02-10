@@ -4,10 +4,11 @@ import { HttpClient } from '@angular/common/http';
 import { Exercise, ExerciseData } from '../../shared/models/exercise';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ExerciseDataService extends DefaultDataService<Exercise> {
-    private readonly baseUrl = 'https://campos-portfolio.net/api/exercises?paginate=false';
+    private readonly baseUrl = `${environment.api}/exercises?paginate=false`;
   constructor(protected override http: HttpClient, httpUrlGenerator: HttpUrlGenerator) {
     super('Exercises', http, httpUrlGenerator);
   }

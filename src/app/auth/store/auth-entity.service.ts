@@ -4,6 +4,9 @@ import { User } from '../../shared/models/users';
 import { Observable, tap, map, BehaviorSubject } from 'rxjs';
 import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate';
 import { AuthDataService } from './auth-data.service';
+import { UserEntityService } from '../../store/user/user-entity.service';
+import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';
+import { TrainingEntityService } from '../../store/training/training-entity.service';
 
 interface AuthState {
     user: User;
@@ -12,21 +15,12 @@ interface AuthState {
 
 @Injectable({ providedIn: 'root' })
 export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
-    private isAdminSubject = new BehaviorSubject<boolean>(false);
     private tokenSubject = new BehaviorSubject<string>('');
-    private currentUserSubject = new BehaviorSubject<User>({} as User);
-
-    readonly isAdmin$ = this.isAdminSubject.asObservable();
     readonly token$ = this.tokenSubject.asObservable();
-    readonly currentUser$ = this.currentUserSubject.asObservable();
 
     readonly authState$ = this.entities$.pipe(
         map(entities => entities[0]),
         tap(state => {
-            if (state?.user) {
-                this.currentUserSubject.next(state.user);
-                this.isAdminSubject.next(state.user.roles.map(role => role.name).includes('admin'));
-            }
             if (state?.token) {
                 this.tokenSubject.next(state.token);
             }
@@ -36,17 +30,12 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
     constructor(
         serviceElementsFactory: EntityCollectionServiceElementsFactory,
         private authDataService: AuthDataService,
+        private userEntityService: UserEntityService,
+        private exerciseEntityService: ExerciseEntityService,
+        private trainingEntityService: TrainingEntityService,
     ) {
         super('Auth', serviceElementsFactory);
         this.authState$.subscribe();
-    }
-
-    getCurrentUser(): User {
-        return this.currentUserSubject.getValue();
-    }
-
-    getIsAdmin(): boolean {
-        return this.isAdminSubject.getValue();
     }
 
     getToken(): string {
@@ -60,6 +49,7 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
                     this.addOneToCache({ user: response.data.user, token: response.data.token });
                     this.tokenSubject.next(response.data.token);
                     localStorage.setItem('token', response.data.token);
+                    this.userEntityService.setCurrentUser(response.data.user);
                 }
             })
         );
@@ -68,10 +58,12 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
     logout(): Observable<void> {
         return this.authDataService.logout().pipe(
             tap(() => {
-                this.isAdminSubject.next(false);
                 this.tokenSubject.next('');
                 localStorage.removeItem('token');
                 this.clearCache();
+                this.userEntityService.clearUserState();
+                this.exerciseEntityService.clearCache();
+                this.trainingEntityService.clearCache();
             })
         );
     }

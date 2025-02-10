@@ -6,6 +6,7 @@ import { LoadingService } from '../shared/services/loading.service';
 import { Observable } from 'rxjs';
 import { User } from '../shared/models/users';
 import { AuthEntityService } from '../auth/store/auth-entity.service';
+import { UserEntityService } from '../store/user/user-entity.service';
 
 
 @Component({
@@ -20,11 +21,12 @@ import { AuthEntityService } from '../auth/store/auth-entity.service';
   ]
 })
 export class MenuComponent {
+  private readonly userEntityService = inject(UserEntityService);
   private readonly authEntityService = inject(AuthEntityService);
   private readonly router = inject(Router);
   private readonly loadingService = inject(LoadingService);
 
-  currentUser$: Observable<User> = this.authEntityService.currentUser$;
+  currentUser$: Observable<User> = this.userEntityService.currentUser$;
 
   logout(): void {
     const logout$ = this.authEntityService.logout();

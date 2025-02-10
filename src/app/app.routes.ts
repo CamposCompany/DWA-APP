@@ -22,15 +22,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'first-access',
-    loadComponent: () =>
-      import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
-    canActivate: [authGuard]
-  },
-  {
     path: 'first-access/:id',
     loadComponent: () =>
-      import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
+      import('./auth/first-access/first-access.component').then((m) => m.FirstAccessComponent),
     canActivate: [authGuard],
   },
   {

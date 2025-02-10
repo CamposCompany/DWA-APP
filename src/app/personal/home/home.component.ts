@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { firstValueFrom, map, Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { User } from '../../shared/models/users';
 import { Training } from '../../shared/models/training';
 import { Exercise } from '../../shared/models/exercise';
@@ -48,7 +48,7 @@ export class HomeComponent {
   users$: Observable<User[]> = this.userEntityService.entities$;
   gymMembers$: Observable<User[]> = this.userEntityService.getGymMembers();
 
-  currentUser$: Observable<User> = this.authEntityService.currentUser$;
+  currentUser$: Observable<User> = this.userEntityService.currentUser$;
   userCount$: Observable<number> = this.users$.pipe(
     map((users: User[]) => users.length)
   );

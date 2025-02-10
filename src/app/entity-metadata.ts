@@ -8,7 +8,10 @@ import { ExerciseViewState } from './store/exercise-view/exercise-view.state';
 export const entityMetadata: EntityMetadataMap = {
   Trainings: {
     entityName: 'Trainings',
-    selectId: (training: Training) => training.id
+    selectId: (training: Training) => training.id,
+    entityDispatcherOptions: {
+      optimisticUpdate: true
+    }
   },
   Exercises: {
     entityName: 'Exercises',
@@ -16,11 +19,17 @@ export const entityMetadata: EntityMetadataMap = {
   },
   Users: {
     entityName: 'Users',
-    selectId: (user: User) => user.id
+    selectId: (user: User) => user.id,
+    entityDispatcherOptions: {
+      optimisticUpdate: true
+    }
   },
   Auth: {
     entityName: 'Auth',
-    selectId: (auth: AuthenticateLoginData) => auth.user.id
+    selectId: (auth: AuthenticateLoginData) => auth?.user?.id ?? 0,
+    entityDispatcherOptions: {
+      optimisticUpdate: true
+    }
   },
   ExerciseView: {
     selectId: (state: ExerciseViewState) => 'current',

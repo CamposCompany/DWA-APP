@@ -2,14 +2,14 @@ import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
 import { tap, filter, first } from 'rxjs/operators';
 import { TrainingEntityService } from './training-entity.service';
-import { AuthEntityService } from '../../auth/store/auth-entity.service';
+import { UserEntityService } from '../user/user-entity.service';
 
 export const trainingResolver: ResolveFn<boolean> = () => {
   const trainingEntityService = inject(TrainingEntityService);
-  const authEntityService = inject(AuthEntityService);
+  const userEntityService = inject(UserEntityService);
   
-  const isAdmin = authEntityService.getIsAdmin();
-  const currentUser = authEntityService.getCurrentUser();
+  const isAdmin = userEntityService.getIsAdmin();
+  const currentUser = userEntityService.getCurrentUser();
 
   
   return trainingEntityService.loaded$.pipe(

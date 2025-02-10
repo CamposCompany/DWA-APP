@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { CreatedTrainingData, Training, TrainingData, UserTrainingData } from '../../shared/models/training';
+import { Training, TrainingData, UserTrainingData } from '../../shared/models/training';
 import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
-import { map, Observable, tap } from 'rxjs';
+import { map, Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 
 @Injectable({

@@ -1,10 +1,9 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Training, TrainingData } from '../../shared/models/training';
-import { map, tap } from 'rxjs/operators';
+import { Training } from '../../shared/models/training';
+import { map } from 'rxjs/operators';
 import { TrainingDataService } from './training-data.service';
-import { Observable, BehaviorSubject, firstValueFrom } from 'rxjs';
-import Swal from 'sweetalert2';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

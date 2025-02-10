@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -11,6 +11,7 @@ import { BehaviorSubject, catchError, of, tap } from 'rxjs';
 import { AuthEntityService } from '../store/auth-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-first-login',
   standalone: true,
@@ -19,7 +20,7 @@ import { HttpErrorResponse } from '@angular/common/http';
   styleUrl: './first-access.component.scss',
   providers: [LoadingService, AuthEntityService]
 })
-export class FirstLoginComponent {
+export class FirstAccessComponent {
   private readonly fb = inject(FormBuilder);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
@@ -60,8 +61,18 @@ export class FirstLoginComponent {
       this.userEntityService.update(updateData).pipe(
         tap(() => {
           this.errorMessageSubject.next(null);
-          this.successMessageSubject.next('Usuário atualizado com sucesso');
-          this.router.navigateByUrl('on-boarding');
+          Swal.fire({
+            title: 'Sucesso!',
+            text: 'Usuário atualizado com sucesso',
+            icon: 'success',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          });
+
+          this.router.navigateByUrl('/on-boarding');
         }),
         catchError((err: HttpErrorResponse) => {
           this.errorMessageSubject.next(err.error?.message || 'Erro inesperado.');

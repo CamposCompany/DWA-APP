@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthEntityService } from '../store/auth-entity.service';
+import { UserEntityService } from '../../store/user/user-entity.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -10,9 +10,9 @@ import { AuthEntityService } from '../store/auth-entity.service';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  private readonly authEntityService = inject(AuthEntityService);
+  private readonly userEntityService = inject(UserEntityService);
   private readonly router = inject(Router);
-  isAdmin: boolean = this.authEntityService.getIsAdmin();
+  isAdmin: boolean = this.userEntityService.getIsAdmin();
 
 
   constructor() { }
