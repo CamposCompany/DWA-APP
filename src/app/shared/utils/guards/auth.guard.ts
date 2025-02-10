@@ -1,12 +1,14 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
+import { AuthEntityService } from '../../../auth/store/auth-entity.service';
 
-export const authGuard = () => {
-  const authService = inject(AuthService);
+export const authGuard = async () => {
+  const authEntityService = inject(AuthEntityService);
   const router = inject(Router);
 
-  if (authService.isLoggedIn()) {
+  const token = authEntityService.getToken();
+
+  if (token) {
     return true;
   } else {
     router.navigate(['/login']);

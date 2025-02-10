@@ -15,9 +15,9 @@ export interface Exercise {
   user_trainingID: number;
   series: number;
   rest: number;
-  description: string;
-  equipment: string;
-  category: string;
+  description?: string;
+  equipment?: string;
+  category?: string;
   image: string | null;
   video: string | null;
   comments: string | null;
@@ -30,12 +30,17 @@ export interface Exercise {
   exercise_name: string;
   repetitions: Repetition[];
   exercise: ExerciseDetails;
+  pivot?: {
+    training_id: number
+    exercise_id: number;
+  }
 }
 
 export interface Repetition {
   id: number;
   training_exerciseID: number;
   repetitions: number;
+  weight: number | null;
   created_at: string;
   updated_at: string;
 }
@@ -48,4 +53,6 @@ interface ExerciseDetails {
   category: string;
   image: string | null;
   video: string | null;
+  created_at: string;
+  updated_at: string;
 }

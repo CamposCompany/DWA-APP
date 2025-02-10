@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -6,29 +6,25 @@ import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { UserService } from '../../shared/services/user.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
-import { BehaviorSubject } from 'rxjs';
-import { AuthService } from '../../shared/services/auth.service';
-import { Store } from '@ngrx/store';
-
-import { updateUser } from '../login/store/auth.action';
-import { AppState } from '../../store';
+import { BehaviorSubject, catchError, of, tap } from 'rxjs';
+import { AuthEntityService } from '../store/auth-entity.service';
+import { UserEntityService } from '../../store/user/user-entity.service';
+import { HttpErrorResponse } from '@angular/common/http';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-first-login',
   standalone: true,
   imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './first-access.component.html',
   styleUrl: './first-access.component.scss',
-  providers: [LoadingService, AuthService]
+  providers: [LoadingService, AuthEntityService]
 })
-export class FirstLoginComponent {
+export class FirstAccessComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly userService = inject(UserService);
   private readonly activatedRoute = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly loadingService = inject(LoadingService);
-  private readonly store = inject(Store<AppState>);
+  private readonly userEntityService = inject(UserEntityService);
 
   readonly passwordFieldType = 'password';
 
@@ -57,19 +53,32 @@ export class FirstLoginComponent {
         'password_confirmation',
       ]);
 
-      const auth$ = this.userService.updateUser(formValues, Number(this.userId));
+      const updateData = {
+        id: Number(this.userId),
+        ...formValues
+      };
 
-      this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: ({ data, message }) => {
-          this.store.dispatch(updateUser({ user: data }));
+      this.userEntityService.update(updateData).pipe(
+        tap(() => {
           this.errorMessageSubject.next(null);
-          this.successMessageSubject.next(message);
-          this.router.navigateByUrl('on-boarding');
-        },
-        error: (err) => {
+          Swal.fire({
+            title: 'Sucesso!',
+            text: 'Usuário atualizado com sucesso',
+            icon: 'success',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          });
+
+          this.router.navigateByUrl('/on-boarding');
+        }),
+        catchError((err: HttpErrorResponse) => {
           this.errorMessageSubject.next(err.error?.message || 'Erro inesperado.');
-        }
-      });
+          return of(null);
+        })
+      ).subscribe();
     }
   }
 }

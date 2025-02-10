@@ -1,14 +1,11 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { firstValueFrom } from 'rxjs';
-import { isAdminSelector } from '../../../auth/login/store/auth.selectors';
-import { Store } from '@ngrx/store';
-
-export const memberGuard: CanActivateFn = async (route, state) => {
+import { UserEntityService } from '../../../store/user/user-entity.service';
+export const memberGuard: CanActivateFn = async () => {
   const router = inject(Router);
-  const store = inject(Store);
+  const userEntityService = inject(UserEntityService);
 
-  const isUserAdmin = await firstValueFrom(store.select(isAdminSelector));
+  const isUserAdmin = userEntityService.getIsAdmin();
 
   if (!isUserAdmin) {
     return true;

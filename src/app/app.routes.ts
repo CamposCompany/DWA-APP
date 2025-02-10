@@ -2,8 +2,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './shared/utils/guards/auth.guard';
 import { memberGuard } from './shared/utils/guards/member.guard';
 import { adminGuard } from './shared/utils/guards/admin.guard';
-import { AuthEffects } from './auth/login/store/auth.effects';
-import { provideEffects } from '@ngrx/effects';
 
 export const routes: Routes = [
   {
@@ -15,10 +13,7 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () =>
-      import('./auth/login/login.component').then((m) => m.LoginComponent),
-    providers: [
-      provideEffects(AuthEffects)
-    ]
+      import('./auth/login/login.component').then((m) => m.LoginComponent)
   },
   {
     path: 'on-boarding',
@@ -27,15 +22,9 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'first-access',
-    loadComponent: () =>
-      import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
-    canActivate: [authGuard]
-  },
-  {
     path: 'first-access/:id',
     loadComponent: () =>
-      import('./auth/first-access/first-access.component').then((m) => m.FirstLoginComponent),
+      import('./auth/first-access/first-access.component').then((m) => m.FirstAccessComponent),
     canActivate: [authGuard],
   },
   {
@@ -59,6 +48,12 @@ export const routes: Routes = [
     loadChildren: () =>
       import('./personal/personal.routes').then((m) => m.PERSONAL_ROUTES),
     canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'general',
+    loadChildren: () =>
+      import('./general.routes').then((m) => m.GENERAL_ROUTES),
+    canActivate: [authGuard]
   },
   {
     path: 'menu',

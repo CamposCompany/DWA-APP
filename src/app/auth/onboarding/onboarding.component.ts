@@ -1,12 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { UsersStore } from '../../store/users.store';
-import { ExercisesStore } from '../../store/exercises.store';
-
-import { select, Store } from '@ngrx/store';
-import { isAdminSelector } from '../login/store/auth.selectors';
-import { AppState } from '../../store';
-
+import { UserEntityService } from '../../store/user/user-entity.service';
 
 @Component({
   selector: 'app-onboarding',
@@ -16,28 +10,21 @@ import { AppState } from '../../store';
   styleUrl: './onboarding.component.scss'
 })
 export class OnboardingComponent {
-  private readonly store = inject(Store<AppState>);
+  private readonly userEntityService = inject(UserEntityService);
   private readonly router = inject(Router);
-  private readonly usersStore = inject(UsersStore);
-  private readonly exerciseStore = inject(ExercisesStore);
+  isAdmin: boolean = this.userEntityService.getIsAdmin();
+
 
   constructor() { }
 
   ngOnInit() {
-    this.store.pipe(select(isAdminSelector))
-      .subscribe(isAdminValue => {
-        const targetRoute = isAdminValue
-          ? '/personal/home'
-          : '/members/home';
-
-        if (isAdminValue) {
-          this.usersStore.loadAllUsers();
-          this.exerciseStore.loadAllExercises();
-        }
-
-        setTimeout(() => {
-          this.router.navigateByUrl(targetRoute);
-        }, 2500);
-      });
+    setTimeout(() => {
+      if(this.isAdmin) {
+        this.router.navigateByUrl('/personal/home');
+      } else {
+        this.router.navigateByUrl('/members/home');
+      }
+    }, 2000);
   }
 }
+

@@ -12,7 +12,7 @@ export class ButtonComponent {
   @Input() label: string = 'Continuar';
   @Input() buttonClass: string = 'btn-primary';
   @Input() disabled: boolean = false;
-  @Input() addIcon: boolean = false;
+  @Input() icon: string = '';
   @Output() clicked = new EventEmitter<void>();
 
   onClick() {

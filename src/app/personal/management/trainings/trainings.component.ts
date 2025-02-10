@@ -5,9 +5,7 @@ import { Training } from '../../../shared/models/training';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
-import { Store } from '@ngrx/store';
-import { AppState } from '../../../store';
-import { selectAllTrainings } from '../../../store/training/training.selectors';
+import { TrainingEntityService } from '../../../store/training/training-entity.service';
 
 @Component({
   selector: 'app-trainings',
@@ -17,8 +15,8 @@ import { selectAllTrainings } from '../../../store/training/training.selectors';
   styleUrl: './trainings.component.scss'
 })
 export class TrainingsComponent {
-  private readonly store = inject(Store<AppState>);
-  trainings$: Observable<Training[]> = this.store.select(selectAllTrainings);
+  private readonly trainingEntityService = inject(TrainingEntityService);
+  trainings$: Observable<Training[]> = this.trainingEntityService.entities$;
   filteredTrainings$: Observable<Training[]> = new Observable<Training[]>;
 
 

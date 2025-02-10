@@ -2,13 +2,11 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../shared/components/header/header.component';
-import { AuthService } from '../shared/services/auth.service';
 import { LoadingService } from '../shared/services/loading.service';
 import { Observable } from 'rxjs';
 import { User } from '../shared/models/users';
-import { selectUser } from '../auth/login/store/auth.selectors';
-import { Store } from '@ngrx/store';
-import { AppState } from '../store';
+import { AuthEntityService } from '../auth/store/auth-entity.service';
+import { UserEntityService } from '../store/user/user-entity.service';
 
 
 @Component({
@@ -23,15 +21,15 @@ import { AppState } from '../store';
   ]
 })
 export class MenuComponent {
-  private readonly store = inject(Store<AppState>);
-  private readonly authService = inject(AuthService);
+  private readonly userEntityService = inject(UserEntityService);
+  private readonly authEntityService = inject(AuthEntityService);
   private readonly router = inject(Router);
   private readonly loadingService = inject(LoadingService);
 
-  currentUser$: Observable<User> = this.store.select(selectUser);
+  currentUser$: Observable<User> = this.userEntityService.currentUser$;
 
   logout(): void {
-    const logout$ = this.authService.logout();
+    const logout$ = this.authEntityService.logout();
 
     this.loadingService.showLoaderUntilCompleted(logout$).subscribe({
       next: () => {

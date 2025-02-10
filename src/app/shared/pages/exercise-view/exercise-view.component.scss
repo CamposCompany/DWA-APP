@@ -1,0 +1,109 @@
+.view-container {
+  padding: 16px;
+  background-color: white;
+  border-radius: 20px;
+  height: 90%;
+
+  .information-container {
+    grid-template-rows: 50px;
+  }
+
+  h3,
+  p,
+  h4 {
+    font-family: "Poppins", sans-serif;
+  }
+
+  p {
+    margin-bottom: 0;
+  }
+
+  h3 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: 16px;
+  }
+}
+
+.exercise-image-container {
+  width: 100%;
+  min-height: 200px;
+
+  img {
+    max-height: 300px;
+    object-fit: contain;
+    border-radius: 10px;
+  }
+}
+
+.training-info {
+  background-color: rgba(68, 68, 68, 0.2);
+  border-radius: 20px;
+
+  span, li {
+    font-family: "Poppins", sans-serif;
+    font-size: 12px;
+  }
+
+  .nav-tabs {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    
+    .nav-link {
+      color: #000000;
+      border: none;
+      padding: 8px 16px;
+      font-size: 14px;
+      
+      &.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-bottom: 2px solid #F5A623;
+        color: #F5A623;
+        font-weight: 600;
+      }
+      
+      &:hover:not(.active) {
+        border-bottom: 2px solid rgba(245, 166, 35, 0.5);
+      }
+
+      .series-done-icon {
+        width: 15px;
+        height: 15px;
+        filter: invert(71%) sepia(75%) saturate(436%) hue-rotate(339deg) brightness(95%) contrast(92%);
+      }
+    }
+  }
+
+  .tab-content {
+    padding: 16px 0 0 0;
+  }
+}
+
+.info-section {
+  min-height: 80px;
+
+  h4 {
+    margin-bottom: 0.5rem;
+  }
+
+  .content-box {
+    height: 65px;
+    font-size: 14px;
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.weight-input {
+  width: 70px;
+}
+
+.confirm-icon {
+  filter: invert(83%) sepia(31%) saturate(436%) hue-rotate(67deg) brightness(92%) contrast(87%);
+}

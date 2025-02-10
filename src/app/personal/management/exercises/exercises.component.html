@@ -4,8 +4,9 @@
   <p class="mt-4">Exercícios cadastrados</p>
   <div class="mt-3">
     <app-card-exercise
-      [exercises]="(filteredExercises$ | async)!"
-      (exerciseClicked)="viewExercise($event)"
+      *ngFor="let exercise of (filteredExercises$ | async)!"
+      [exercise]="exercise"
+      (exerciseClicked)="viewExercises($event)"
     ></app-card-exercise>
   </div>
 </div>

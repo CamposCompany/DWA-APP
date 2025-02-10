@@ -1,42 +1,28 @@
 import { ResolveFn } from '@angular/router';
 import { inject } from '@angular/core';
-import { select, Store } from '@ngrx/store';
+import { tap, filter, first } from 'rxjs/operators';
+import { TrainingEntityService } from './training-entity.service';
+import { UserEntityService } from '../user/user-entity.service';
 
-import { first, tap, map } from 'rxjs/operators';
-import { TrainingActions } from './action-types';
-import { allTrainingsLoaded } from './training.selectors';
-import { AppState } from '..';
-import { isAdminSelector } from '../../auth/login/store/auth.selectors';
-
-export const trainingResolver: ResolveFn<boolean> = (route, state) => {
-  const store = inject(Store<AppState>);
+export const trainingResolver: ResolveFn<boolean> = () => {
+  const trainingEntityService = inject(TrainingEntityService);
+  const userEntityService = inject(UserEntityService);
   
-  return store.pipe(
-    select(isAdminSelector),
-    first(),
-    tap(isAdmin => {
-      if (isAdmin) {
-        store.pipe(
-          select(allTrainingsLoaded),
-          first(),
-          tap(loaded => {
-            if (!loaded) {
-              store.dispatch(TrainingActions.loadAllTrainings());
-            }
-          })
-        ).subscribe();
-      } else {
-        store.pipe(
-          select(allTrainingsLoaded),
-          first(),
-          tap(loaded => {
-            if (!loaded) {
-              store.dispatch(TrainingActions.loadUserTrainings());
-            }
-          })
-        ).subscribe();
+  const isAdmin = userEntityService.getIsAdmin();
+  const currentUser = userEntityService.getCurrentUser();
+
+  
+  return trainingEntityService.loaded$.pipe(
+    tap(loaded => {
+      if (!loaded) {
+        if(isAdmin) {
+          trainingEntityService.getAll();
+        } else {
+          trainingEntityService.getUserTrainings(currentUser.id);
+        }
       }
     }),
-    map(() => true)
-  );
+    filter(loaded => !!loaded),
+    first()
+  )
 };

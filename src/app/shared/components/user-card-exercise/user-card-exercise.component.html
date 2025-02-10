@@ -1,0 +1,48 @@
+<div
+  class="card-training d-flex justify-content-between align-items-center mb-3 gap-3 p-3"
+  (click)="onExerciseClick()"
+>
+  <div class="d-flex align-items-center gap-3 w-100">
+    <div class="exercise-info w-100 p-3">
+      <h3 class="exercise-name">{{ exercise.exercise_name }}</h3>
+
+      <div class="exercise-details d-flex gap-4 mt-3">
+        <div class="detail-item text-center">
+          <span class="value">{{ exercise.series }}</span>
+          <span class="label">SERIES</span>
+        </div>
+
+        <div class="detail-item text-center">
+          <span class="value" *ngIf="exercise.repetitions.length > 0">{{
+            formatRepetitions(exercise.repetitions)
+          }}</span>
+          <span *ngIf="exercise.methodology" class="methodology">
+            {{ formatMethodology(exercise.methodology) }}
+          </span>
+          <span class="label">MÉTODO</span>
+        </div>
+
+        <div class="detail-item text-center">
+          <span class="value">{{ exercise.weight || 0 }}kg</span>
+          <span class="label">CARGA</span>
+        </div>
+      </div>
+    </div>
+    <div class="exercise-status">
+      <div class="form-check form-switch">
+        <input
+          class="form-check-input"
+          type="checkbox"
+          role="switch"
+          [checked]="isCompleted || isTrainingCompleted" 
+          (click)="onToggleExercise($event)"
+          [disabled]="isTrainingCompleted || !isTrainingStarted || isTrainingPaused || isOtherTrainingActive"
+          [ngClass]="{
+            'bg-success border-success': isCompleted || isTrainingCompleted,
+            disabled: !isTrainingStarted || isTrainingPaused || isOtherTrainingActive
+          }"
+        />
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,250 @@
+<div class="h-100" *ngIf="exercise$ | async as exercise">
+  <app-header title="Exercício"></app-header>
+  <div class="view-container d-flex w-100 justify-content-center">
+    <div
+      class="d-flex flex-column justify-content-around w-100 align-items-start"
+    >
+      <div class="w-100 text-center mb-3">
+        <h3>{{ exercise.exercise_name || exercise.name }}</h3>
+      </div>
+
+      <div
+        class="exercise-image-container border border-warning rounded d-flex flex-column justify-content-center align-items-center p-3 mb-3"
+      >
+        <img
+          [src]="exercise.image || 'assets/images/default-trained-muscles.png'"
+          alt="Exercise Image"
+          class="img-fluid rounded mb-2 w-100"
+        />
+      </div>
+
+      <div class="w-100 mb-2" *ngIf="exercise.user_trainingID">
+        <div class="training-info p-2 mb-2">
+          <ul
+            class="nav nav-tabs justify-content-center"
+            id="exerciseTabs"
+            role="tablist"
+          >
+            <li
+              class="nav-item"
+              role="presentation"
+              *ngFor="
+                let series of createSeriesArray(exercise.series);
+                let i = index
+              "
+            >
+              <button
+                class="nav-link d-flex align-items-center gap-2"
+                [class.active]="(currentSeries$ | async) === i"
+                [id]="'series-' + i + '-tab'"
+                data-bs-toggle="tab"
+                [attr.data-bs-target]="'#series-' + i"
+                type="button"
+                role="tab"
+                [attr.aria-controls]="'series-' + i"
+                [attr.aria-selected]="(currentSeries$ | async) === i"
+                (click)="exerciseViewService.setCurrentSeries(exercise.id, i)"
+              >
+                Série {{ i + 1 }}
+                <img
+                  *ngIf="
+                    (exerciseViewService.isSeriesCompleted(i) | async) ||
+                    (isTrainingCompleted$ | async)
+                  "
+                  src="assets/icons/done.svg"
+                  alt="Concluído"
+                  class="series-done-icon"
+                />
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content mt-3" id="exerciseTabsContent">
+            <div
+              class="tab-pane fade"
+              [class.show]="(currentSeries$ | async) === i"
+              [class.active]="(currentSeries$ | async) === i"
+              *ngFor="
+                let series of createSeriesArray(exercise.series);
+                let i = index
+              "
+              [id]="'series-' + i"
+              role="tabpanel"
+              [attr.aria-labelledby]="'series-' + i + '-tab'"
+            >
+              <div class="d-flex flex-column gap-3">
+                <div class="d-flex justify-content-around">
+                  <div
+                    class="d-flex align-items-center gap-2"
+                    *ngIf="
+                      !hasMethodology(exercise) &&
+                      exercise.repetitions.length > 0
+                    "
+                  >
+                    <img
+                      src="assets/icons/exercise-view/rep.svg"
+                      alt="Repetitions"
+                      class="img-fluid"
+                    />
+                    <span
+                      >{{
+                        getRepetitionForSeries(exercise.repetitions, i)
+                      }}
+                      rep</span
+                    >
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      src="assets/icons/exercise-view/weight.svg"
+                      alt="Weight"
+                      class="img-fluid"
+                    />
+                    <ng-container
+                      *ngIf="
+                        !isEditingWeight || currentEditingSeriesIndex !== i;
+                        else weightEdit
+                      "
+                    >
+                      <span
+                        >{{
+                          getWeightForSeries(exercise.repetitions, i) || 0
+                        }}kg</span
+                      >
+                      <img
+                        src="assets/icons/exercise-view/pencil.svg"
+                        alt="Edit"
+                        class="img-fluid cursor-pointer"
+                        style="width: 19px; height: 13px"
+                        (click)="startWeightEdit(i)"
+                      />
+                    </ng-container>
+                    <ng-template #weightEdit>
+                      <input
+                        type="number"
+                        class="form-control form-control-sm weight-input"
+                        [(ngModel)]="editWeight"
+                        min="0"
+                        step="0.5"
+                      />
+                      <img
+                        src="assets/icons/done.svg"
+                        alt="Confirm"
+                        class="img-fluid cursor-pointer confirm-icon"
+                        (click)="confirmWeightEdit()"
+                      />
+                    </ng-template>
+                  </div>
+
+                  <div class="d-flex align-items-center gap-2">
+                    <img
+                      src="assets/icons/exercise-view/clock.svg"
+                      alt="Rest"
+                      class="img-fluid"
+                    />
+                    <span>{{ exercise.rest }}s</span>
+                  </div>
+                </div>
+
+                <app-button
+                  [label]="
+                    (isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)
+                      ? 'Exercício Concluído'
+                      : isLastSeries(exercise, i)
+                      ? 'Concluir Exercício'
+                      : 'Próxima Série'
+                  "
+                  [icon]="((isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)) ? 'assets/icons/done.svg' : ''"
+                  buttonClass="btn-success"
+                  class="w-100"
+                  [disabled]="
+                    (isButtonDisabled(i) | async) || 
+                    (isExerciseCompleted$ | async) || 
+                    (isTrainingCompleted$ | async) ?? false
+                  "
+                  (clicked)="onCompleteSeries(i)"
+                ></app-button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <app-button
+          [label]="
+            (restTimer.timer$ | async) === null
+              ? exercise.rest + 's'
+              : (restTimer.timer$ | async) + 's'
+          "
+          buttonClass="btn-secondary"
+          class="w-100"
+          icon="assets/icons/exercise-view/clock.svg"
+          (clicked)="startRestTimer(exercise.rest)"
+          [disabled]="(restTimer.timer$ | async) !== null"
+        ></app-button>
+      </div>
+
+      <div class="d-flex flex-column gap-2 w-100">
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Descrição:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.description || exercise.exercise.description }}
+            </p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Músculos Trabalhados:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.category || exercise.exercise.category }}
+            </p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section">
+          <h4 class="mb-1">Equipamento:</h4>
+          <div class="content-box">
+            <p class="mb-0">
+              {{ exercise.equipment || exercise.exercise.equipment }}
+            </p>
+          </div>
+        </div>
+
+        <div
+          class="w-100 info-section"
+          *ngIf="hasMethodology(exercise) && exercise.user_trainingID"
+        >
+          <h4 class="mb-1">Metodologia:</h4>
+          <div class="content-box">
+            <p class="mb-0">{{ exercise.methodology }}</p>
+          </div>
+        </div>
+
+        <div class="w-100 info-section" *ngIf="exercise.comments">
+          <h4 class="mb-1">Observações:</h4>
+          <div class="content-box">
+            <p class="mb-0">{{ exercise.comments }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="w-100 d-flex flex-column gap-2">
+        <div class="d-flex gap-2 w-100 flex-column">
+          <app-button
+            [disabled]="!(hasNextExercise$ | async)"
+            (click)="navigateToExercise('next')"
+            label="PRÓXIMO"
+            class="w-100"
+          ></app-button>
+          <app-button
+            [disabled]="!(hasPreviousExercise$ | async)"
+            (click)="navigateToExercise('previous')"
+            label="ANTERIOR"
+            class="w-100"
+            buttonClass="btn-secondary"
+          ></app-button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

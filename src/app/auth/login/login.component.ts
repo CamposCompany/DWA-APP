@@ -2,14 +2,13 @@ import { Component, inject, OnInit } from '@angular/core';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '../../shared/components/button/button.component';
-import { AuthService } from '../../shared/services/auth.service';
 import { LoadingService } from '../../shared/services/loading.service';
 import { LoadingComponent } from "../../shared/components/loading/loading.component";
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
-
+import { AuthEntityService } from '../store/auth-entity.service';
 
 @Component({
   selector: 'app-login',
@@ -17,11 +16,11 @@ import { BehaviorSubject } from 'rxjs';
   imports: [InputComponent, ButtonComponent, ReactiveFormsModule, LoadingComponent, CommonModule, RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
-  providers: [AuthService, LoadingService],
+  providers: [AuthEntityService, LoadingService],
 })
 export class LoginComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
-  private readonly authService = inject(AuthService);
+  private readonly authEntityService = inject(AuthEntityService);
   private readonly router = inject(Router);
   private readonly loadingService = inject(LoadingService);
 
@@ -44,7 +43,7 @@ export class LoginComponent implements OnInit {
 
       formValues.password = btoa(formValues.password);
 
-      const auth$ = this.authService.authenticate(formValues);
+      const auth$ = this.authEntityService.authenticate({ ...formValues, fromApp: true });
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: ({ data: { user } }) => {

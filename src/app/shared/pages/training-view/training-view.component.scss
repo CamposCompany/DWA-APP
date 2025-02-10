@@ -1,0 +1,36 @@
+:host {
+  h3 {
+    color: #F5A623;
+  }
+
+  h3,
+  p, h4 {
+    font-family: "Poppins", sans-serif;
+  }
+
+  .view-container {
+    border: 1px solid #F5A623;
+    border-radius: 20px;
+    padding: 20px 12px;
+    background-color: #313131;
+
+    h3 {
+      font-size: 16px;
+    }
+
+    p, h4 {
+      font-size: 12px;
+      color: white;
+      margin-bottom: 0px;
+    }
+
+    img {
+      width: 15px;
+    }
+  }
+
+  .no-exercises {
+    color: white;
+    font-size: 12px;
+  }
+}

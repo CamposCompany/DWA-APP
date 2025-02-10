@@ -3,15 +3,28 @@
   [ngClass]="{ 'card-large': size === 'large', 'card-small': size === 'small' }"
 >
   <img [src]="imageSrc" alt="Imagem de perfil" class="card-image w-100" />
-  <div class="information d-flex justify-content-between">
-    <div>
-      <h2 class="title">{{ title }}</h2>
-      <div class="d-flex justify-content-between mt-3">
-        <p *ngIf="validity" class="text-center">Validade: {{ validity }}</p>
+  <div class="information d-flex justify-content-between flex-column">
+    <h2 class="title">{{ title }}</h2>
+    <div
+      class="d-flex mt-3 align-items-center"
+      [ngClass]="{
+        'justify-content-between': duration,
+        'justify-content-start': !duration
+      }"
+    >
+      <p *ngIf="validity" class="text-center">Validade: {{ validity }}</p>
+      <div class="d-flex gap-1" *ngIf="duration">
+        <img src="assets/icons/clock.svg" alt="clock icon" />
+        <p class="text-center">
+          {{ duration }}
+        </p>
       </div>
-    </div>
-    <div class="d-flex align-items-end" *ngIf="showButton">
-      <app-button [label]="buttonLabel" buttonClass="btn-secondary"></app-button>
+      <div class="d-flex align-items-end" *ngIf="showButton">
+        <app-button
+          [label]="buttonLabel"
+          buttonClass="btn-secondary"
+        ></app-button>
+      </div>
     </div>
   </div>
 </div>

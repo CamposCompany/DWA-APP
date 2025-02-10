@@ -1,7 +1,6 @@
 import { Component, OnInit, TemplateRef, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoadingService } from '../../shared/services/loading.service';
-import { AuthService } from '../../shared/services/auth.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { OnlyOneErrorPipe } from '../../shared/utils/pipes/only-one-error.pipe';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -11,6 +10,7 @@ import { ButtonComponent } from '../../shared/components/button/button.component
 import { InputComponent } from '../../shared/components/input/input.component';
 import { ForgotPasswordRes } from '../../shared/models/authenticate';
 import { BehaviorSubject, Observable } from 'rxjs';
+import { AuthEntityService } from '../store/auth-entity.service';
 
 
 @Component({
@@ -27,7 +27,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
     RouterModule,
     OnlyOneErrorPipe
   ],
-  providers: [LoadingService, AuthService]
+  providers: [LoadingService, AuthEntityService]
 })
 export class ResetPasswordComponent implements OnInit {
   @ViewChild('firstStepTemplate', { static: true }) firstStepTemplate!: TemplateRef<any>;
@@ -56,7 +56,7 @@ export class ResetPasswordComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private loadingService: LoadingService,
-    private authService: AuthService,
+    private authEntityService: AuthEntityService,
     private activatedRoute: ActivatedRoute,
     private route: Router
   ) { }
@@ -118,7 +118,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   private executeStep1(): void {
-    const auth$: Observable<ForgotPasswordRes> = this.authService.resetPasswordStep1(this.firstStepForm.value);
+    const auth$: Observable<ForgotPasswordRes> = this.authEntityService.resetPasswordStep1(this.firstStepForm.value);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res: ForgotPasswordRes) => {
@@ -135,7 +135,7 @@ export class ResetPasswordComponent implements OnInit {
       ...this.secondStepForm.value,
     };
 
-    const auth$: Observable<ForgotPasswordRes> = this.authService.resetPasswordStep2(payload);
+    const auth$: Observable<ForgotPasswordRes> = this.authEntityService.resetPasswordStep2(payload);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res) => {
@@ -164,10 +164,10 @@ export class ResetPasswordComponent implements OnInit {
     }
 
     if (this.token && this.userId) {
-      const auth$ = this.authService.resetPasswordLastStep(payload);
+      const auth$ = this.authEntityService.resetPasswordLastStep(payload);
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: (res) => {
+        next: (res: any) => {
           this.successMessage.next(res.message);
 
           setTimeout(() => {

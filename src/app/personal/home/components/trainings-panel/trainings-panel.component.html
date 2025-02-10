@@ -7,14 +7,13 @@
       </p>
     </div>
     <div class="d-flex flex-column gap-3">
-      <ng-container *ngFor="let training of trainings$ | async">
+      <ng-container *ngFor="let training of trainings">
         <app-card
           [title]="training.name.toLocaleUpperCase()"
           [duration]="getDuration(training.duration)"
           imageSrc="assets/images/default-training-profile.png"
-          iconSrc="assets/icons/clock.svg"
           size="large"
-          [routerLink]="['/personal/trainings', training.id]"
+          [routerLink]="['/general/training', training.id]"
           [showButton]="true"
         ></app-card>
       </ng-container>

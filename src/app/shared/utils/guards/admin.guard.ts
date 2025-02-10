@@ -1,14 +1,12 @@
 import { CanActivateFn, Router } from '@angular/router';
 import { inject } from '@angular/core';
-import { Store } from '@ngrx/store';
-import { firstValueFrom } from 'rxjs';
-import { isAdminSelector } from '../../../auth/login/store/auth.selectors';
+import { UserEntityService } from '../../../store/user/user-entity.service';
 
 export const adminGuard: CanActivateFn = async () => {
   const router = inject(Router);
-  const store = inject(Store);
+  const userEntityService = inject(UserEntityService);
   
-  const isUserAdmin = await firstValueFrom(store.select(isAdminSelector));
+  const isUserAdmin = userEntityService.getIsAdmin();
   
   if (!isUserAdmin) {
     router.navigate(['/members/home']);

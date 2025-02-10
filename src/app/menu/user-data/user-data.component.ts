@@ -6,11 +6,9 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Observable } from 'rxjs';
-import { selectUser } from '../../auth/login/store/auth.selectors';
-
-import { Store } from '@ngrx/store';
-import { UserService } from '../../shared/services/user.service';
-import { AppState } from '../../store';
+import { tap, catchError, of } from 'rxjs';
+import Swal from 'sweetalert2';
+import { UserEntityService } from '../../store/user/user-entity.service';
 
 @Component({
   selector: 'app-user-data',
@@ -26,15 +24,24 @@ import { AppState } from '../../store';
   ]
 })
 export class UserDataComponent implements OnInit {
-  private readonly store = inject(Store<AppState>);
-  private readonly userService = inject(UserService);
+  private readonly userEntityService = inject(UserEntityService);
   private readonly fb = inject(FormBuilder);
   private userId: number = 0;
 
   userForm: FormGroup;
-  genderOptions = ['Masculino', 'Feminino', 'Outro', 'Prefiro não informar'];
+  readonly genderMap = {
+    'male': 'Masculino',
+    'female': 'Feminino',
+    'other': 'Outro'
+  };
+
+  genderOptions = [
+    { value: 'male', label: 'Masculino' },
+    { value: 'female', label: 'Feminino' },
+    { value: 'other', label: 'Outro' }
+  ].map(option => option.label);
   
-  currentUser$: Observable<User> = this.store.select(selectUser);
+  currentUser$: Observable<User> = this.userEntityService.currentUser$;
 
   constructor() {
     
@@ -43,7 +50,6 @@ export class UserDataComponent implements OnInit {
       username: ['', Validators.required],
       telephone: ['', Validators.required],
       email: ['', [Validators.email]],
-      birth_date: [''],
       gender: ['']
     });
   }
@@ -56,7 +62,7 @@ export class UserDataComponent implements OnInit {
         username: user.username,
         telephone: user.telephone,
         email: user.email,
-        gender: user.gender
+        gender: this.genderMap[user.gender as keyof typeof this.genderMap || 'other']
       });
     });
 
@@ -64,10 +70,36 @@ export class UserDataComponent implements OnInit {
   }
 
   onSubmit(): void {
-    if (this.userForm.valid) {
+    if (this.userForm.valid && this.userId) {
       const formValues = this.userForm.getRawValue();
-      // this.userService.updateUser(formValues, this.userId);
-      // this.store.dispatch(updateUser({ user: formValues }));
+      
+      const genderValue = Object.entries(this.genderMap)
+        .find(([key, value]) => value === formValues.gender)?.[0] || 'other';
+
+      const updateData = {
+        id: Number(this.userId),
+        ...formValues,
+        gender: genderValue
+      };
+
+      this.userEntityService.update(updateData).pipe(
+        tap(async () => {
+          await Swal.fire({
+            title: 'Sucesso!',
+            text: 'Dados atualizados com sucesso',
+            icon: 'success',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          });
+        }),
+        catchError((error) => {
+          console.error('Error updating user:', error);
+          return of(null);
+        })
+      ).subscribe();
     }
   }
 }

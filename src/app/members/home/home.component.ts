@@ -5,11 +5,10 @@ import { User } from '../../shared/models/users';
 import { Observable } from 'rxjs';
 import { Training } from '../../shared/models/training';
 import { CardComponent } from '../../shared/components/card/card.component';
-import { selectUser } from '../../auth/login/store/auth.selectors';
+import { formatDuration } from '../../shared/utils/helpers/duration.helper';
+import { TrainingEntityService } from '../../store/training/training-entity.service';
+import { UserEntityService } from '../../store/user/user-entity.service';
 
-import { Store } from '@ngrx/store';
-import { AppState } from '../../store';
-import { selectAllTrainings } from '../../store/training/training.selectors';
 
 @Component({
   selector: 'app-home',
@@ -19,12 +18,15 @@ import { selectAllTrainings } from '../../store/training/training.selectors';
   styleUrl: './home.component.scss'
 })
 export class HomeComponent {
-  private readonly store = inject(Store<AppState>);
-
-  currentUser$: Observable<User> = this.store.select(selectUser);
-  userTrainings$: Observable<Training[]> = this.store.select(selectAllTrainings);
+  private readonly trainingEntityService = inject(TrainingEntityService);
+  private readonly userEntityService = inject(UserEntityService);
+  
+  currentUser$: Observable<User> = this.userEntityService.currentUser$;
+  userTrainings$: Observable<Training[]> = this.trainingEntityService.entities$;
 
   formatDate(date: string) {
     return new Date(date).toLocaleDateString('pt-BR');
   }
+
+  formatDuration = formatDuration;
 }
