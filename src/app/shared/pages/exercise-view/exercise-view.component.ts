@@ -19,8 +19,6 @@ import { ExerciseViewService } from './services/exercise-view.service';
 import { RestTimerService } from '../training-view/services/rest-timer.service';
 import { TrainingStateService } from '../training-view/services/training-state.service';
 import { FormsModule } from '@angular/forms';
-import { TrainingEntityService } from '../../../store/training/training-entity.service';
-import { TrainingTimerService } from '../training-view/services/training-timer.service';
 
 @Component({
   selector: 'app-exercise-view',

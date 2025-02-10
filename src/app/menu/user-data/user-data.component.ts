@@ -56,7 +56,6 @@ export class UserDataComponent implements OnInit {
 
   ngOnInit(): void {
     this.currentUser$.subscribe(user => {
-      console.log(user);
       this.userId = user.id;
       this.userForm.patchValue({
         document: user.document,

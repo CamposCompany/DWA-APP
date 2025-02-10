@@ -31,7 +31,6 @@ export class TrainingEntityService extends EntityCollectionServiceBase<Training>
   getTrainingById(id: number) {
     return this.trainings$.pipe(
       map(trainings => {
-        console.log('trainings:', trainings);
         return trainings.find(training => training.id === id);
       })
     );
