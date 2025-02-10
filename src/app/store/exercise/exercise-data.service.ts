@@ -8,7 +8,7 @@ import { environment } from '../../environments/environment';
 
 @Injectable()
 export class ExerciseDataService extends DefaultDataService<Exercise> {
-    private readonly baseUrl = `${environment.api}/exercises?paginate=false`;
+    private readonly baseUrl = `${environment.api}exercises?paginate=false`;
   constructor(protected override http: HttpClient, httpUrlGenerator: HttpUrlGenerator) {
     super('Exercises', http, httpUrlGenerator);
   }
