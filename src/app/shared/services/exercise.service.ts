@@ -1,5 +1,4 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable, catchError, map, throwError } from 'rxjs';
 import { Http } from './http.service';
 import { Exercise, ExerciseData } from '../models/exercise';
 

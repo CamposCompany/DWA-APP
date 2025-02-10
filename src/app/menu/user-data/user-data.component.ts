@@ -6,7 +6,6 @@ import { InputComponent } from '../../shared/components/input/input.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { Observable } from 'rxjs';
-import { AuthEntityService } from '../../auth/store/auth-entity.service';
 import { tap, catchError, of } from 'rxjs';
 import Swal from 'sweetalert2';
 import { UserEntityService } from '../../store/user/user-entity.service';

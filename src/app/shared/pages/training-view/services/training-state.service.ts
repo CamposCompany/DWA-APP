@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject, firstValueFrom, of, from } from 'rxjs';
+import { BehaviorSubject, of } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { TrainingTimerService } from './training-timer.service';

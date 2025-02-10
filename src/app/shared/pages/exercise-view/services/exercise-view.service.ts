@@ -5,12 +5,11 @@ import {
   selectCompletedSeries,
   selectCurrentSeries,
   selectExerciseViewState,
-  selectExerciseViewExercises
 } from '../../../../store/exercise-view/exercise-view.selectors';
 
 import { Exercise } from '../../../models/exercise';
 import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
-import { map, combineLatest, take, Observable } from 'rxjs';
+import { map, take, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'

@@ -7,7 +7,6 @@ import { Training } from '../../shared/models/training';
 import { CardComponent } from '../../shared/components/card/card.component';
 import { formatDuration } from '../../shared/utils/helpers/duration.helper';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
-import { AuthEntityService } from '../../auth/store/auth-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
 
 

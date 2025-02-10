@@ -1,7 +1,5 @@
 import { Component, Input } from '@angular/core';
 
-import { Observable } from 'rxjs';
-
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { Training } from '../../../../shared/models/training';

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../components/header/header.component';
@@ -41,9 +41,6 @@ export class ExerciseViewComponent {
 
   public readonly exerciseViewService = inject(ExerciseViewService);
   public readonly restTimer = inject(RestTimerService);
-
-  private readonly trainingEntityService = inject(TrainingEntityService);
-  private readonly trainingTimerService = inject(TrainingTimerService);
 
   exercise$ = this.store.select(selectCurrentExercise);
   hasNextExercise$ = this.store.select(selectHasNextExercise);
