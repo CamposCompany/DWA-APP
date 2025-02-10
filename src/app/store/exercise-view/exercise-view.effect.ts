@@ -20,17 +20,15 @@ export class ExerciseViewEffects {
   updateRepetitionWeight$ = createEffect(() => this.actions$.pipe(
     ofType(ExerciseViewActions.updateRepetitionWeight),
     withLatestFrom(this.store.select(selectExerciseViewState)),
-    concatMap(([{ exerciseId, weight }, state]) => {
-      const exercise = state.exercises.find(ex => ex.id === exerciseId);
-      const repetitionId = exercise?.repetitions[state.currentSeries[exerciseId] || 0]?.id;
-
+    concatMap(([{ userExerciseId, weight, repetitionId }, state]) => {
       if (!repetitionId) return EMPTY;
 
-      return this.exerciseService.updateRepetitionWeight(repetitionId, weight, exerciseId).pipe(
-        map(() => ExerciseViewActions.updateRepetitionWeightSuccess({
-          exerciseId,
+      return this.exerciseService.updateRepetitionWeight(userExerciseId, weight, repetitionId).pipe(
+        map((response) => ExerciseViewActions.updateRepetitionWeightSuccess({
+          userExerciseId,
           weight,
-          repetitionId
+          repetitionId,
+          updatedRepetition: response.data
         }))
       );
     })

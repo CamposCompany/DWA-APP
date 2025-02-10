@@ -130,9 +130,9 @@ export class ExerciseViewService {
     this.store.dispatch(ExerciseViewActions.setCurrentSeries({ exerciseId, seriesIndex }));
   }
 
-  updateRepetitionWeight(exerciseId: number, weight: number, repetitionId: number) {
+  updateRepetitionWeight(userExerciseId: number, weight: number, repetitionId: number) {
     this.store.dispatch(ExerciseViewActions.updateRepetitionWeight({
-      exerciseId,
+      userExerciseId,
       weight,
       repetitionId
     }));

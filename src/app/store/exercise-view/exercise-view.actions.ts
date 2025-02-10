@@ -29,18 +29,14 @@ export const setCurrentSeries = createAction(
 export const updateRepetitionWeight = createAction(
   '[Exercise View] Update Repetition Weight',
   props<{ 
-    exerciseId: number;
+    userExerciseId: number;
     weight: number;
     repetitionId: number;
   }>()
 );
 export const updateRepetitionWeightSuccess = createAction(
   '[Exercise View] Update Repetition Weight Success',
-  props<{ 
-    exerciseId: number;
-    weight: number;
-    repetitionId: number;
-  }>()
+  props<{ userExerciseId: number; weight: number; repetitionId: number; updatedRepetition: any }>()
 );
 
 export const completeExercise = createAction(

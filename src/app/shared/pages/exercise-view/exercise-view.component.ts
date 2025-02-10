@@ -156,7 +156,7 @@ export class ExerciseViewComponent {
 
     const repetition = exercise.repetitions[this.currentEditingSeriesIndex];
     if (!repetition) return;
-
+    
     this.exerciseViewService.updateRepetitionWeight(
       repetition.training_exerciseID,
       this.editWeight,
