@@ -43,7 +43,7 @@ export class AuthDataService extends DefaultDataService<AuthState> {
     return this.http.post<ForgotPasswordRes>(`${this.baseUrl}/auth/forgot-password-step1`, { document });
   }
 
-  resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
+  resetPasswordStep2(payload: { code: string; userID: number }): Observable<ForgotPasswordRes> {
     return this.http.post<ForgotPasswordRes>(`${this.baseUrl}/auth/forgot-password-step2`, payload);
   }
 

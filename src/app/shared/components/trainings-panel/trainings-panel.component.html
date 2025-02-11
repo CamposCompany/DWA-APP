@@ -19,7 +19,7 @@
         imageSrc="assets/images/default-training-profile.png"
         size="large"
         [routerLink]="['/general/training', training.id]"
-        [showButton]="isPersonal"
+        [showButton]="showButton"
         [validity]="!isPersonal ? formatDate(training.expire_date) : undefined"
       ></app-card>
     </ng-container>

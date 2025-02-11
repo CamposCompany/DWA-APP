@@ -6,11 +6,12 @@ import { Challenge } from '../../../../shared/models/challenge.model';
 import { ChallengeEntityService } from '../../../../store/challenge/challenge-entity.service';
 import { SwiperOptions } from 'swiper/types';
 import { ChallengeCardComponent } from '../challenges-card/challenge-card.component';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-challenges-panel',
   standalone: true,
-  imports: [CommonModule, ChallengeCardComponent],
+  imports: [CommonModule, ChallengeCardComponent, RouterModule],
   templateUrl: './challenges-panel.component.html',
   styleUrl: './challenges-panel.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]

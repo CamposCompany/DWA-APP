@@ -17,5 +17,6 @@ export interface ForgotPasswordRes extends GenericData {
 
 export interface ForgotPasswordData {
   telephone: string;
-  userId: number;
+  userID: number;
+  token: string;
 }

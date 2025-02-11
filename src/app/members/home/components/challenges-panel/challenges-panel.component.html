@@ -12,7 +12,7 @@
     [slidesPerView]="1"
   >
     <swiper-slide *ngFor="let challenge of challenges$ | async">
-      <app-challenge-card [challenge]="challenge"></app-challenge-card>
+      <app-challenge-card [challenge]="challenge" routerLink="/general/challenges"></app-challenge-card>
     </swiper-slide>
   </swiper-container>
 </section>

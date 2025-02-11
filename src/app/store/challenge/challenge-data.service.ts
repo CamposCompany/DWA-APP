@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Challenge } from '../../shared/models/challenge.model';
+import { Challenge, todayChallengeData } from '../../shared/models/challenge.model';
 import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';
@@ -10,9 +10,8 @@ import { ChallengeData } from '../../shared/models/challenge.model';
   providedIn: 'root'
 })
 export class ChallengeDataService extends DefaultDataService<Challenge> {
-  private baseUrl = `${environment.api}challenges`;
-
   private readonly routes = {
+    challenges: `${environment.api}challenges`,
     todayChallenges: `${environment.api}challenges/today`,
   } as const;
 
@@ -21,8 +20,14 @@ export class ChallengeDataService extends DefaultDataService<Challenge> {
   }
 
   override getAll(): Observable<Challenge[]> {
-    return this.http.get<ChallengeData>(this.routes.todayChallenges).pipe(
-      map((response: ChallengeData) => response.data)
+    return this.http.get<ChallengeData>(this.routes.challenges).pipe(
+      map((response: ChallengeData) => response.data.challenges)
+    );
+  }
+
+  getTodayChallenges(): Observable<Challenge[]> {
+    return this.http.get<todayChallengeData>(this.routes.todayChallenges).pipe(
+      map((response: todayChallengeData) => response.data)
     );
   }
 } 

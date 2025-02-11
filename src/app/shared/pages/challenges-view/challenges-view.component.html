@@ -1,0 +1,39 @@
+<app-header title="Desafios"></app-header>
+
+<div class="locked-card mb-4 overflow-hidden position-relative">
+  <div class="card-header d-flex align-items-center justify-content-between">
+    <div class="d-flex align-items-center">
+      <div class="icon-wrapper d-flex align-items-center justify-content-center">
+        <i class="fas fa-lock"></i>
+      </div>
+      <div class="header-text ms-3 mb-2">
+        <h2 class="m-0">Pontos</h2>
+        <p class="m-0 opacity-75">Em breve</p>
+      </div>
+    </div>
+    <button class="redeem-button" disabled>Resgatar pontos</button>
+  </div>
+
+  <div class="card-message">
+    <p class="mb-3">Em breve você receberá pontos por completar desafios, fique ligado!</p>
+    <div class="progress-bar">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+</div>
+
+<ng-container *ngFor="let challenge of challenges$ | async">
+  <div class="challenge-card mb-2 p-3">
+    <div class="difficulty-container px-2 py-1 mb-2">
+      <p class="text-center m-0">{{ "⭐".repeat(+challenge.difficulty) }}</p>
+    </div>
+    <h3 class="text-start mb-2">{{ challenge.name }}</h3>
+    <p class="text-start mb-3">{{ challenge.description }}</p>
+
+    <app-button
+      label="Concluir"
+      (clicked)="completeChallenge(challenge.id)"
+      buttonClass="btn-secondary"
+    ></app-button>
+  </div>
+</ng-container>

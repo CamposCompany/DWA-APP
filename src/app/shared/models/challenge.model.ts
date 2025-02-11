@@ -1,6 +1,14 @@
-import { GenericData } from "./generic-data.model";
+import { GenericData, GenericListResult } from "./generic-data.model";
 
-export interface ChallengeData extends GenericData {
+export interface ChallengeData extends GenericListResult {
+    data: Data;
+}
+
+export interface Data {
+    challenges: Challenge[];
+}
+
+export interface todayChallengeData extends GenericData {
     data: Challenge[];
 }
 

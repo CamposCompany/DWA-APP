@@ -17,6 +17,7 @@ export class TrainingsPanelComponent {
   @Input() title: string = 'TREINOS CADASTRADOS';
   @Input() showTodayTraining = false;
   @Input() isPersonal = false;
+  @Input() showButton = false;
 
   formatDate(date: string): string {
     return new Date(date).toLocaleDateString();

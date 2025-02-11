@@ -72,7 +72,8 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
         return this.authDataService.resetPasswordStep1(document);
     }
 
-    resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
+    resetPasswordStep2(payload: { code: string; userID: number }): Observable<ForgotPasswordRes> {
+        console.log(payload);
         return this.authDataService.resetPasswordStep2(payload);
     }
 
