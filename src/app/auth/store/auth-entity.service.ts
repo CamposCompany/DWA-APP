@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { User } from '../../shared/models/users';
+import { User } from '../../shared/models/users.model';
 import { Observable, tap, map, BehaviorSubject } from 'rxjs';
-import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate';
+import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate.model';
 import { AuthDataService } from './auth-data.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
 import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';

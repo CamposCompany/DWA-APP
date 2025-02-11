@@ -1,0 +1,29 @@
+import { CommonModule } from '@angular/common';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Observable } from 'rxjs';
+import { Challenge } from '../../../../shared/models/challenge.model';
+
+import { ChallengeEntityService } from '../../../../store/challenge/challenge-entity.service';
+import { SwiperOptions } from 'swiper/types';
+import { ChallengeCardComponent } from '../challenges-card/challenge-card.component';
+
+@Component({
+  selector: 'app-challenges-panel',
+  standalone: true,
+  imports: [CommonModule, ChallengeCardComponent],
+  templateUrl: './challenges-panel.component.html',
+  styleUrl: './challenges-panel.component.scss',
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
+})
+export class ChallengesPanelComponent {
+  private readonly challengeEntityService = inject(ChallengeEntityService);
+  challenges$: Observable<Challenge[]> = this.challengeEntityService.entities$;
+
+  swiperConfig: SwiperOptions = {
+    spaceBetween: 30,
+    pagination: {
+      clickable: true,
+    },
+    navigation: true
+  };
+}

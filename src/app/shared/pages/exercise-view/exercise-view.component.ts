@@ -13,7 +13,7 @@ import {
   selectIsTrainingView,
   selectCompletedSeries,
 } from '../../../store/exercise-view/exercise-view.selectors';
-import { Exercise, Repetition } from '../../models/exercise';
+import { Exercise, Repetition } from '../../models/exercise.model';
 import { firstValueFrom, map, Observable, combineLatest} from 'rxjs';
 import { ExerciseViewService } from './services/exercise-view.service';
 import { RestTimerService } from '../training-view/services/rest-timer.service';

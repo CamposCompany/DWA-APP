@@ -8,9 +8,10 @@ import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
 import { InputComponent } from '../../shared/components/input/input.component';
-import { ForgotPasswordRes } from '../../shared/models/authenticate';
+import { ForgotPasswordRes } from '../../shared/models/authenticate.model';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthEntityService } from '../store/auth-entity.service';
+import Swal from 'sweetalert2';
 
 
 @Component({
@@ -44,12 +45,10 @@ export class ResetPasswordComponent implements OnInit {
   userId: string | null = '';
 
   errorMessage = new BehaviorSubject<string | null>(null);
-  successMessage = new BehaviorSubject<string | null>(null);
   sentSmsMessage = new BehaviorSubject<string | null>(null);
   userPhone = new BehaviorSubject<string | null>(null);
 
   errorMessage$ = this.errorMessage.asObservable();
-  successMessage$ = this.successMessage.asObservable();
   sentSmsMessage$ = this.sentSmsMessage.asObservable();
   userPhone$ = this.userPhone.asObservable();
 
@@ -118,7 +117,7 @@ export class ResetPasswordComponent implements OnInit {
   }
 
   private executeStep1(): void {
-    const auth$: Observable<ForgotPasswordRes> = this.authEntityService.resetPasswordStep1(this.firstStepForm.value);
+    const auth$: Observable<ForgotPasswordRes> = this.authEntityService.resetPasswordStep1(this.firstStepForm.value.document);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
       next: (res: ForgotPasswordRes) => {
@@ -168,7 +167,15 @@ export class ResetPasswordComponent implements OnInit {
 
       this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
         next: (res: any) => {
-          this.successMessage.next(res.message);
+          Swal.fire({
+            title: res.message,
+            icon: 'success',
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true
+          });
 
           setTimeout(() => {
             this.route.navigateByUrl('login');

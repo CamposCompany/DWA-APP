@@ -1,6 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import { Http } from './http.service';
-import { Exercise, ExerciseData } from '../models/exercise';
+import { Exercise, ExerciseData } from '../models/exercise.model';
 
 @Injectable({
   providedIn: 'root'

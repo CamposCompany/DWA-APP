@@ -1,0 +1,19 @@
+<div class="challenge-card">
+  <div class="d-flex flex-column justify-content-around p-3">
+    <h2 class="challenge-title mb-1">{{ challenge.name.toUpperCase() }}</h2>
+    
+    <p class="challenge-description mb-1">
+      {{ challenge.description }}
+    </p>
+    
+    <div class="small text-muted">
+      <span class="difficulty">
+        Dificuldade: {{ '⭐'.repeat(+challenge.difficulty) }}
+      </span>
+    </div>
+  </div>
+
+  <div class="challenge-image w-100 h-100 overflow-hidden">
+    <img class="w-100 h-100" [src]="'assets/backgrounds/challenge-default-image.svg'" [alt]="challenge.name">
+  </div>
+</div>

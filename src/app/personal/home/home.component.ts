@@ -1,19 +1,18 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
-import { User } from '../../shared/models/users';
-import { Training } from '../../shared/models/training';
-import { Exercise } from '../../shared/models/exercise';
+import { User } from '../../shared/models/users.model';
+import { Training } from '../../shared/models/training.model';
+import { Exercise } from '../../shared/models/exercise.model';
 import { KeymetricPanelComponent } from './components/keymetric-panel/keymetric-panel.component';
 import { ActionsPanelComponent } from './components/actions-panel/actions-panel.component';
 import { GymMembersPanelComponent } from './components/gym-members-panel/gym-members-panel.component';
-import { TrainingsPanelComponent } from './components/trainings-panel/trainings-panel.component';
+import { TrainingsPanelComponent } from '../../shared/components/trainings-panel/trainings-panel.component';
 import { LoadingService } from '../../shared/services/loading.service';
 import { RouterModule } from '@angular/router';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
 import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
-import { AuthEntityService } from '../../auth/store/auth-entity.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -30,7 +29,6 @@ import { AuthEntityService } from '../../auth/store/auth-entity.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent {
-  private readonly authEntityService = inject(AuthEntityService);
   private readonly trainingEntityService = inject(TrainingEntityService);
   private readonly exerciseEntityService = inject(ExerciseEntityService);
   private readonly userEntityService = inject(UserEntityService);

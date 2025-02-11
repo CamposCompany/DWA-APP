@@ -1,6 +1,6 @@
 import { createAction, props } from '@ngrx/store';
-import { Exercise } from '../../shared/models/exercise';
-import { Training } from '../../shared/models/training';
+import { Exercise } from '../../shared/models/exercise.model';
+import { Training } from '../../shared/models/training.model';
 
 export const setExercises = createAction(
   '[Exercise View] Set Exercises',

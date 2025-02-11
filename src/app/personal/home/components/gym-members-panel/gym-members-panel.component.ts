@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, Input, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { Observable, Subject } from 'rxjs';
-import { User } from '../../../../shared/models/users';
+import { User } from '../../../../shared/models/users.model';
 import { CardComponent } from '../../../../shared/components/card/card.component';
 import { map, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Swiper, SwiperEvents, SwiperOptions } from 'swiper/types';
@@ -29,6 +29,7 @@ export class GymMembersPanelComponent implements OnInit {
       rows: 3,
       fill: 'row'
     },
+    spaceBetween: 15,
     scrollbar: {
       draggable: true,
       hide: false

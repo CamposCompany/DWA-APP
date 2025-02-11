@@ -32,43 +32,20 @@
     </button>
   </div>
 </header>
-<div class="content-container mt-4">
-  <div class="d-flex flex-column gap-2 mb-2">
-    <div class="d-flex align-items-center gap-2">
-      <img src="assets/icons/lit.svg" />
-      <h3>TREINO DO DIA</h3>
-    </div>
-    <ng-container *ngIf="userTrainings$ | async as userTrainings">
-      <ng-container *ngFor="let training of userTrainings">
-        <app-card
-          *ngIf="training.todayTraining"
-          [title]="training.name.toLocaleUpperCase()"
-          imageSrc="assets/images/default-training-profile.png"
-          size="large"
-          [routerLink]="['/general/training', training.id]"
-          [validity]="formatDate(training.expire_date)"
-          [duration]="training.last_duration ? formatDuration(training.last_duration) : undefined"
-        ></app-card>
-      </ng-container>
-    </ng-container>
-  </div>
+<div class="content-container d-flex flex-column gap-4 mt-4">
+  <ng-container *ngIf="userTrainings$ | async as userTrainings">
+    <app-trainings-panel
+      title="TREINO DO DIA"
+      [trainings]="userTrainings"
+      [showTodayTraining]="true"
+    ></app-trainings-panel>
 
-  <div class="d-flex flex-column gap-2 mt-3">
-    <div class="text-start">
-      <h3>MEUS TREINOS</h3>
-    </div>
-    <ng-container *ngIf="userTrainings$ | async as userTrainings">
-      <ng-container *ngFor="let training of userTrainings">
-        <app-card
-          *ngIf="!training.todayTraining"
-          [title]="training.name.toLocaleUpperCase()"
-          imageSrc="assets/images/default-training-profile.png"
-          size="large"
-          [routerLink]="['/general/training', training.id]"
-          [validity]="formatDate(training.expire_date)"
-          [duration]="training.last_duration ? formatDuration(training.last_duration) : undefined"
-        ></app-card>
-      </ng-container>
-    </ng-container>
-  </div>
+    <app-challenges-panel></app-challenges-panel>
+    
+    <app-trainings-panel
+      title="MEUS TREINOS"
+      [trainings]="userTrainings"
+    ></app-trainings-panel>
+  </ng-container>
+
 </div>

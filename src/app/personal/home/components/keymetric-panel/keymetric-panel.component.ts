@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, Input, OnInit } from '@angular/core';
 
 import { Observable } from 'rxjs';
-import { dashboardInformation } from '../../../../shared/models/dashboard';
+import { dashboardInformation } from '../../../../shared/models/dashboard.model';
 
 @Component({
   selector: 'app-keymetric-panel',

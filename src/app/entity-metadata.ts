@@ -1,9 +1,10 @@
 import { EntityMetadataMap, EntityDataModuleConfig } from '@ngrx/data';
-import { Training } from './shared/models/training';
-import { Exercise } from './shared/models/exercise';
-import { User } from './shared/models/users';
-import { AuthenticateLoginData } from './shared/models/authenticate';
+import { Training } from './shared/models/training.model';
+import { Exercise } from './shared/models/exercise.model';
+import { User } from './shared/models/users.model';
+import { AuthenticateLoginData } from './shared/models/authenticate.model';
 import { ExerciseViewState } from './store/exercise-view/exercise-view.state';
+import { Challenge } from './shared/models/challenge.model';
 
 export const entityMetadata: EntityMetadataMap = {
   Trainings: {
@@ -36,6 +37,10 @@ export const entityMetadata: EntityMetadataMap = {
     entityDispatcherOptions: {
       optimisticUpdate: true
     }
+  },
+  Challenges: {
+    entityName: 'Challenges',
+    selectId: (challenge: Challenge) => challenge.id
   }
 };
 

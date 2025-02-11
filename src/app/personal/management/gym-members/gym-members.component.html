@@ -1,9 +1,9 @@
 <app-header title="Alunos"></app-header>
 
 <div class="members-container">
-  <div class="members-list">
-    <div class="member-card" *ngFor="let member of members$ | async">
-      <div class="member-info">
+  <div class="d-flex flex-column gap-3">
+    <div class="member-card d-flex justify-content-between align-items-center" *ngFor="let member of members$ | async">
+      <div class="d-flex align-items-center gap-3">
         <img
           [src]="
             member.profile_image || 'assets/images/default-user-profile.png'
@@ -12,13 +12,13 @@
           class="profile-pic"
         />
         <div class="member-details">
-          <h2 class="mb-3">{{ member.first_name }} {{ member.last_name }}</h2>
-          <div class="contact-info">
-            <span>
+          <h2 class="mb-3">{{ member.username }} </h2>
+          <div class="contact-info d-flex flex-column gap-2">
+            <span class="d-flex align-items-center gap-1 font-light">
               <img src="assets/icons/telephone.png" alt="Telefone" />
               {{ member.telephone || 'Não informado' }}
             </span>
-            <span>
+            <span class="d-flex align-items-center gap-1 font-light">
               <img src="assets/icons/email.png" alt="Email" />
               {{ member.email || 'Não informado' }}
             </span>

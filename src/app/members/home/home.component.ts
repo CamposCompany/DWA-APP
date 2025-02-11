@@ -1,19 +1,19 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common'; 
 import { RouterModule } from '@angular/router';
-import { User } from '../../shared/models/users';
+import { User } from '../../shared/models/users.model';
 import { Observable } from 'rxjs';
-import { Training } from '../../shared/models/training';
-import { CardComponent } from '../../shared/components/card/card.component';
-import { formatDuration } from '../../shared/utils/helpers/duration.helper';
+import { Training } from '../../shared/models/training.model';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
+import { ChallengesPanelComponent } from './components/challenges-panel/challenges-panel.component';
+import { TrainingsPanelComponent } from '../../shared/components/trainings-panel/trainings-panel.component';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, CardComponent],
+  imports: [CommonModule, RouterModule, TrainingsPanelComponent, ChallengesPanelComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -27,6 +27,4 @@ export class HomeComponent {
   formatDate(date: string) {
     return new Date(date).toLocaleDateString('pt-BR');
   }
-
-  formatDuration = formatDuration;
 }

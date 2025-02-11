@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Training } from '../../shared/models/training';
+import { Training } from '../../shared/models/training.model';
 import { map } from 'rxjs/operators';
 import { TrainingDataService } from './training-data.service';
 import { Observable, BehaviorSubject } from 'rxjs';

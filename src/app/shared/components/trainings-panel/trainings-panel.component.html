@@ -1,0 +1,27 @@
+<div class="trainings">
+  <div class="d-flex align-items-center" [class.justify-content-between]="isPersonal">
+    <div class="d-flex align-items-center gap-2">
+      <img src="assets/icons/lit.svg" *ngIf="showTodayTraining"/>
+      <h1 class="training-title mb-2">{{ title }}</h1>
+    </div>
+    <p *ngIf="isPersonal" routerLink="/personal/trainings">
+      Ver todos
+      <img src="assets/icons/arrow.svg" alt="Seta" />
+    </p>
+  </div>
+
+  <div class="d-flex flex-column gap-4">
+    <ng-container *ngFor="let training of trainings">
+      <app-card
+        *ngIf="showTodayTraining ? training.todayTraining : true"
+        [title]="training.name.toLocaleUpperCase()"
+        [duration]="formatDuration(training.last_duration || training.duration.toString())"
+        imageSrc="assets/images/default-training-profile.png"
+        size="large"
+        [routerLink]="['/general/training', training.id]"
+        [showButton]="isPersonal"
+        [validity]="!isPersonal ? formatDate(training.expire_date) : undefined"
+      ></app-card>
+    </ng-container>
+  </div>
+</div>

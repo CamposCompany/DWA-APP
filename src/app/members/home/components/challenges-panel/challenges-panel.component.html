@@ -1,0 +1,18 @@
+<section class="challenges-panel">
+  <header class="challenges-panel__header mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <img src="assets/icons/trophy.svg" alt="Ícone de troféu" />
+      <h3>DESAFIOS</h3>
+    </div>
+  </header>
+
+  <swiper-container
+    class="challenges-panel__slider"
+    [config]="swiperConfig"
+    [slidesPerView]="1"
+  >
+    <swiper-slide *ngFor="let challenge of challenges$ | async">
+      <app-challenge-card [challenge]="challenge"></app-challenge-card>
+    </swiper-slide>
+  </swiper-container>
+</section>

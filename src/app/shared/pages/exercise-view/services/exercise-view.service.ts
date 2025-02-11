@@ -7,7 +7,7 @@ import {
   selectExerciseViewState,
 } from '../../../../store/exercise-view/exercise-view.selectors';
 
-import { Exercise } from '../../../models/exercise';
+import { Exercise } from '../../../models/exercise.model';
 import * as ExerciseViewActions from '../../../../store/exercise-view/exercise-view.actions';
 import { map, take, Observable } from 'rxjs';
 

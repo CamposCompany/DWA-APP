@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Exercise, Repetition } from '../../models/exercise';
+import { Exercise, Repetition } from '../../models/exercise.model';
 import { CommonModule } from '@angular/common';
 
 @Component({

@@ -2,7 +2,7 @@ import {
   createReducer,
   on,
 } from '@ngrx/store';
-import { User } from '../../../shared/models/users';
+import { User } from '../../../shared/models/users.model';
 import { AuthActions } from './action.types';
 
 

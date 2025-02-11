@@ -1,8 +1,8 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.camposcompany.dwapp',
-  appName: 'DWApp',
+  appId: 'com.gcptecnologia.app',
+  appName: 'dwa-app',
   webDir: 'dist'
 };
 

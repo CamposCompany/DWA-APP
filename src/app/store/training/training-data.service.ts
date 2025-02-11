@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Training, TrainingData, UserTrainingData } from '../../shared/models/training';
+import { Training, TrainingData, UserTrainingData } from '../../shared/models/training.model';
 import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable } from 'rxjs';

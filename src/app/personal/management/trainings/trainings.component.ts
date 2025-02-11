@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { map, Observable } from 'rxjs';
-import { Training } from '../../../shared/models/training';
+import { Training } from '../../../shared/models/training.model';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';

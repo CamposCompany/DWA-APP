@@ -1,0 +1,27 @@
+.challenge-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 16px;
+    background: #fff;
+    border-radius: 21px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+  
+  .challenge-title, .challenge-description {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1;
+  }
+  
+  .challenge-title, .challenge-description, .difficulty {
+    font-size: 0.6rem;
+    color: #666;
+  }
+
+  .challenge-title, .difficulty {
+    font-weight: bold;
+  }
+
+  .challenge-title {
+    font-size: 16px;
+    color: #333;
+  }

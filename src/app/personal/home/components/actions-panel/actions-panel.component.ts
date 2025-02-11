@@ -27,13 +27,13 @@ export class ActionsPanelComponent implements OnInit {
       },
       {
         icon: 'assets/icons/verified-list.svg',
-        title: 'Treinos',
-        route: '/personal/trainings',
+        title: 'Exercícios',
+        route: '/personal/exercises',
       },
       {
         icon: 'assets/icons/verified-list.svg',
-        title: 'Exercícios',
-        route: '/personal/exercises',
+        title: 'Treinos',
+        route: '/personal/trainings',
       }
     ];
   }

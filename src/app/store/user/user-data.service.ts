@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
-import { User, UserData } from '../../shared/models/users';
+import { User, UserData } from '../../shared/models/users.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Update } from '@ngrx/entity';

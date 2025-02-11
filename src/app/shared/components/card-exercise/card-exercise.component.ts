@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Exercise, Repetition } from '../../models/exercise';
+import { Exercise, Repetition } from '../../models/exercise.model';
 import { Router, RouterModule } from '@angular/router';
 import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 import { AppState } from '../../../store';

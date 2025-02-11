@@ -1,7 +1,7 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { User } from '../../shared/models/users';
+import { User } from '../../shared/models/users.model';
 import { InputComponent } from '../../shared/components/input/input.component';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';

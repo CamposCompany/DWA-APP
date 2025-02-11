@@ -9,7 +9,8 @@
     line-height: 24px;
   }
 
-  input, select {
+  input,
+  select {
     height: 40px;
     padding: 0 16px;
     border-radius: 15px;
@@ -26,7 +27,6 @@
   }
 
   img {
-    margin-top: 7px;
     right: 20px;
   }
 
@@ -43,7 +43,7 @@
 
     ::ng-deep [icon] {
       position: absolute;
-      left: 10px;
+      right: 20px;
       width: 20px;
       height: 20px;
       pointer-events: none;

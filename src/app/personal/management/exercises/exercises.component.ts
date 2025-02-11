@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
 import { FilterComponent } from '../../../shared/components/filter/filter.component';
 import { map } from 'rxjs/operators';
-import { Exercise } from '../../../shared/models/exercise';
+import { Exercise } from '../../../shared/models/exercise.model';
 import { CommonModule } from '@angular/common';
 
 import { Router, RouterModule } from '@angular/router';
