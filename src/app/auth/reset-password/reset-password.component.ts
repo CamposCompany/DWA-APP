@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { LoadingService } from '../../shared/services/loading.service';
 import { encodePasswordFields, passwordMatchValidator } from '../../shared/utils/validators/password.validator';
 import { OnlyOneErrorPipe } from '../../shared/utils/pipes/only-one-error.pipe';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { ButtonComponent } from '../../shared/components/button/button.component';
@@ -127,7 +127,6 @@ export class ResetPasswordComponent implements OnInit {
       next: (res: ForgotPasswordRes) => {
         this.userPhone.next(this.formatPhoneNumber(res.data.telephone));
         this.userID = res.data.userID;
-        this.token = res.data.token;
         this.currentStep++
         this.errorMessage.next(null);
       },
@@ -144,7 +143,8 @@ export class ResetPasswordComponent implements OnInit {
     const auth$: Observable<ForgotPasswordRes> = this.authEntityService.resetPasswordStep2(payload);
 
     this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-      next: () => {
+      next: (res: ForgotPasswordRes) => {
+        this.token = res.data.token;
         this.currentStep++;
         this.errorMessage.next(null);
       },
@@ -162,30 +162,28 @@ export class ResetPasswordComponent implements OnInit {
       ...formValues,
       userID: this.userID,
       token: this.token
-    }
+    };
 
-    if (this.userID) {
-      const auth$ = this.authEntityService.resetPasswordLastStep(payload);
+    const auth$ = this.authEntityService.resetPasswordLastStep(payload);
 
-      this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
-        next: (res: any) => {
-          Swal.fire({
-            title: res.message,
-            icon: 'success',
-            toast: true,
-            position: 'top-end',
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true
-          });
+    this.loadingService.showLoaderUntilCompleted(auth$).subscribe({
+      next: (res: any) => {
+        Swal.fire({
+          title: res.message,
+          icon: 'success',
+          toast: true,
+          position: 'top-end',
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true
+        });
 
-          setTimeout(() => {
-            this.route.navigateByUrl('login');
-          }, 1500);
-        },
-        error: (err) => this.errorMessage.next(err.error?.message || 'Erro inesperado.'),
-      })
-    }
+        setTimeout(() => {
+          this.route.navigateByUrl('login');
+        }, 1500);
+      },
+      error: (err) => this.errorMessage.next(err.error?.message || 'Erro inesperado.'),
+    });
   }
 
   private formatPhoneNumber(phone: string): string {

@@ -1,8 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Challenge } from '../../shared/models/challenge.model';
+import { Challenge, ChallengeData } from '../../shared/models/challenge.model';
 import { Observable, BehaviorSubject } from 'rxjs';
-import { map } from 'rxjs/operators';
+import { map, tap } from 'rxjs/operators';
 import { ChallengeDataService } from './challenge-data.service';
 
 @Injectable({
@@ -41,5 +41,23 @@ export class ChallengeEntityService extends EntityCollectionServiceBase<Challeng
     });
 
     return this.challenges$;
+  }
+
+  completeChallenge(payload: { challenge_id: number, user_id: number }): Observable<Challenge> {
+    return this.challengeDataService.completeChallenge(payload).pipe(
+      tap((response: Challenge) => {
+        const update = { id: response.id!, changes: response };
+
+        super.updateOneInCache(update);
+        const currentChallenges = this.challengesSubject.getValue();
+        if (currentChallenges.some(ch => ch.id === response.id)) {
+          this.challengesSubject.next(
+            currentChallenges.map(ch =>
+              ch.id === response.id ? response : ch
+            )
+          );
+        }
+      })
+    );
   }
 } 

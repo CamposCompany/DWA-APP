@@ -9,7 +9,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class TrainingDataService extends DefaultDataService<Training> {
-  private baseUrl = `${environment.api}trainings`;
+  private baseUrl = `${environment.api}trainings?withExercises=true`;
   private userTrainingsUrl = `${environment.api}user-training/user`;
 
   private readonly routes = {

@@ -3,7 +3,6 @@ import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { User } from '../../shared/models/users.model';
 import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate.model';
 import { AuthState } from '../login/store';
 

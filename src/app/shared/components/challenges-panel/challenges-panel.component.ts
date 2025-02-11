@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
 import { Observable } from 'rxjs';
-import { Challenge } from '../../../../shared/models/challenge.model';
+import { Challenge } from '../../models/challenge.model';
 
-import { ChallengeEntityService } from '../../../../store/challenge/challenge-entity.service';
+import { ChallengeEntityService } from '../../../store/challenge/challenge-entity.service';
 import { SwiperOptions } from 'swiper/types';
-import { ChallengeCardComponent } from '../challenges-card/challenge-card.component';
+
 import { RouterModule } from '@angular/router';
+import { ChallengeCardComponent } from './challenges-card/challenge-card.component';
 
 @Component({
   selector: 'app-challenges-panel',

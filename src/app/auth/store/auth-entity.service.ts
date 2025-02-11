@@ -7,6 +7,7 @@ import { AuthDataService } from './auth-data.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
 import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
+import { ChallengeEntityService } from '../../store/challenge/challenge-entity.service';
 
 interface AuthState {
     user: User;
@@ -33,6 +34,7 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
         private userEntityService: UserEntityService,
         private exerciseEntityService: ExerciseEntityService,
         private trainingEntityService: TrainingEntityService,
+        private challengeEntityService: ChallengeEntityService,
     ) {
         super('Auth', serviceElementsFactory);
         this.authState$.subscribe();
@@ -64,6 +66,7 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
                 this.userEntityService.clearUserState();
                 this.exerciseEntityService.clearCache();
                 this.trainingEntityService.clearCache();
+                this.challengeEntityService.clearCache();
             })
         );
     }

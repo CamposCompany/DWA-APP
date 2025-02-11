@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { Training } from '../../shared/models/training.model';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
-import { ChallengesPanelComponent } from './components/challenges-panel/challenges-panel.component';
+import { ChallengesPanelComponent } from '../../shared/components/challenges-panel/challenges-panel.component';
 import { TrainingsPanelComponent } from '../../shared/components/trainings-panel/trainings-panel.component';
 
 

@@ -22,7 +22,7 @@ export class UserEntityService extends EntityCollectionServiceBase<User> {
 
   setCurrentUser(user: User) {
     this.currentUserSubject.next(user);
-    this.isAdminSubject.next(user.roles.map(role => role.name).includes('admin'));
+    this.isAdminSubject.next(!user.roles.map(role => role.name).includes('user'));
   }
 
   getCurrentUser(): User {

@@ -13,6 +13,9 @@ import { RouterModule } from '@angular/router';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
 import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
+import { ChallengeEntityService } from '../../store/challenge/challenge-entity.service';
+import { Challenge } from '../../shared/models/challenge.model';
+import { ChallengesPanelComponent } from '../../shared/components/challenges-panel/challenges-panel.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -22,7 +25,8 @@ import { UserEntityService } from '../../store/user/user-entity.service';
     ActionsPanelComponent,
     TrainingsPanelComponent,
     GymMembersPanelComponent,
-    RouterModule
+    RouterModule,
+    ChallengesPanelComponent
   ],
   providers: [LoadingService],
   templateUrl: './home.component.html',
@@ -32,6 +36,9 @@ export class HomeComponent {
   private readonly trainingEntityService = inject(TrainingEntityService);
   private readonly exerciseEntityService = inject(ExerciseEntityService);
   private readonly userEntityService = inject(UserEntityService);
+  private readonly challengeEntityService = inject(ChallengeEntityService);
+
+  challenges$: Observable<Challenge[]> = this.challengeEntityService.entities$;
 
   trainings$: Observable<Training[]> = this.trainingEntityService.entities$;
   trainingCount$: Observable<number> = this.trainings$.pipe(
