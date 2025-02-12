@@ -8,11 +8,11 @@
         *ngIf="showTodayTraining"
         class="fas fa-solid fa-fire-flame-curved"
       ></i>
-      <h1 class="training-title mb-2">{{ title }}</h1>
+      <h1 class="mb-2 font-family-poppins fw-semibold font-family-poppins text-white">{{ title }}</h1>
     </div>
-    <p *ngIf="isPersonal" routerLink="/personal/trainings">
+    <p class="font-family-poppins fw-semibold" *ngIf="isPersonal" routerLink="/personal/trainings">
       Ver todos
-      <img src="assets/icons/arrow.svg" alt="Seta" />
+      <i class="fas fa-solid fa-caret-right"></i>
     </p>
   </div>
 

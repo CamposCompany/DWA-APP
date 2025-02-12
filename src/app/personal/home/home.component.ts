@@ -17,6 +17,7 @@ import { ChallengeEntityService } from '../../store/challenge/challenge-entity.s
 import { Challenge } from '../../shared/models/challenge.model';
 import { ChallengesPanelComponent } from '../../shared/components/challenges-panel/challenges-panel.component';
 import { TrainingViewEntityService } from '../../store/training-view/training-view-entity.service';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -27,7 +28,8 @@ import { TrainingViewEntityService } from '../../store/training-view/training-vi
     TrainingsPanelComponent,
     GymMembersPanelComponent,
     RouterModule,
-    ChallengesPanelComponent
+    ChallengesPanelComponent,
+    HeaderComponent
   ],
   providers: [LoadingService],
   templateUrl: './home.component.html',
@@ -54,6 +56,7 @@ export class HomeComponent {
 
   users$: Observable<User[]> = this.userEntityService.entities$;
   gymMembers$: Observable<User[]> = this.userEntityService.getGymMembers();
+  isAdmin: boolean = this.userEntityService.getIsAdmin();
 
   currentUser$: Observable<User> = this.userEntityService.currentUser$;
   userCount$: Observable<number> = this.users$.pipe(

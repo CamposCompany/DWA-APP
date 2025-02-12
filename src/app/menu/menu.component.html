@@ -1,32 +1,32 @@
 <app-header title="Menu"> </app-header>
 <div class="d-flex flex-column align-items-start mt-4">
-  <h3>Oi, {{ (currentUser$ | async)?.username }}!</h3>
+  <h3 class="font-family-poppins text-white font-weight-bold">Oi, {{ (currentUser$ | async)?.username }}!</h3>
 
-  <div class="menu-items w-100">
-    <div class="menu-item d-flex align-items-center" routerLink="user-data">
+  <div class="menu-items w-100 p-2 mt-4">
+    <div class="menu-item d-flex align-items-center p-3 gap-3" routerLink="user-data">
       <i class="fas fa-regular fa-user fs-3"></i>
-      <span>Meus dados</span>
+      <span class="font-family-poppins text-white fw-medium">Meus dados</span>
     </div>
 
     <div
-      class="menu-item d-flex align-items-center"
+      class="menu-item gap-3 p-3 d-flex align-items-center"
       routerLink="terms-security"
     >
       <i class="fas fa-shield-halved fs-3"></i>
-      <span>Segurança</span>
+      <span class="font-family-poppins text-white fw-medium">Segurança</span>
     </div>
 
-    <div class="menu-item d-flex align-items-center" routerLink="terms-privacy">
+    <div class="menu-item gap-3 p-3 d-flex align-items-center" routerLink="terms-privacy">
       <i class="fas fa-lock fs-3"></i>
-      <span>Privacidade</span>
+      <span class="font-family-poppins text-white fw-medium">Privacidade</span>
     </div>
 
     <div
-      class="menu-item d-flex align-items-center text-danger mt-auto"
+      class="menu-item gap-3 p-3 d-flex align-items-center text-danger mt-auto"
       (click)="logout()"
     >
       <i class="exit fa-solid fa-arrow-right-from-bracket fs-3"></i>
-      <span>Sair</span>
+      <span class="font-family-poppins text-white">Sair</span>
     </div>
   </div>
 </div>

@@ -1,6 +1,8 @@
+@import "../../../shared/styles/variables.scss";
+
 .members-container {
   .member-card {
-    background: #1e1e1e;
+    background: $gym-members-list-background;
     border-radius: 16px;
     border: 1px solid rgba(255, 255, 255, 0.6);
 
@@ -14,11 +16,9 @@
         color: #f5a623;
         font-size: 18px;
         margin: 0 0 4px 0;
-        font-family: "Poppins", sans-serif;
       }
 
       .plan {
-        color: #fff;
         font-size: 14px;
         margin: 0 0 8px 0;
       }
@@ -28,8 +28,6 @@
 
         span {
           font-size: 12px;
-          font-family: "League Spartan", sans-serif;
-          color: white;
 
           img {
             width: 16px;

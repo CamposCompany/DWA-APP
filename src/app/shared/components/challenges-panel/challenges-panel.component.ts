@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, CUSTOM_ELEMENTS_SCHEMA, inject, OnInit } from '@angular/core';
+import { Component, CUSTOM_ELEMENTS_SCHEMA, inject } from '@angular/core';
 import { Observable } from 'rxjs';
 import { Challenge } from '../../models/challenge.model';
 
@@ -21,11 +21,8 @@ export class ChallengesPanelComponent {
   private readonly challengeEntityService = inject(ChallengeEntityService);
   challenges$: Observable<Challenge[]> = this.challengeEntityService.entities$;
 
-  swiperConfig: SwiperOptions = {
-    spaceBetween: 30,
-    pagination: {
-      clickable: true,
-    },
-    navigation: true
+  swiperConfig = {
+    slidesPerView: 1,
+    pagination: true
   };
 }

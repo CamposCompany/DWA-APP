@@ -1,3 +1,5 @@
+@import "../../shared/styles/variables.scss";
+
 .terms-container {
   padding: 1rem;
   color: white;
@@ -17,20 +19,18 @@
 
   .terms-section {
     &:first-of-type {
-      background-color: #1e1e1e;
+      background-color: $terms-security-background;
       border-radius: 16px 16px 0 0;
     }
 
     &:last-of-type {
-      background-color: #1e1e1e;
+      background-color: $terms-security-background;
       border-radius: 0 0 16px 16px;
     }
 
     &:not(:first-of-type):not(:last-of-type) {
-      background-color: #1e1e1e;
+      background-color: $terms-security-background;
     }
-
-    padding: 1rem;
 
     p {
       font-size: 14px;

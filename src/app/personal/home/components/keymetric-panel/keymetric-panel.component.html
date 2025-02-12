@@ -1,10 +1,10 @@
-<div class="dashboard-cards d-grid align-items-center w-100">
+<div class="dashboard-cards d-grid align-items-center w-100 bg-white">
   <div
     class="card-dashboard d-flex flex-column align-items-start text-center"
     *ngFor="let information of dashboardInformation"
   >
     <i [class]="information.icon"></i>
-    <span class="card-number">{{ information.value$ | async }}</span>
-    <span class="card-label">{{ information.title }}</span>
+    <span class="card-number fw-bold">{{ information.value$ | async }}</span>
+    <span class="card-label fw-normal text-nowrap text-uppercase">{{ information.title }}</span>
   </div>
 </div>

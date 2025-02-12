@@ -3,14 +3,13 @@ import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, tap } from 'rxjs/operators';
-import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate.model';
-import { AuthState } from '../login/store';
+import { AuthenticateLogin, AuthenticateLoginData, ForgotPasswordRes } from '../../shared/models/authenticate.model';
 
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthDataService extends DefaultDataService<AuthState> {
+export class AuthDataService extends DefaultDataService<AuthenticateLoginData> {
   private readonly baseUrl = 'https://campos-portfolio.net/api';
 
   constructor(
@@ -20,7 +19,7 @@ export class AuthDataService extends DefaultDataService<AuthState> {
     super('Auth', http, httpUrlGenerator);
   }
 
-  override getAll(): Observable<AuthState[]> {
+  override getAll(): Observable<AuthenticateLoginData[]> {
     return this.http.get<any>(`${this.baseUrl}/auth`).pipe(
       map(response => response.user)
     );

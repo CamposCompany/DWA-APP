@@ -8,7 +8,7 @@ export interface AuthenticateLogin extends GenericData {
 export interface AuthenticateLoginData extends GenericData {
   token: string;
   user: User;
-  fromApp: boolean;
+  fromApp?: boolean;
 }
 
 export interface ForgotPasswordRes extends GenericData {

@@ -1,4 +1,4 @@
-<app-header title="Aluno"></app-header>
+<app-header title="Aluno" [hasHome]="true"></app-header>
 
 <div class="member-view-container p-3">
   <div class="member-card bg-white" *ngIf="member$ | async as member">
@@ -8,14 +8,14 @@
         [alt]="member.username"
         class="h-100"
       />
-      <div class="member-info p-3">
-        <h2 class="mb-4">{{ member.first_name }} {{ member.last_name }}</h2>
+      <div class="member-info p-3 fw-semibold">
+        <h2 class="mb-4 font-family-poppins">{{ member.first_name }} {{ member.last_name }}</h2>
         <div class="d-flex flex-column gap-2">
-          <p class="mb-0 d-flex align-items-center gap-1">
+          <p class="mb-0 d-flex align-items-center gap-1 font-family-poppins">
             <i class="fas fa-phone me-2"></i>
             {{ member.telephone }}
           </p>
-          <p class="mb-0 d-flex align-items-center gap-1">
+          <p class="mb-0 d-flex align-items-center gap-1 font-family-poppins">
             <i class="fas fa-envelope me-2"></i>
             {{ member.email }}
           </p>
@@ -24,7 +24,7 @@
     </div>
   </div>
 
-  <h3 class="mt-4 mb-3">Treinos Cadastrados</h3>
+  <h3 class="mt-4 mb-3 font-family-poppins text-white">Treinos Cadastrados</h3>
   <ng-container *ngIf="trainings$ | async as trainings">
     <div class="trainings-container d-flex flex-column gap-4">
       <ng-container *ngIf="trainings.length > 0; else noTrainings">

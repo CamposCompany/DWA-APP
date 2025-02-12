@@ -1,38 +1,9 @@
-<header class="header">
-  <div class="header-left">
-    <h1>Oi, {{ (currentUser$ | async)?.username }}!</h1>
-    <p class="subtitle">Persistência hoje, resultados amanhã.</p>
-
-    <!-- <div class="points-container">
-      <div class="points-item">
-        <img src="assets/icons/gold.svg" alt="Gold icon" class="icon" />
-        <span>Gold</span>
-        <img
-          src="assets/icons/chevron-right.svg"
-          alt="Chevron right"
-          class="chevron"
-        />
-      </div>
-
-      <div class="separator"></div>
-      <div class="points-item">
-        <img src="assets/icons/add-points.svg" alt="Points icon" class="icon" />
-        <span>{{ currentUser.points }}</span>
-        <img
-          src="assets/icons/chevron-right.svg"
-          alt="Chevron right"
-          class="chevron"
-        />
-      </div>
-    </div> -->
-  </div>
-  <div class="header-right">
-    <button class="icon-button" routerLink="/menu">
-      <img src="assets/icons/user.svg" alt="User profile" class="icon" />
-    </button>
-  </div>
-</header>
-<div class="content-container d-flex flex-column gap-4 mt-4">
+<app-header
+  [currentUser]="(currentUser$ | async)!"
+  [isAdmin]="isAdmin"
+  [homeMode]="true"
+></app-header>
+<div class="d-flex flex-column gap-4 mt-4">
   <ng-container *ngIf="userTrainings$ | async as userTrainings">
     <app-trainings-panel
       title="TREINO DO DIA"
@@ -42,12 +13,11 @@
     ></app-trainings-panel>
 
     <app-challenges-panel></app-challenges-panel>
-    
+
     <app-trainings-panel
       title="MEUS TREINOS"
       [trainings]="userTrainings"
       [showButton]="true"
     ></app-trainings-panel>
   </ng-container>
-
 </div>

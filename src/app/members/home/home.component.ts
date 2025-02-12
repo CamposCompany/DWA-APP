@@ -9,12 +9,13 @@ import { UserEntityService } from '../../store/user/user-entity.service';
 import { ChallengesPanelComponent } from '../../shared/components/challenges-panel/challenges-panel.component';
 import { TrainingsPanelComponent } from '../../shared/components/trainings-panel/trainings-panel.component';
 import { TrainingViewEntityService } from '../../store/training-view/training-view-entity.service';
+import { HeaderComponent } from '../../shared/components/header/header.component';
 
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, RouterModule, TrainingsPanelComponent, ChallengesPanelComponent],
+  imports: [CommonModule, RouterModule, TrainingsPanelComponent, ChallengesPanelComponent, HeaderComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -25,6 +26,7 @@ export class HomeComponent {
   
   currentUser$: Observable<User> = this.userEntityService.currentUser$;
   userTrainings$: Observable<Training[]> = this.trainingEntityService.entities$;
+  isAdmin: boolean = this.userEntityService.getIsAdmin();
 
   ngOnInit() {
     combineLatest([

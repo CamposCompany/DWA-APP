@@ -1,5 +1,4 @@
 .dashboard-cards {
-    background-color: #FFFFFF;
     border-radius: 16px;
     grid-template-columns: 1fr 1fr 1fr;
   
@@ -13,16 +12,12 @@
   
       .card-number {
         font-size: 28px;
-        font-weight: bold;
         color: #4A4A4A;
       }
   
       .card-label {
         font-size: 8px;
-        font-weight: 400;
         color: #888888;
-        text-transform: uppercase;
-        white-space: nowrap;
       }
     }
   }

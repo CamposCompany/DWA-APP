@@ -8,12 +8,9 @@
 
     .text-container {
         z-index: 2;
-        position: relative;
 
         h1,
         img {
-            font-family: "League Spartan", sans-serif;
-            color: white;
             opacity: 0;
             transform: translateX(100%);
             visibility: hidden;
@@ -31,13 +28,6 @@
             visibility: visible;
         }
     }
-}
-
-.onboarding-container,
-.overlay {
-    right: 0;
-    left: 0;
-    z-index: 1;
 }
 
 @keyframes appearAndSlideInFromRight {

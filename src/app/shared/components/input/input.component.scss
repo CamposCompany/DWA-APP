@@ -1,10 +1,6 @@
 .form-group {
-  position: relative;
-
   label {
-    font-family: "Poppins", sans-serif;
     color: #d9d9d9;
-    font-weight: 500;
     font-size: 16px;
     line-height: 24px;
   }
@@ -37,10 +33,6 @@
   }
 
   .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-
     ::ng-deep [icon] {
       position: absolute;
       right: 20px;
