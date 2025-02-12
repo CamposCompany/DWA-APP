@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { User } from '../../shared/models/users';
+import { User } from '../../shared/models/users.model';
 import { map, tap } from 'rxjs/operators';
 import { UserDataService } from './user-data.service';
 import { BehaviorSubject } from 'rxjs';
@@ -22,7 +22,7 @@ export class UserEntityService extends EntityCollectionServiceBase<User> {
 
   setCurrentUser(user: User) {
     this.currentUserSubject.next(user);
-    this.isAdminSubject.next(user.roles.map(role => role.name).includes('admin'));
+    this.isAdminSubject.next(!user.roles.map(role => role.name).includes('user'));
   }
 
   getCurrentUser(): User {

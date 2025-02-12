@@ -1,0 +1,48 @@
+.challenge-card {
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+
+  &.difficulty-advanced {
+    background-color: #ffd5ba;
+  }
+
+  .challenge-title,
+  .challenge-description {
+    font-size: 0.7rem;
+    color: #666;
+    line-height: 1;
+  }
+
+  .challenge-title {
+    font-size: 16px;
+    color: #333;
+  }
+
+  .difficulty {
+    font-size: 8px;
+  }
+
+  .dificulty-container {
+    border-radius: 13px;
+    padding: 8px;
+    width: fit-content;
+
+    &.difficulty-beginner-tag {
+      background-color: #00a300;
+    }
+
+    &.difficulty-intermediate-tag {
+      background-color: #0000ff;
+    }
+
+    &.difficulty-advanced-tag {
+      background-color: #ff4800;
+    }
+  }
+
+  .challenge-image {
+    border-radius: 0 20px 20px 0;
+  }
+}

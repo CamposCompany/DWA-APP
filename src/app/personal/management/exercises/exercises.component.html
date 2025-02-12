@@ -1,7 +1,7 @@
-<app-header title="Exercícios" routeNameBack="/personal/home"></app-header>
+<app-header title="Exercícios"></app-header>
 <div class="exercise-container w-100">
   <app-filter (filterChanged)="onFilterChanged($event)"></app-filter>
-  <p class="mt-4">Exercícios cadastrados</p>
+  <p class="mt-4 text-white font-family-poppins">Exercícios cadastrados</p>
   <div class="mt-3">
     <app-card-exercise
       *ngFor="let exercise of (filteredExercises$ | async)!"

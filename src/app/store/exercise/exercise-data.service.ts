@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { DefaultDataService, HttpUrlGenerator } from '@ngrx/data';
 import { HttpClient } from '@angular/common/http';
-import { Exercise, ExerciseData } from '../../shared/models/exercise';
+import { Exercise, ExerciseData } from '../../shared/models/exercise.model';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from '../../environments/environment';

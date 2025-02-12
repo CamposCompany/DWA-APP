@@ -4,6 +4,7 @@ import { exerciseResolver } from '../store/exercise/exercise.resolver';
 import { userResolver } from '../store/user/user.resolver';
 import { adminGuard } from '../shared/utils/guards/admin.guard';
 import { authGuard } from '../shared/utils/guards/auth.guard';
+import { challengeResolver } from '../store/challenge/challenge.resolver';
 
 export const PERSONAL_ROUTES: Routes = [
   {
@@ -18,7 +19,8 @@ export const PERSONAL_ROUTES: Routes = [
     resolve: {
       trainings: trainingResolver,
       exercises: exerciseResolver,
-      users: userResolver
+      users: userResolver,
+      challenges: challengeResolver
     },
   },
   {
@@ -37,6 +39,12 @@ export const PERSONAL_ROUTES: Routes = [
     path: 'gym-members',
     loadComponent: () =>
       import('./management/gym-members/gym-members.component').then((m) => m.GymMembersComponent),
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'gym-members/:id',
+    loadComponent: () =>
+      import('./management/gym-members/gym-member-view/gym-member-view.component').then((m) => m.GymMemberViewComponent),
     canActivate: [authGuard, adminGuard]
   }
 ];

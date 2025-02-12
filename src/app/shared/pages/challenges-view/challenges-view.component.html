@@ -1,0 +1,57 @@
+<app-header title="Desafios"></app-header>
+
+<ng-container *ngIf="!isAdmin">
+  <div class="locked-card mb-4 overflow-hidden position-relative">
+    <div class="card-header d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <div
+          class="icon-wrapper d-flex align-items-center justify-content-center"
+        >
+          <i class="fas fa-lock"></i>
+        </div>
+        <div class="header-text ms-3 mb-2">
+          <h2 class="m-0">Pontos</h2>
+          <p class="m-0 opacity-75">Em breve</p>
+        </div>
+      </div>
+      <button class="redeem-button" disabled>Resgatar pontos</button>
+    </div>
+
+    <div class="card-message">
+      <p class="mb-3">
+        Em breve você receberá pontos por completar desafios, fique ligado!
+      </p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  </div>
+</ng-container>
+
+<ng-container *ngFor="let challenge of challenges$ | async">
+  <app-challenge-view-card
+    [challenge]="challenge"
+    (completeChallenge)="completeChallenge($event)"
+    [isAdmin]="isAdmin"
+  ></app-challenge-view-card>
+</ng-container>
+
+<h3>Concluídos</h3>
+
+<ng-container *ngIf="(completedChallenges$ | async)?.length; else showEmptyState">
+  <ng-container *ngFor="let challenge of completedChallenges$ | async">
+    <app-challenge-view-card
+      [challenge]="challenge"
+      [completed]="true"
+    ></app-challenge-view-card>
+  </ng-container>
+</ng-container>
+
+<ng-template #showEmptyState>
+  <ng-container *ngIf="!isAdmin">
+    <div class="empty-state text-center p-4">
+      <i class="fas fa-trophy mb-3 text-muted"></i>
+      <p class="text-muted">Você ainda não concluiu nenhum desafio</p>
+    </div>
+  </ng-container>
+</ng-template>

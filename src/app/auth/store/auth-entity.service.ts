@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { User } from '../../shared/models/users';
+import { User } from '../../shared/models/users.model';
 import { Observable, tap, map, BehaviorSubject } from 'rxjs';
-import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate';
+import { AuthenticateLogin, ForgotPasswordRes } from '../../shared/models/authenticate.model';
 import { AuthDataService } from './auth-data.service';
 import { UserEntityService } from '../../store/user/user-entity.service';
 import { ExerciseEntityService } from '../../store/exercise/exercise-entity.service';
 import { TrainingEntityService } from '../../store/training/training-entity.service';
+import { ChallengeEntityService } from '../../store/challenge/challenge-entity.service';
 
 interface AuthState {
     user: User;
@@ -33,6 +34,7 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
         private userEntityService: UserEntityService,
         private exerciseEntityService: ExerciseEntityService,
         private trainingEntityService: TrainingEntityService,
+        private challengeEntityService: ChallengeEntityService,
     ) {
         super('Auth', serviceElementsFactory);
         this.authState$.subscribe();
@@ -64,6 +66,7 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
                 this.userEntityService.clearUserState();
                 this.exerciseEntityService.clearCache();
                 this.trainingEntityService.clearCache();
+                this.challengeEntityService.clearCache();
             })
         );
     }
@@ -72,7 +75,8 @@ export class AuthEntityService extends EntityCollectionServiceBase<AuthState> {
         return this.authDataService.resetPasswordStep1(document);
     }
 
-    resetPasswordStep2(payload: { document: string; telephone: number }): Observable<ForgotPasswordRes> {
+    resetPasswordStep2(payload: { code: string; userID: number }): Observable<ForgotPasswordRes> {
+        console.log(payload);
         return this.authDataService.resetPasswordStep2(payload);
     }
 

@@ -4,7 +4,7 @@
 >
   <img [src]="imageSrc" alt="Imagem de perfil" class="card-image w-100" />
   <div class="information d-flex justify-content-between flex-column">
-    <h2 class="title">{{ title }}</h2>
+    <h2 class="title fw-semibold">{{ title }}</h2>
     <div
       class="d-flex mt-3 align-items-center"
       [ngClass]="{
@@ -12,10 +12,10 @@
         'justify-content-start': !duration
       }"
     >
-      <p *ngIf="validity" class="text-center">Validade: {{ validity }}</p>
+      <p *ngIf="validity" class="text-center text-white font-family-poppins mb-0 fw-lighter">Validade: {{ validity }}</p>
       <div class="d-flex gap-1" *ngIf="duration">
-        <img src="assets/icons/clock.svg" alt="clock icon" />
-        <p class="text-center">
+        <i class="fas fa-solid fa-clock"></i>
+        <p class="text-center text-white font-family-poppins mb-0 fw-lighter">
           {{ duration }}
         </p>
       </div>

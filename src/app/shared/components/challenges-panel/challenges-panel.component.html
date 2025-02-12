@@ -1,0 +1,25 @@
+<section class="challenges-panel">
+  <header class="challenges-panel__header mb-2">
+    <div class="d-flex align-items-center gap-2">
+      <i class="fas fa-trophy"></i>
+      <h3 class="font-family-poppins fw-semibold text-white">DESAFIOS</h3>
+    </div>
+  </header>
+
+  <swiper-container
+    class="challenges-panel__slider"
+    [config]="swiperConfig"
+    [slidesPerView]="1"
+    style="--swiper-pagination-color: #ff4800;"
+    pagination="true"
+    pagination-clickable="true"
+    pagination-dynamic-bullets="true"
+  >
+    <swiper-slide *ngFor="let challenge of challenges$ | async">
+      <app-challenge-card
+        [challenge]="challenge"
+        routerLink="/general/challenges"
+      ></app-challenge-card>
+    </swiper-slide>
+  </swiper-container>
+</section>

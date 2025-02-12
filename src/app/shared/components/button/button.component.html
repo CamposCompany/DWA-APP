@@ -1,9 +1,10 @@
 <button
-  class="w-100 d-flex gap-2 justify-content-center align-items-center"
+  class="w-100 d-flex gap-2 justify-content-center align-items-center fw-bold font-family-poppins"
   [ngClass]="[buttonClass || '']"
   (click)="onClick()"
   [disabled]="disabled"
 >
   {{ label }}
   <img *ngIf="icon" [src]="icon" />
+  <ng-content [icon]></ng-content>
 </button>

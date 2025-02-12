@@ -1,26 +1,32 @@
 <app-header title="Menu"> </app-header>
 <div class="d-flex flex-column align-items-start mt-4">
-  <h3>Oi, {{ (currentUser$ | async)?.username }}!</h3>
+  <h3 class="font-family-poppins text-white font-weight-bold">Oi, {{ (currentUser$ | async)?.username }}!</h3>
 
-  <div class="menu-items w-100">
-    <div class="menu-item d-flex align-items-center" routerLink="user-data">
-      <img src="assets/icons/menu-user.svg" alt="Ícone usuário" class="menu-icon">
-      <span>Meus dados</span>
+  <div class="menu-items w-100 p-2 mt-4">
+    <div class="menu-item d-flex align-items-center p-3 gap-3" routerLink="user-data">
+      <i class="fas fa-regular fa-user fs-3"></i>
+      <span class="font-family-poppins text-white fw-medium">Meus dados</span>
     </div>
 
-    <div class="menu-item d-flex align-items-center" routerLink="terms-security">
-      <img src="assets/icons/menu-security.svg" alt="Ícone segurança" class="menu-icon">
-      <span>Segurança</span>
+    <div
+      class="menu-item gap-3 p-3 d-flex align-items-center"
+      routerLink="terms-security"
+    >
+      <i class="fas fa-shield-halved fs-3"></i>
+      <span class="font-family-poppins text-white fw-medium">Segurança</span>
     </div>
 
-    <div class="menu-item d-flex align-items-center" routerLink="terms-privacy">
-      <img src="assets/icons/menu-privacity.svg" alt="Ícone privacidade" class="menu-icon">
-      <span>Privacidade</span>
+    <div class="menu-item gap-3 p-3 d-flex align-items-center" routerLink="terms-privacy">
+      <i class="fas fa-lock fs-3"></i>
+      <span class="font-family-poppins text-white fw-medium">Privacidade</span>
     </div>
 
-    <div class="menu-item d-flex align-items-center text-danger mt-auto" (click)="logout()">
-      <img src="assets/icons/menu-exit.svg" alt="Ícone sair" class="menu-icon">
-      <span>Sair</span>
+    <div
+      class="menu-item gap-3 p-3 d-flex align-items-center text-danger mt-auto"
+      (click)="logout()"
+    >
+      <i class="exit fa-solid fa-arrow-right-from-bracket fs-3"></i>
+      <span class="font-family-poppins text-white">Sair</span>
     </div>
   </div>
 </div>

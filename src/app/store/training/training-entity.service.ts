@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { EntityCollectionServiceBase, EntityCollectionServiceElementsFactory } from '@ngrx/data';
-import { Training } from '../../shared/models/training';
-import { map } from 'rxjs/operators';
+import { Training } from '../../shared/models/training.model';
+import { map, tap } from 'rxjs/operators';
 import { TrainingDataService } from './training-data.service';
 import { Observable, BehaviorSubject } from 'rxjs';
 
@@ -11,6 +11,8 @@ import { Observable, BehaviorSubject } from 'rxjs';
 export class TrainingEntityService extends EntityCollectionServiceBase<Training> {
   private trainingsSubject = new BehaviorSubject<Training[]>([]);
   readonly trainings$ = this.trainingsSubject.asObservable();
+  private readonly userTrainingSubject = new BehaviorSubject<Training[]>([]);
+  readonly userTrainings$ = this.userTrainingSubject.asObservable();
 
   constructor(serviceElementsFactory: EntityCollectionServiceElementsFactory, private trainingDataService: TrainingDataService) {
     super('Trainings', serviceElementsFactory);
@@ -37,10 +39,7 @@ export class TrainingEntityService extends EntityCollectionServiceBase<Training>
   }
 
   completeTraining(trainingId: number, duration: string): Observable<Training | undefined> {
-    this.trainingDataService.completeTraining(trainingId, duration).subscribe({
-      next: (training) => console.log('Training completed:', training),
-      error: (error) => console.error('Error completing training:', error)
-    });
+    this.trainingDataService.completeTraining(trainingId, duration).subscribe();
 
     return this.trainings$.pipe(
       map(trainings => trainings.find(t => t.id === trainingId))
@@ -51,7 +50,7 @@ export class TrainingEntityService extends EntityCollectionServiceBase<Training>
     super.getAll().subscribe(trainings => {
       this.trainingsSubject.next(trainings);
     });
-    
+
     return this.trainings$;
   }
 }

@@ -1,6 +1,6 @@
-<div class="form-group {{containerClass}}" [class.borderless]="borderless">
-  <label *ngIf="label" [class]="labelClass">{{ label }}</label>
-  <div class="input-container">
+<div class="form-group {{containerClass}} position-relative" [class.borderless]="borderless">
+  <label class="font-family-poppins fw-medium" *ngIf="label" [class]="labelClass">{{ label }}</label>
+  <div class="input-container position-relative d-flex align-items-center">
     <ng-content select="[icon]" #content></ng-content>
     <input
       [class]="'w-100 ' + inputClass"
@@ -25,17 +25,13 @@
       "
     />
 
-    <img
+    <i
       class="position-absolute"
       *ngIf="type === 'password'"
-      [src]="
-        showPassword
-          ? 'assets/images/password-eye-on.png'
-          : 'assets/images/password-eye-off.png'
-      "
+      [class]="showPassword ? 'fa-regular fa-eye' : 'fa-regular fa-eye-slash'"
       (click)="this.showPassword = !this.showPassword"
-      [attr.alt]="showPassword ? 'Hide password' : 'Show password'"
-    />
+      [attr.title]="showPassword ? 'Hide password' : 'Show password'"
+    ></i>
   </div>
 
   <select

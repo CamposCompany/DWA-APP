@@ -1,6 +1,4 @@
 .header {
-  display: flex;
-  align-items: center;
   padding: 15px 20px;
   color: white;
 
@@ -19,6 +17,57 @@
   }
 
   img {
-    filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%) hue-rotate(9deg) brightness(96%) contrast(97%);
+    filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%)
+      hue-rotate(9deg) brightness(96%) contrast(97%);
+  }
+}
+
+.header-home {
+  h1 {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 9px;
+    font-style: italic;
+    opacity: 0.9;
+  }
+
+  .header {
+    padding: 10px;
+  }
+
+  .content {
+    margin-top: 20px;
+  }
+
+  .points-item {
+    .icon {
+      width: 20px;
+      height: 20px;
+    }
+
+    .chevron {
+      width: 10px;
+      height: 10px;
+    }
+  }
+
+  .separator {
+    width: 1px;
+    height: 24px;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .icon-button {
+    background: none;
+    border: none;
+    
+    padding: 0.5rem;
+
+    .icon {
+      width: 14px;
+      height: 18px;
+    }
   }
 }

@@ -1,10 +1,8 @@
 .btn-primary,
 .btn-success,
 .btn-secondary {
-  font-family: "League Spartan", sans-serif;
-  font-weight: bold;
   font-size: 14px;
-  cursor: pointer;
+  
   border: none;
   border-radius: 15px;
   padding: 8px;
@@ -20,7 +18,6 @@
   color: #ff8000;
   border: 2px solid #ff8000;
   border-radius: 20px;
-  align-items: center;
 }
 
 .btn-secondary img {

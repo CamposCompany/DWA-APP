@@ -1,14 +1,16 @@
 <div
   class="container-first-login h-100 d-flex flex-column justify-content-center align-items-center"
 >
-  <div class="d-flex">
-    <a routerLink="/login">
-      <img class="backButton" src="../../../assets/backButton.png" />
-    </a>
-    <h1 class="text-center">Primeiro acesso</h1>
+  <div class="d-flex w-100 align-items-center">
+    <i class="fa-solid fa-arrow-left text-white fs-5" routerLink="/login"></i>
+    <h1 class="text-center text-white font-family-league-spartan w-100">
+      Primeiro acesso
+    </h1>
   </div>
 
-  <span class="text-left">Preencha seus dados para finalizar seu cadastro</span>
+  <span class="text-left text-white text-center fw-normal"
+    >Preencha seus dados para finalizar seu cadastro</span
+  >
 
   <div class="d-flex flex-column justify-content-between w-100 h-100">
     <form [formGroup]="firstAccessForm" class="d-flex flex-column gap-3">
@@ -50,12 +52,19 @@
         type="password"
       ></app-input>
 
-      <p class="error-message" *ngIf="errorMessage$ | async as error">
+      <p
+        class="error-message font-family-league-spartan"
+        *ngIf="errorMessage$ | async as error"
+      >
         {{ error }}
       </p>
-      <span class="text-left" id="policy-link"
-        >Ao continuar você aceita nosso <a>Termos de Uso</a> e
-        <a>Política de Privacidade.</a></span
+      <span
+        class="text-left text-white text-center mb-0 fw-normal"
+        id="policy-link"
+      >
+        Ao continuar você aceita nosso
+        <a class="text-decoration-underline">Termos de Uso</a> e
+        <a class="text-decoration-underline">Política de Privacidade.</a></span
       >
     </form>
     <div class="mt-3">

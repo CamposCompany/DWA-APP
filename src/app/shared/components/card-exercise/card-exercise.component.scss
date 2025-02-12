@@ -1,24 +1,16 @@
 .card-training {
-  background-color: white;
   border-radius: 20px;
   padding: 8px 16px;
   height: 50px;
 
-  h3,
-  p {
-    font-family: "Poppins", sans-serif;
-  }
-
   h3 {
     font-size: 14px;
     color: #262525;
-    font-weight: bold;
   }
 
   p {
     color: #888888;
     font-size: 8px;
-    margin-bottom: 0;
   }
 
   img {
@@ -26,18 +18,4 @@
     filter: brightness(0) saturate(100%) invert(44%) sepia(100%) saturate(750%)
       hue-rotate(9deg) brightness(96%) contrast(97%);
   }
-
-  .reps {
-    p {
-      color: black;
-      font-size: 12px;
-      font-weight: 600;
-    }
-  }
-}
-
-.no-exercises {
-  font-family: "Poppins", sans-serif;
-  font-size: 14px;
-  color: white;
 }

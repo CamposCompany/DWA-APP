@@ -1,31 +1,19 @@
+@import "../shared/styles/variables.scss";
+
 h3 {
   font-size: 22px;
-  color: white;
-  font-weight: bold;
 }
 
 span {
-    font-size: 16px;
-    font-weight: 500;
-}
-
-h3,
-span {
-  font-family: "Poppins", sans-serif;
+  font-size: 16px;
 }
 
 .menu-items {
-  margin-top: 2rem;
-  background-color: #1e1e1e;
+  background-color: $menu-background;
   border-radius: 16px;
-  padding: 0.5rem;
 }
 
 .menu-item {
-  padding: 1rem;
-  cursor: pointer;
-  gap: 1rem;
-  color: white;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 
   &:last-child {
@@ -36,4 +24,8 @@ span {
 .menu-icon {
   width: 24px;
   height: 24px;
+}
+
+.exit {
+  color: red;
 }

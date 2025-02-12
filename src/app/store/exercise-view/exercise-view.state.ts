@@ -1,4 +1,4 @@
-import { Exercise } from "../../shared/models/exercise";
+import { Exercise } from "../../shared/models/exercise.model";
 
 export interface ExerciseViewState {
     id?: string;

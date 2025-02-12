@@ -18,19 +18,25 @@ import { entityConfig } from './entity-metadata';
 import { ExerciseDataService } from './store/exercise/exercise-data.service';
 import { UserDataService } from './store/user/user-data.service';
 import { AuthDataService } from './auth/store/auth-data.service';
+import { ChallengeDataService } from './store/challenge/challenge-data.service';
+import { TrainingViewDataService } from './store/training-view/training-view-data.service';
 
 export function initializeEntityDataService(
   entityDataService: EntityDataService,
   trainingDataService: TrainingDataService,
+  trainingViewDataService: TrainingViewDataService,
   exerciseDataService: ExerciseDataService,
   userDataService: UserDataService,
   authDataService: AuthDataService,
+  challengeDataService: ChallengeDataService
 ) {
   return () => {
     entityDataService.registerService('Trainings', trainingDataService);
+    entityDataService.registerService('UserTrainings', trainingViewDataService);
     entityDataService.registerService('Exercises', exerciseDataService);
     entityDataService.registerService('Users', userDataService);
     entityDataService.registerService('Auth', authDataService);
+    entityDataService.registerService('Challenges', challengeDataService);
   };
 }
 
@@ -57,18 +63,22 @@ export const appConfig: ApplicationConfig = {
     provideRouterStore(),
     provideEntityData(entityConfig, withEffects()),
     TrainingDataService,
+    TrainingViewDataService,
     ExerciseDataService,
     UserDataService,
     AuthDataService,
+    ChallengeDataService,
     {
       provide: APP_INITIALIZER,
       useFactory: initializeEntityDataService,
       deps: [
         EntityDataService, 
         TrainingDataService, 
+        TrainingViewDataService,
         ExerciseDataService, 
         UserDataService, 
         AuthDataService,
+        ChallengeDataService
       ],
       multi: true
     }

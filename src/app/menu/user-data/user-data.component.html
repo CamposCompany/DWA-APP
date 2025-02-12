@@ -1,4 +1,4 @@
-<app-header title="Meus dados"></app-header>
+<app-header title="Meus dados" [hasHome]="true"></app-header>
 
 <div class="mt-4">
   <form class="d-flex flex-column gap-3" [formGroup]="userForm" (ngSubmit)="onSubmit()">

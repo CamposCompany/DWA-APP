@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { Http } from './http.service';
 import { Observable, catchError, map, throwError, firstValueFrom, async } from 'rxjs';
-import { Training, UserTrainingData } from '../models/training';
+import { Training, UserTrainingData } from '../models/training.model';
 import Swal from 'sweetalert2';
 import { TrainingTimerService } from '../pages/training-view/services/training-timer.service';
 import { TrainingEntityService } from '../../store/training/training-entity.service';

@@ -1,15 +1,12 @@
 .form-group {
-  position: relative;
-
   label {
-    font-family: "Poppins", sans-serif;
     color: #d9d9d9;
-    font-weight: 500;
     font-size: 16px;
     line-height: 24px;
   }
 
-  input, select {
+  input,
+  select {
     height: 40px;
     padding: 0 16px;
     border-radius: 15px;
@@ -25,8 +22,7 @@
     }
   }
 
-  img {
-    margin-top: 7px;
+  i {
     right: 20px;
   }
 
@@ -37,13 +33,9 @@
   }
 
   .input-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-
     ::ng-deep [icon] {
       position: absolute;
-      left: 10px;
+      right: 20px;
       width: 20px;
       height: 20px;
       pointer-events: none;

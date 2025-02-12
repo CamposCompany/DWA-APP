@@ -16,5 +16,10 @@ export const GENERAL_ROUTES: Routes = [
       import('./shared/pages/exercise-view/exercise-view.component').then((m) => m.ExerciseViewComponent),
     canActivate: [authGuard],
     providers: [provideEffects(ExerciseViewEffects)]
+  },
+  {
+    path: 'challenges',
+    loadComponent: () => 
+      import('./shared/pages/challenges-view/challenges-view.component').then((m) => m.ChallengesViewComponent),
   }
 ]

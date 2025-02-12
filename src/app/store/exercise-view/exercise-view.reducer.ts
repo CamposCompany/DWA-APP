@@ -1,7 +1,7 @@
 import { createReducer, on } from '@ngrx/store';
 import * as ExerciseViewActions from './exercise-view.actions';
 import { ExerciseViewState, initialState } from './exercise-view.state';
-import { Exercise, Repetition } from '../../shared/models/exercise';
+import { Exercise, Repetition } from '../../shared/models/exercise.model';
 import { EntityAdapter, createEntityAdapter } from '@ngrx/entity';
 
 export const adapter: EntityAdapter<Exercise> = createEntityAdapter<Exercise>();

@@ -2,18 +2,18 @@
 <div class="d-flex flex-column w-100">
   <app-filter (filterChanged)="onFilterChanged($event)"></app-filter>
 
-  <p class="mt-4">Treinos cadastrados</p>
+  <p class="mt-4 font-family-poppins text-white">Treinos cadastrados</p>
 
   <ng-container *ngFor="let training of filteredTrainings$ | async">
     <div
-      class="card-training d-flex justify-content-between align-items-center mb-3"
+      class="card-training d-flex justify-content-between align-items-center mb-3 bg-white"
       [routerLink]="['/general/training', training.id]"
     >
       <img src="assets/images/default-training-card.png" />
-      <h3>
+      <h3 class="font-family-poppins fw-bold">
         {{ training.name.toLocaleUpperCase() }}
       </h3>
-      <img src="assets/icons/arrow-forward.svg" />
+      <i class="fas fa-solid fa-arrow-right"></i>
     </div>
   </ng-container>
 </div>

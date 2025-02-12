@@ -1,5 +1,5 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Exercise, Repetition } from '../../models/exercise';
+import { Exercise, Repetition } from '../../models/exercise.model';
 import { CommonModule } from '@angular/common';
 
 @Component({
@@ -16,6 +16,7 @@ export class UserCardExerciseComponent {
   @Input() isTrainingCompleted: boolean = false;
   @Input() isCompleted: boolean = false;
   @Input() isOtherTrainingActive: boolean = false;
+  @Input() isAdmin: boolean = false;
   @Output() exerciseClicked = new EventEmitter<Exercise>();
   @Output() exerciseToggled = new EventEmitter<Exercise>();
 

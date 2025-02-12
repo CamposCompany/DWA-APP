@@ -16,6 +16,6 @@ export class CardComponent {
   @Input() duration?: string;
   @Input() imageSrc!: string;
   @Input() size: 'small' | 'large' = 'large';
-  @Input() showButton: boolean = false;
+  @Input() showButton: boolean = true;
   @Input() buttonLabel: string = 'Ver treino';
 }

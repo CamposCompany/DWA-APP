@@ -1,9 +1,10 @@
 import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HeaderComponent } from '../../../shared/components/header/header.component';
-import { User } from '../../../shared/models/users';
+import { User } from '../../../shared/models/users.model';
 import { Observable } from 'rxjs';
 import { UserEntityService } from '../../../store/user/user-entity.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-gym-members',
@@ -14,10 +15,11 @@ import { UserEntityService } from '../../../store/user/user-entity.service';
 })
 export class GymMembersComponent {
   readonly userEntityService = inject(UserEntityService);
+  private readonly router = inject(Router); 
 
   members$: Observable<User[]> = this.userEntityService.entities$;
 
-  onViewTraining(memberId: number): void {
-    console.log('Ver treino do membro:', memberId);
+  goToMemberView(memberId: number): void {
+    this.router.navigate(['/personal/gym-members', memberId]);
   }
 }
