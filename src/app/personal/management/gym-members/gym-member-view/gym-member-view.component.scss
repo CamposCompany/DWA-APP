@@ -1,0 +1,29 @@
+h2,
+h3,
+p {
+  font-family: "Poppins", sans-serif;
+}
+
+h3 {
+  color: white;
+  font-size: 18px;
+}
+
+.member-card {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  height: 100px;
+  border-radius: 18px;
+
+  .member-info {
+    h2 {
+      color: #666;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    p {
+      font-size: 10px;
+      color: #666;
+    }
+  }
+}

@@ -24,7 +24,9 @@ export interface Training {
   todayTraining: boolean,
   exercises: Exercise[],
   completed: boolean,
-  last_duration: string
+  last_duration: string,
+  origin_trainingID?: number,
+  user_id?: number
 }
 
 export interface CreatedTrainingData extends GenericData {

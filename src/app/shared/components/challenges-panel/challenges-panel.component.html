@@ -1,7 +1,7 @@
 <section class="challenges-panel">
   <header class="challenges-panel__header mb-2">
     <div class="d-flex align-items-center gap-2">
-      <img src="assets/icons/trophy.svg" alt="Ícone de troféu" />
+      <i class="fas fa-trophy"></i>
       <h3>DESAFIOS</h3>
     </div>
   </header>
@@ -12,7 +12,10 @@
     [slidesPerView]="1"
   >
     <swiper-slide *ngFor="let challenge of challenges$ | async">
-      <app-challenge-card [challenge]="challenge" routerLink="/general/challenges"></app-challenge-card>
+      <app-challenge-card
+        [challenge]="challenge"
+        routerLink="/general/challenges"
+      ></app-challenge-card>
     </swiper-slide>
   </swiper-container>
 </section>

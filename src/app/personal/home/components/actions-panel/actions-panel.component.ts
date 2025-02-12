@@ -21,17 +21,17 @@ export class ActionsPanelComponent implements OnInit {
   private setDashboardAction(): void {
     this.dashboardActions = [
       {
-        icon: 'assets/icons/shoes.svg',
+        icon: 'fa-solid fa-clipboard-user',
         title: 'Meus Alunos',
         route: '/personal/gym-members'
       },
       {
-        icon: 'assets/icons/verified-list.svg',
+        icon: 'fa-regular fa-clipboard',
         title: 'Exercícios',
         route: '/personal/exercises',
       },
       {
-        icon: 'assets/icons/verified-list.svg',
+        icon: 'fa-regular fa-clipboard',
         title: 'Treinos',
         route: '/personal/trainings',
       }

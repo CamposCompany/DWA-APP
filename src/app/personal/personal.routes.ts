@@ -40,5 +40,11 @@ export const PERSONAL_ROUTES: Routes = [
     loadComponent: () =>
       import('./management/gym-members/gym-members.component').then((m) => m.GymMembersComponent),
     canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'gym-members/:id',
+    loadComponent: () =>
+      import('./management/gym-members/gym-member-view/gym-member-view.component').then((m) => m.GymMemberViewComponent),
+    canActivate: [authGuard, adminGuard]
   }
 ];

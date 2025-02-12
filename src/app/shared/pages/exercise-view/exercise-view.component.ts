@@ -19,6 +19,7 @@ import { ExerciseViewService } from './services/exercise-view.service';
 import { RestTimerService } from '../training-view/services/rest-timer.service';
 import { TrainingStateService } from '../training-view/services/training-state.service';
 import { FormsModule } from '@angular/forms';
+import { UserEntityService } from '../../../store/user/user-entity.service';
 
 @Component({
   selector: 'app-exercise-view',
@@ -36,6 +37,7 @@ import { FormsModule } from '@angular/forms';
 export class ExerciseViewComponent {
   private readonly store = inject(Store<AppState>);
   private readonly trainingStateService = inject(TrainingStateService);
+  private readonly userService = inject(UserEntityService);
 
   public readonly exerciseViewService = inject(ExerciseViewService);
   public readonly restTimer = inject(RestTimerService);
@@ -52,6 +54,7 @@ export class ExerciseViewComponent {
   isEditingWeight = false;
   editWeight: number | null = null;
   currentEditingSeriesIndex: number | null = null;
+  isAdmin = this.userService.getIsAdmin();
 
   isExerciseCompleted$ = combineLatest([
     this.store.select(selectCompletedSeries),

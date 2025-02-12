@@ -3,7 +3,6 @@ import { Training } from './shared/models/training.model';
 import { Exercise } from './shared/models/exercise.model';
 import { User } from './shared/models/users.model';
 import { AuthenticateLoginData } from './shared/models/authenticate.model';
-import { ExerciseViewState } from './store/exercise-view/exercise-view.state';
 import { Challenge } from './shared/models/challenge.model';
 
 export const entityMetadata: EntityMetadataMap = {
@@ -25,15 +24,13 @@ export const entityMetadata: EntityMetadataMap = {
       optimisticUpdate: true
     }
   },
+  TrainingView: {
+    entityName: 'TrainingView',
+    selectId: (training: Training) => training.id
+  },
   Auth: {
     entityName: 'Auth',
     selectId: (auth: AuthenticateLoginData) => auth?.user?.id ?? 0,
-    entityDispatcherOptions: {
-      optimisticUpdate: true
-    }
-  },
-  ExerciseView: {
-    selectId: (state: ExerciseViewState) => 'current',
     entityDispatcherOptions: {
       optimisticUpdate: true
     }

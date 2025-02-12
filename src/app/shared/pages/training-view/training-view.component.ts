@@ -15,8 +15,9 @@ import { ExerciseViewActions } from '../../../store/exercise-view/action.types';
 import { ExerciseViewService } from '../exercise-view/services/exercise-view.service';
 import { Training } from '../../models/training.model';
 import { formatDuration } from '../../utils/helpers/duration.helper';
-import { TrainingEntityService } from '../../../store/training/training-entity.service';
 import { AppState } from '../../../store';
+import { TrainingViewEntityService } from '../../../store/training-view/training-view-entity.service';
+import { UserEntityService } from '../../../store/user/user-entity.service';
 
 
 
@@ -38,11 +39,14 @@ export class TrainingViewComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly store = inject(Store<AppState>);
-  private readonly trainingEntityService = inject(TrainingEntityService);
   private readonly timerService = inject(TrainingTimerService);
   private readonly trainingStateService = inject(TrainingStateService);
   private readonly exerciseViewService = inject(ExerciseViewService);
   private readonly trainingBehaviorSubject = new BehaviorSubject<Training | null>(null);
+  private readonly trainingViewEntityService = inject(TrainingViewEntityService);
+  private readonly userService = inject(UserEntityService);
+
+  isAdmin = this.userService.getIsAdmin();
 
   training$ = this.trainingBehaviorSubject.asObservable();
   isTrainingStarted$ = this.trainingStateService.isTrainingStarted$;
@@ -86,12 +90,13 @@ export class TrainingViewComponent implements OnInit {
 
   ngOnInit(): void {
     const trainingId = Number(this.route.snapshot.paramMap.get('id'));
-    this.trainingEntityService.getTrainingById(trainingId).pipe(
-      filter((training): training is Training => !!training),
-      tap((training: Training) => {
-        this.trainingBehaviorSubject.next(training);
-      })
-    ).subscribe();
+    this.trainingViewEntityService.trainingView$.pipe(
+      map(userTrainings => userTrainings.find((training: Training) =>
+        'origin_trainingID' in training ? training.origin_trainingID === trainingId : training.id === trainingId
+      )!)
+    ).subscribe(training => {
+      this.trainingBehaviorSubject.next(training);
+    });
   }
 
   getTraining(): Training {
@@ -182,7 +187,7 @@ export class TrainingViewComponent implements OnInit {
         const training = await firstValueFrom(this.training$);
         if (!training) return;
 
-        training.exercises.forEach(exercise => {
+        training.exercises.forEach((exercise: Exercise) => {
           this.exerciseViewService.uncompleteSeries(exercise.id);
         });
 

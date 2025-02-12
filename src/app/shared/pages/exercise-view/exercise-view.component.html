@@ -112,6 +112,7 @@
                         }}kg</span
                       >
                       <img
+                        *ngIf="!isAdmin"
                         src="assets/icons/exercise-view/pencil.svg"
                         alt="Edit"
                         class="img-fluid cursor-pointer"
@@ -137,30 +138,33 @@
                   </div>
 
                   <div class="d-flex align-items-center gap-2">
-                    <img
-                      src="assets/icons/exercise-view/clock.svg"
-                      alt="Rest"
-                      class="img-fluid"
-                    />
+                    <i class="fa-solid fa-clock"></i>
                     <span>{{ exercise.rest }}s</span>
                   </div>
                 </div>
 
                 <app-button
+                  *ngIf="!isAdmin"
                   [label]="
-                    (isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)
+                    (isExerciseCompleted$ | async) ||
+                    (isTrainingCompleted$ | async)
                       ? 'Exercício Concluído'
                       : isLastSeries(exercise, i)
                       ? 'Concluir Exercício'
                       : 'Próxima Série'
                   "
-                  [icon]="((isExerciseCompleted$ | async) || (isTrainingCompleted$ | async)) ? 'assets/icons/done.svg' : ''"
+                  [icon]="
+                    (isExerciseCompleted$ | async) ||
+                    (isTrainingCompleted$ | async)
+                      ? 'assets/icons/done.svg'
+                      : ''
+                  "
                   buttonClass="btn-success"
                   class="w-100"
                   [disabled]="
-                    (isButtonDisabled(i) | async) || 
-                    (isExerciseCompleted$ | async) || 
-                    (isTrainingCompleted$ | async) ?? false
+                    (isButtonDisabled(i) | async) ||
+                    (isExerciseCompleted$ | async) ||
+                    ((isTrainingCompleted$ | async) ?? false)
                   "
                   (clicked)="onCompleteSeries(i)"
                 ></app-button>
@@ -169,6 +173,7 @@
           </div>
         </div>
         <app-button
+          *ngIf="!isAdmin"
           [label]="
             (restTimer.timer$ | async) === null
               ? exercise.rest + 's'
@@ -176,10 +181,11 @@
           "
           buttonClass="btn-secondary"
           class="w-100"
-          icon="assets/icons/exercise-view/clock.svg"
           (clicked)="startRestTimer(exercise.rest)"
           [disabled]="(restTimer.timer$ | async) !== null"
-        ></app-button>
+        >
+          <i class="fas fa-solid fa-clock"></i>
+        </app-button>
       </div>
 
       <div class="d-flex flex-column gap-2 w-100">

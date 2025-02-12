@@ -1,7 +1,7 @@
 <section class="costumers-panel">
   <header class="costumers-panel__header">
     <div class="brand">
-      <img src="assets/icons/lit.svg" alt="Ícone de fogo" />
+      <i class="fas fa-fire-flame-curved"></i>
       <h1>ALUNOS CADASTRADOS</h1>
     </div>
   </header>
@@ -19,6 +19,7 @@
         [showButton]="false"
         imageSrc="assets/images/default-user-profile.png"
         size="small"
+        [routerLink]="['/personal/gym-members', gymMember.id]"
       ></app-card>
     </swiper-slide>
   </swiper-container>

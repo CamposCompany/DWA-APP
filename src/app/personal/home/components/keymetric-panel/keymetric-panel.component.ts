@@ -23,17 +23,17 @@ export class KeymetricPanelComponent implements OnInit {
 
   private setDashboardInformation(): void {
     this.dashboardInformation = [{
-      icon: 'assets/icons/shoes.svg',
+      icon: 'fa-solid fa-clipboard-user',
       title: 'Total de alunos',
       value$: this.userCount$
     },
     {
-      icon: 'assets/icons/verified-list.svg',
+      icon: 'fa-regular fa-clipboard',
       title: 'Exercícios cadastrados',
       value$: this.exerciseCount$
     },
     {
-      icon: 'assets/icons/verified-list.svg',
+      icon: 'fa-regular fa-clipboard',
       title: 'Treinos cadastrados',
       value$: this.trainingCount$
     }]

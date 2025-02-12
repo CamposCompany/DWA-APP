@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { map, Observable } from 'rxjs';
+import { map, Observable, take, combineLatest } from 'rxjs';
 import { User } from '../../shared/models/users.model';
 import { Training } from '../../shared/models/training.model';
 import { Exercise } from '../../shared/models/exercise.model';
@@ -16,6 +16,7 @@ import { UserEntityService } from '../../store/user/user-entity.service';
 import { ChallengeEntityService } from '../../store/challenge/challenge-entity.service';
 import { Challenge } from '../../shared/models/challenge.model';
 import { ChallengesPanelComponent } from '../../shared/components/challenges-panel/challenges-panel.component';
+import { TrainingViewEntityService } from '../../store/training-view/training-view-entity.service';
 @Component({
   selector: 'app-dashboard',
   standalone: true,
@@ -37,6 +38,7 @@ export class HomeComponent {
   private readonly exerciseEntityService = inject(ExerciseEntityService);
   private readonly userEntityService = inject(UserEntityService);
   private readonly challengeEntityService = inject(ChallengeEntityService);
+  private readonly trainingViewEntityService = inject(TrainingViewEntityService);
 
   challenges$: Observable<Challenge[]> = this.challengeEntityService.entities$;
 
@@ -57,5 +59,16 @@ export class HomeComponent {
   userCount$: Observable<number> = this.users$.pipe(
     map((users: User[]) => users.length)
   );
+
+  ngOnInit(): void {
+    combineLatest([
+      this.trainings$.pipe(take(1)),
+      this.trainingViewEntityService.trainingView$.pipe(take(1))
+    ]).subscribe(([trainings, trainingViews]) => {
+      if (JSON.stringify(trainings) !== JSON.stringify(trainingViews)) {
+        this.trainingViewEntityService.upsertManyInCache(trainings);
+      }
+    });
+  }
 
 }

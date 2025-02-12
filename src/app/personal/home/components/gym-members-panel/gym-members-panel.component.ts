@@ -6,11 +6,12 @@ import { User } from '../../../../shared/models/users.model';
 import { CardComponent } from '../../../../shared/components/card/card.component';
 import { map, takeUntil, debounceTime, distinctUntilChanged } from 'rxjs/operators';
 import { Swiper, SwiperEvents, SwiperOptions } from 'swiper/types';
+import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-gym-members-panel',
   standalone: true,
-  imports: [CommonModule, CardComponent, ReactiveFormsModule],
+  imports: [CommonModule, CardComponent, ReactiveFormsModule, RouterModule],
   templateUrl: './gym-members-panel.component.html',
   styleUrl: './gym-members-panel.component.scss',
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
