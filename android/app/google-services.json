@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "595888165640",
+    "project_id": "dwa-app-7d233",
+    "storage_bucket": "dwa-app-7d233.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:595888165640:android:f465fa8ef3134e1ea4d2bd",
+        "android_client_info": {
+          "package_name": "com.gcptecnologia.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA2-DbUX31GagsoHQ-PwnNZJIy7IDAWmgk"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
